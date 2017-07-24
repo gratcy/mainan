@@ -78,7 +78,7 @@ var sauth;
 
 app.all('/*', function(req, res, next){
 	if (/\/login/.test(req.path) === false) {
-		helpers.helpers.__check_permission(req, res);
+		helpers.helpers.__check_permission(req, res, next);
 	}
 	next();
 });
@@ -124,6 +124,7 @@ app.get('/products/products_update/:id', products.products_detail);
 app.post('/products/products_update',products.products_update);
 app.get('/products/products_delete/:id', products.products_delete);
 
+app.get('/login/logging', login.main);
 app.get('/login', login.main);
 app.post('/login/logging', login.login);
 app.get('/login/logout', login.logout);

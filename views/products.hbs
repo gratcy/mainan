@@ -35,6 +35,9 @@
                   <th>Category</th>
                   <th>Product</th>
                   <th>Description</th>
+                  <th>Price Base PCS</th>
+                  <th>Price Base Lusin</th>
+                  <th>Price Base Koli</th>
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
@@ -48,6 +51,9 @@
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
                   <td>{{ pdesc }}</td>
+                  <td>{{ __number_format ppricebasepcs 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricebasedozen 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricebasekoli 0 '' ',' }}</td>
                   <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
@@ -64,6 +70,9 @@
                   <th>Category</th>
                   <th>Product</th>
                   <th>Description</th>
+                  <th>Price Base PCS</th>
+                  <th>Price Base Lusin</th>
+                  <th>Price Base Koli</th>
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>

@@ -51,12 +51,21 @@ exports.products_add = function(req,res) {
 				pricedozen = pricedozen.replace(/(\,|\.)/g, "");
 			var pricekoli = input.pricekoli;
 				pricekoli = pricekoli.replace(/(\,|\.)/g, "");
+			var pricebasepcs = input.pricebasepcs;
+				pricebasepcs = pricebasepcs.replace(/(\,|\.)/g, "");
+			var pricebasedozen = input.pricebasedozen;
+				pricebasedozen = pricebasedozen.replace(/(\,|\.)/g, "");
+			var pricebasekoli = input.pricebasekoli;
+				pricebasekoli = pricebasekoli.replace(/(\,|\.)/g, "");
 			
 			var data = {
 				pcid : input.cid,
 				pdate : helpers.__get_date_now(),
 				pname : input.name,
 				pdesc : input.desc,
+				ppricebasepcs : pricebasepcs,
+				ppricebasedozen : pricebasedozen,
+				ppricebasekoli : pricebasekoli,
 				ppricepcs : pricepcs,
 				ppricedozen : pricedozen,
 				ppricekoli : pricekoli,
@@ -94,12 +103,21 @@ exports.products_update = function(req,res) {
 					pricedozen = pricedozen.replace(/(\,|\.)/g, "");
 				var pricekoli = input.pricekoli;
 					pricekoli = pricekoli.replace(/(\,|\.)/g, "");
+				var pricebasepcs = input.pricebasepcs;
+					pricebasepcs = pricebasepcs.replace(/(\,|\.)/g, "");
+				var pricebasedozen = input.pricebasedozen;
+					pricebasedozen = pricebasedozen.replace(/(\,|\.)/g, "");
+				var pricebasekoli = input.pricebasekoli;
+					pricebasekoli = pricebasekoli.replace(/(\,|\.)/g, "");
 				
 				var data = {
 					pcid : input.cid,
 					pdate : helpers.__get_date_now(),
 					pname : input.name,
 					pdesc : input.desc,
+					ppricebasepcs : pricebasepcs,
+					ppricebasedozen : pricebasedozen,
+					ppricebasekoli : pricebasekoli,
 					ppricepcs : pricepcs,
 					ppricedozen : pricedozen,
 					ppricekoli : pricekoli,
@@ -107,10 +125,13 @@ exports.products_update = function(req,res) {
 				};
 				
 				connection.query("UPDATE products_tab set ? WHERE pid = ? ",[data,id], function(err, rows) {
-					if (parseInt(pricepcs) !== parseInt(input.tmppricepcs) || parseInt(pricedozen) !== parseInt(input.tmppricedozen) || parseInt(pricekoli) !== parseInt(input.tmppricekoli)) {
+					if (parseInt(pricepcs) !== parseInt(input.tmppricepcs) || parseInt(pricedozen) !== parseInt(input.tmppricedozen) || parseInt(pricekoli) !== parseInt(input.tmppricekoli) || parseInt(pricebasepcs) !== parseInt(input.tmppricebasepcs) || parseInt(pricebasedozen) !== parseInt(input.tmppricebasedozen) || parseInt(pricebasekoli) !== parseInt(input.tmppricebasekoli)) {
 						var rdata = {
 							ppid : id,
 							pdate : helpers.__get_date_now(),
+							ppricebasepcs : pricebasepcs,
+							ppricebasedozen : pricebasedozen,
+							ppricebasekoli : pricebasekoli,
 							ppricepcs : pricepcs,
 							ppricedozen : pricedozen,
 							ppricekoli : pricekoli,

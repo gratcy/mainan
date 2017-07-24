@@ -37,6 +37,7 @@
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Address</th>
+                  <th>Deposit</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -49,6 +50,7 @@
                   <td>{{ cemail }}</td>
                   <td>{{ __replace_string cphone }}</td>
                   <td>{{ caddr }} {{ city }} {{ province }}</td>
+                  <td>{{ __number_format cdeposit 0 '' ',' }}</td>
                   <td>{{ __get_status cstatus 1 }}</td>
                   <td>
 					<a href="{{ __site_url 'customers/customers_update/' }}{{ cid }}"><i class="fa fa-pencil"></i></a>
@@ -64,6 +66,7 @@
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Address</th>
+                  <th>Deposit</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>

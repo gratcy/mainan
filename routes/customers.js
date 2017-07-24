@@ -37,6 +37,8 @@ exports.customers_add = function(req,res) {
 	}
 	else {
 		req.getConnection(function (err, connection) {
+			var deposit = input.deposit;
+				deposit = deposit.replace(/(\,|\.)/g, "");
 			var data = {
 				ctype : input.ctype,
 				cname : input.name,
@@ -45,7 +47,7 @@ exports.customers_add = function(req,res) {
 				ccity : input.city,
 				cemail : input.email,
 				cphone : input.phone[0]+'*'+input.phone[1],
-				cdeposit : input.name,
+				cdeposit : deposit,
 				cstatus : input.status
 			};
 
@@ -74,6 +76,8 @@ exports.customers_update = function(req,res) {
 		}
 		else {
 			req.getConnection(function (err, connection) {
+				var deposit = input.deposit;
+					deposit = deposit.replace(/(\,|\.)/g, "");
 				var data = {
 					ctype : input.ctype,
 					cname : input.name,
@@ -82,7 +86,7 @@ exports.customers_update = function(req,res) {
 					ccity : input.city,
 					cemail : input.email,
 					cphone : input.phone[0]+'*'+input.phone[1],
-					cdeposit : input.name,
+					cdeposit : deposit,
 					cstatus : input.status
 				};
 
