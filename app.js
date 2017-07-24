@@ -131,6 +131,8 @@ app.get('/login/logout', login.logout);
 
 app.get('/inventory', inventory.list);
 app.get('/opname', opname.list);
+app.get('/opname/opname_update/:id', opname.opname_detail);
+app.post('/opname/opname_update', opname.opname_update);
 
 app.get('/settings', settings.settings);
 app.post('/settings/settings', settings.settings_update);
