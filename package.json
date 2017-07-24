@@ -1,0 +1,23 @@
+{
+  "name": "mainan",
+  "version": "1.0.0",
+  "description": "mainan",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "mainan"
+  ],
+  "author": "gratcy",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "express-myconnection": "^1.0.4",
+    "memcached": "^2.2.2",
+    "mysql": "^2.13.0"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,103 @@
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image" style="padding-left:15px">
+          <img src="{{ __themes_url 'dist/img/no-avatar.png' }}" class="img-circle" alt="User Image">
+        </div>
+      </div>
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="header">MAIN NAVIGATION</li>
+        <li class="active treeview">
+          <a href="{{ __site_url '' }}">
+            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+          </a>
+        </li>
+		 <li class="treeview" rel="Master">
+          <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Master</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+              <span class="label label-danger pull-right">5</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ __site_url 'categories' }}"><i class="fa fa-circle-o"></i> Category Product</a></li>
+            <li><a href="{{ __site_url 'products' }}"><i class="fa fa-circle-o"></i> Products</a></li>
+            <li><a href="{{ __site_url 'customers' }}"><i class="fa fa-circle-o"></i> Customers</a></li>
+            <li><a href="{{ __site_url 'province' }}"><i class="fa fa-circle-o"></i> Province</a></li>
+            <li><a href="{{ __site_url 'city' }}"><i class="fa fa-circle-o"></i> City</a></li>
+          </ul>
+        </li>
+		<li class="treeview" rel="SalesPurchase">
+          <a href="#">
+            <i class="fa fa-money"></i>
+            <span>Sales &amp; Purchase</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+              <span class="label label-primary pull-right">2</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+				<li><a href="{{ __site_url 'order' }}"><i class="fa fa-circle-o"></i> Order</a></li>
+				<li><a href="{{ __site_url 'retur' }}"><i class="fa fa-circle-o"></i> Return</a></li>
+		  </ul>
+        </li>
+		<li class="treeview" rel="Inventory">
+          <a href="#">
+            <i class="fa fa-th"></i>
+            <span>Inventory</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+              <span class="label bg-green pull-right">3</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+				<li><a href="{{ __site_url 'receiving' }}"><i class="fa fa-circle-o"></i> Item Receiving</a></li>
+				<li><a href="{{ __site_url 'opname' }}"><i class="fa fa-circle-o"></i> Opname</a></li>
+				<li><a href="{{ __site_url 'inventory' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
+		  </ul>
+        </li>
+		<li class="treeview" rel="Reports">
+          <a href="#">
+            <i class="fa fa-table"></i>
+            <span>Reports</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+              <span class="label bg-aqua pull-right">3</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+				<li><a href="{{ __site_url 'reporttransaction' }}"><i class="fa fa-circle-o"></i> Transaction</a></li>
+				<li><a href="{{ __site_url 'reportopname' }}"><i class="fa fa-circle-o"></i> Opname</a></li>
+				<li><a href="{{ __site_url 'reportstock' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
+		  </ul>
+        </li>
+        <li class="treeview" rel="Users">
+          <a href="#">
+            <i class="fa fa-users"></i>
+            <span>Users</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+              <span class="label bg-yellow pull-right">2</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ __site_url 'users' }}"><i class="fa fa-circle-o"></i> Users</a></li>
+            <li><a href="{{ __site_url 'users_group' }}"><i class="fa fa-circle-o"></i> Users Group</a></li>
+          </ul>
+        </li>
+        <li>
+		<a href="{{ __site_url 'login/logout' }}" onclick="return confirm('email, are you sure you want to logout?');">
+			<i class="fa fa-sign-in"></i> <span>Logout</span>
+		</a>
+		</li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
