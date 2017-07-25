@@ -103,7 +103,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{{ __themes_url 'dist/img/no-avatar.png' }}" class="user-image" alt="User Image">
-              <span class="hidden-xs">gratcy@palma.ccom</span>
+              <span class="hidden-xs">{{ __global_login 'uemail' }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -111,7 +111,7 @@
                 <img src="{{ __themes_url 'dist/img/no-avatar.png' }}" class="img-circle" alt="User Image">
 
                 <p>
-                  gratcy@palma.ccom
+                  {{ __global_login 'uemail' }}
                   <small>Member since Sep 2016</small>
                 </p>
               </li>
@@ -122,7 +122,7 @@
                   <a href="{{ __site_url 'settings' }}" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{{ __site_url 'login/logout' }}" class="btn btn-default btn-flat" onclick="return confirm('gratcy@palma.com, are you sure you want to logout?');">Sign out</a>
+                  <a href="{{ __site_url 'login/logout' }}" class="btn btn-default btn-flat" onclick="return confirm('{{ __global_login 'uemail' }}, are you sure you want to logout?');">Sign out</a>
                 </div>
               </li>
             </ul>

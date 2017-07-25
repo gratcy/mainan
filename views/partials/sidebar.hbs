@@ -23,12 +23,13 @@
             <span>Master</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
-              <span class="label label-danger pull-right">5</span>
+              <span class="label label-danger pull-right">6</span>
             </span>
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ __site_url 'categories' }}"><i class="fa fa-circle-o"></i> Category Product</a></li>
             <li><a href="{{ __site_url 'products' }}"><i class="fa fa-circle-o"></i> Products</a></li>
+            <li><a href="{{ __site_url 'vendor' }}"><i class="fa fa-circle-o"></i> Vendor</a></li>
             <li><a href="{{ __site_url 'customers' }}"><i class="fa fa-circle-o"></i> Customers</a></li>
             <li><a href="{{ __site_url 'province' }}"><i class="fa fa-circle-o"></i> Province</a></li>
             <li><a href="{{ __site_url 'city' }}"><i class="fa fa-circle-o"></i> City</a></li>
@@ -93,7 +94,7 @@
           </ul>
         </li>
         <li>
-		<a href="{{ __site_url 'login/logout' }}" onclick="return confirm('email, are you sure you want to logout?');">
+		<a href="{{ __site_url 'login/logout' }}" onclick="return confirm('{{ __global_login 'uemail' }}, are you sure you want to logout?');">
 			<i class="fa fa-sign-in"></i> <span>Logout</span>
 		</a>
 		</li>

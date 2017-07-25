@@ -1,0 +1,85 @@
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Vendor
+        <small>Update Vendor</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Vendor</a></li>
+        <li class="active"><a href="#">Update Vendor</a></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            {{{ error_msg }}}
+            
+           <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Update Vendor</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" action="{{ __site_url 'vendor/vendor_update' }}" method="post">
+            <input type="hidden" name="id" value="{{ id }}">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">Vendor</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="name" class="form-control" id="inputEmail3" placeholder="Vendor Name" value="{{ data.vname }}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">Contact Person</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="cpname" class="form-control" id="inputEmail3" placeholder="Contact Person" value="{{ data.vcpname }}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Phone" class="col-sm-2 control-label">Phone</label>
+                  <div class="col-sm-5">
+                    <input type="text" name="phone[]" class="form-control" id="Phone" placeholder="Phone I" value="{{ __explode_string data.vphone '*' 0 }}">
+                  </div>
+                  <div class="col-sm-5">
+                    <input type="text" name="phone[]" class="form-control" id="Phone2" placeholder="Phone II" value="{{ __explode_string data.vphone '*' 1 }}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Address" class="col-sm-2 control-label">Address</label>
+
+                  <div class="col-sm-10">
+                    <textarea type="text" name="addr" class="form-control" id="Address" placeholder="Address">{{ data.vaddr }}</textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-2 control-label">Status</label>
+
+                  <div class="col-sm-10">
+                    <div class="checkbox">
+					  {{{ __get_status data.vstatus 2 }}}
+                  </div>
+                  </div>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="button" onclick="javascript:history.go(-1);" class="btn btn-default">Cancel</button>
+                <button type="submit" class="btn btn-info pull-right">Submit</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

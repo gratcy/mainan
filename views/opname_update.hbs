@@ -1,0 +1,100 @@
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Stock
+        <small>Stock Opname</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Opname</a></li>
+        <li class="active"><a href="#">Stock Opname</a></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            {{{ error_msg }}}
+            
+           <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Stock Opname</h3>
+            </div>
+            <!-- /.box-header -->
+										
+              <div class="box-body">
+											<table class="table table-bordered">
+											<tr>
+											<th>Product Name</th>
+											<th>Description</th>
+											</tr>
+											<tr>
+											<td>{{ data.pname }}</td>
+											<td>{{ data.pdesc }}</td>
+											</tr>
+											</table>
+											<p>&nbsp;</p>
+											<table class="table table-bordered">
+											<tr>
+											<th>Stock Begining</th>
+											<th>Stock In</th>
+											<th>Stock Out</th>
+											<th>Stock Final</th>
+											</tr>
+											<tr>
+											<td>{{ data.istockbegining }}</td>
+											<td>{{ data.istockin }}</td>
+											<td>{{ data.istockout }}</td>
+											<td>{{ data.istock }}</td>
+											</tr>
+											</table>
+            </div>
+            <!-- form start -->
+            <form class="form-horizontal" action="{{ __site_url 'opname/opname_update' }}" method="post">
+<input type="hidden" name="id" value="{{ id }}">
+										<input type="hidden" name="sbegin2" value="{{ data.istockbegining }}" />
+										<input type="hidden" name="sin2" value="{{ data.istockin }}" />
+										<input type="hidden" name="sout2" value="{{ data.istockout }}" />
+										<input type="hidden" name="sfinal2" value="{{ data.istock }}" />
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">Adjustment Min (-)</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" name="adjustmin" class="form-control" id="inputEmail3" placeholder="Adjustment Min (-)">
+                  </div>
+                  </div>
+                <div class="form-group">
+                  <label for="adjustplus" class="col-sm-2 control-label">Adjustment Plus (+)</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" name="adjustplus" class="form-control" id="adjustplus" placeholder="Adjustment Plus (+)">
+                  </div>
+                  </div>
+
+				<div class="form-group">
+					<label class="control-label col-lg-2">Description</label>
+                  <div class="col-sm-10">
+						<textarea name="desc" class="form-control" placeholder="Description"></textarea>
+					</div>
+				</div>
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="button" onclick="javascript:history.go(-1);" class="btn btn-default">Cancel</button>
+                <button type="submit" class="btn btn-info pull-right">Submit</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>

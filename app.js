@@ -25,6 +25,8 @@ global.helpers = helpers.helpers;
 var index = require('./routes/index'),
 	login = require('./routes/login'),
 	settings = require('./routes/settings'),
+	vendor = require('./routes/vendor'),
+	receiving = require('./routes/receiving'),
 	categories = require('./routes/categories'),
 	products = require('./routes/products'),
 	customers = require('./routes/customers'),
@@ -75,12 +77,26 @@ app.set('view engine', '.hbs');
 
 var sauth;
 
-
-app.all('/*', function(req, res, next){
+app.use(function(req, res, next){
 	if (/\/login/.test(req.path) === false) {
-		helpers.helpers.__check_permission(req, res, next);
+		global.sauth = req.session.login;
+		if (!req.session.login) {
+			return res.redirect('/login');
+		}
+		else {
+			if (!req.session.login.uid || !req.session.login.uemail) {
+				return res.redirect('/login');
+			}
+		}
 	}
-	next();
+	else {
+		if (req.session.login) {
+			if (/\/login/.test(req.path) === true) {
+				return res.redirect('/');
+			}
+		}
+	}
+	return next();
 });
 
 app.get('/', index.main);
@@ -116,6 +132,14 @@ app.get('/customers/customers_update/:id', customers.customers_detail);
 app.post('/customers/customers_update',customers.customers_update);
 app.get('/customers/customers_delete/:id', customers.customers_delete);
 
+app.get('/ajax/vendor', vendor.list_ajax);
+app.get('/vendor', vendor.list);
+app.get('/vendor/vendor_add', vendor.add);
+app.post('/vendor/vendor_add', vendor.vendor_add);
+app.get('/vendor/vendor_update/:id', vendor.vendor_detail);
+app.post('/vendor/vendor_update',vendor.vendor_update);
+app.get('/vendor/vendor_delete/:id', vendor.vendor_delete);
+
 app.get('/ajax/products', products.list_ajax);
 app.get('/products', products.list);
 app.get('/products/products_add', products.add);
@@ -143,6 +167,13 @@ app.post('/users/users_add', users.users_add);
 app.get('/users/users_update/:id', users.users_detail);
 app.post('/users/users_update',users.users_update);
 app.get('/users/users_delete/:id', users.users_delete);
+
+app.get('/receiving', receiving.list);
+app.get('/receiving/receiving_add', receiving.add);
+app.post('/receiving/receiving_add', receiving.receiving_add);
+app.get('/receiving/receiving_update/:id', receiving.receiving_detail);
+app.post('/receiving/receiving_update',receiving.receiving_update);
+app.get('/receiving/receiving_delete/:id', receiving.receiving_delete);
 
 app.get('/ajax/users_group', users_group.list_ajax);
 app.get('/users_group', users_group.list);
