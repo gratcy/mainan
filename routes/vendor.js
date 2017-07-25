@@ -29,7 +29,7 @@ exports.vendor_detail = function(req, res) {
 	
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM vendor_tab WHERE ctype=1 AND vid = ?',[id],function(err,rows) {
+			var query = connection.query('SELECT * FROM vendor_tab WHERE vid = ?',[id],function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 				res.render('vendor_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
@@ -47,9 +47,9 @@ exports.vendor_add = function(req,res) {
 		req.getConnection(function (err, connection) {
 			var data = {
 				vname : input.name,
-				vaddr : input.vaddr,
+				vaddr : input.addr,
 				vcpname : input.cpname,
-				vphone : input.phone,
+				vphone : input.phone[0]+'*'+input.phone[1],
 				vstatus : input.status
 			};
 
@@ -80,9 +80,9 @@ exports.vendor_update = function(req,res) {
 			req.getConnection(function (err, connection) {
 				var data = {
 					vname : input.name,
-					vaddr : input.vaddr,
+					vaddr : input.addr,
 					vcpname : input.cpname,
-					vphone : input.phone,
+					vphone : input.phone[0]+'*'+input.phone[1],
 					vstatus : input.status
 				};
 

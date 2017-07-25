@@ -44,12 +44,17 @@
                 <tbody>
 				{{#each data}}
                 <tr>
-                  <td>{{ __get_date data.rdate }}</td>
-                  <td>{{ data.vname }}</td>
-                  <td>{{ data.rdocno }}</td>
-                  <td>{{ data.rdesc }}</td>
-                  <td></td>
-                  <td></td>
+                  <td>{{ __get_date rdate }}</td>
+                  <td>{{ vname }}</td>
+                  <td>{{ rdocno }}</td>
+                  <td>{{ rdesc }}</td>
+                  <td>{{ __parse_json rcreatedby 'uemail' }}</td>
+			{{#compare rstatus 3 operator="=="}}
+                  <td>Approved by <br /> {{ __parse_json rapprovedby 'uemail' }}</td>
+            {{/compare}}
+			{{#compare rstatus 3 operator="!="}}
+                  <td>{{ __get_status rstatus 1 }}</td>
+            {{/compare}}
                   <td>
 					<a href="{{ __site_url 'receiving/receiving_update/' }}{{ rid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'receiving/receiving_delete/' }}{{ rid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>

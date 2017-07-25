@@ -1,9 +1,32 @@
 exports.list = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvid=b.vid WHERE (a.rstatus=1 OR a.rstatus=0)',function(err,rows) {
+			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE (a.rstatus=1 OR a.rstatus=0 OR a.rstatus=3)',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('receiving',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+			});
+		});
+	});
+};
+
+exports.list_products = function(req, res) {
+	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
+		req.getConnection(function(err,connection){
+			var query = connection.query('SELECT a.*,b.cname,d.istock FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid JOIN inventory_tab d ON a.pid=d.ipid WHERE b.ctype=1 AND a.pstatus=1 ORDER BY a.pid DESC',function(err,rows) {
+				res.render('./tmp/receiving_list_products',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+			});
+		});
+	});
+};
+
+exports.products = function(req, res) {
+	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
+		req.getConnection(function(err,connection){
+			var query = connection.query('SELECT a.*,b.cname FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid WHERE a.pstatus=1 AND a.pid IN (0) ORDER BY a.pid DESC',function(err,rows) {
+				if (rows[0])
+				res.render('./tmp/receiving_products',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+				else
+				res.end();
 			});
 		});
 	});
@@ -30,17 +53,22 @@ exports.receiving_detail = function(req, res) {
 
 exports.receiving_add = function(req,res) {
 	var input = req.body;
-	if (!input.name) {
+	if (!input.waktu || !input.vendor || !input.docno) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/receiving/receiving_add');
 	}
 	else {
 		req.getConnection(function (err, connection) {
+			var str = input.waktu;
+			var rres = str.split('/');
+			var waktu = new Date(rres[2]+"-"+rres[1]+"-"+rres[0]).getTime() / 1000;
+			var udate = helpers.__get_date('',2);
 			var data = {
-				rdate : input.waktu,
+				rdate : waktu,
 				rvendor : input.vendor,
 				rdocno : input.docno,
 				rdesc : input.desc,
+				rcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
 				rstatus : input.status
 			};
 
@@ -63,18 +91,32 @@ exports.receiving_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
 	if (id) {
-		if (!input.name) {
+		if (!input.waktu || !input.vendor || !input.docno) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 			res.redirect('/receiving/receiving_update/' + id);
 		}
 		else {
 			req.getConnection(function (err, connection) {
+				var str = input.waktu;
+				var rres = str.split('/');
+				var waktu = new Date(rres[2]+"-"+rres[1]+"-"+rres[0]).getTime() / 1000;
+				
+				var udate = helpers.__get_date('',2);
+				var status = input.status;
+				var rapproved = '';
+				if (input.app == 1) {
+					rapproved = JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate});
+					status = 3;
+				}
+				
 				var data = {
-					rdate : input.waktu,
+					rdate : waktu,
 					rvendor : input.vendor,
 					rdocno : input.docno,
 					rdesc : input.desc,
-					rstatus : input.status
+					rmodifiedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
+					rapprovedby : rapproved,
+					rstatus : status
 				};
 
 				connection.query("UPDATE receiving_tab set ? WHERE rid = ? ",[data,id], function(err, rows) {

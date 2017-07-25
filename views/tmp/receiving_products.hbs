@@ -1,0 +1,56 @@
+		<table class="table table-bordered" id="ProductTMP">
+		<thead>
+		<tr>
+                  <th>Category</th>
+                  <th>Product</th>
+                  <th>Description</th>
+                  <th>Price PCS</th>
+                  <th>Price Lusin</th>
+                  <th>Price Koli</th>
+                  <th>QTY</th>
+		</tr>
+		</thead>
+		<tbody>
+				{{#each data}}
+				<tr idnya="{{ pid }}">
+                  <td>{{ cname }}</td>
+                  <td>{{ pname }}</td>
+                  <td>{{ pdesc }}</td>
+                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
+				<td><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+                </tr>
+                {{/each}}
+		</tbody>
+		<tfoot>
+		<tr>
+		<td>Total</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="totalqtyproduct"></td>
+		</tr>
+		</tfoot>
+		</table>
+<script type="text/javascript">
+$('a#dellist').click(function(){
+	var idnya = $(this).attr('idnya');
+	$('tr[idnya='+idnya+']').remove();
+	var data = {'pid' : idnya};
+	$.post('{{ __site_url "receiving/receiving_products_delete" }}', data,
+	function(datas) {
+		
+	});
+});
+$('input[type="number"]').bind('change click keypress keyup',function(){
+	var totalqty = 0;
+	$('input[type="number"]').each(function(index){
+		totalqty += ($(this).val() == '' ? 0 : parseInt($(this).val()));
+	})
+	$('.totalqtyproduct').html(totalqty);
+});
+</script>

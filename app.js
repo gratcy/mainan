@@ -169,6 +169,8 @@ app.post('/users/users_update',users.users_update);
 app.get('/users/users_delete/:id', users.users_delete);
 
 app.get('/receiving', receiving.list);
+app.get('/receiving/receiving_products/?:id?', receiving.products);
+app.get('/receiving/receiving_list_products/?:id?', receiving.list_products);
 app.get('/receiving/receiving_add', receiving.add);
 app.post('/receiving/receiving_add', receiving.receiving_add);
 app.get('/receiving/receiving_update/:id', receiving.receiving_detail);

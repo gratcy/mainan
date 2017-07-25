@@ -43,14 +43,14 @@
                 <tbody>
 				{{#each data}}
                 <tr>
-                  <td>{{ data.vname }}</td>
-                  <td>{{ vaddr }} {{ city }} {{ province }}</td>
-                  <td>{{ data.vcpname }}</td>
+                  <td>{{ vname }}</td>
+                  <td>{{ vaddr }}</td>
+                  <td>{{ vcpname }}</td>
                   <td>{{ __replace_string vphone }}</td>
                   <td>{{ __get_status vstatus 1 }}</td>
                   <td>
-					<a href="{{ __site_url 'vendor/vendor_update/' }}{{ data.vid }}"><i class="fa fa-pencil"></i></a>
-					<a href="{{ __site_url 'vendor/vendor_delete/' }}{{ data.vid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					<a href="{{ __site_url 'vendor/vendor_update/' }}{{ vid }}"><i class="fa fa-pencil"></i></a>
+					<a href="{{ __site_url 'vendor/vendor_delete/' }}{{ vid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
                   </td>
                 </tr>
                 {{/each}}
@@ -59,6 +59,7 @@
                 <tr>
                   <th>Name</th>
                   <th>Address</th>
+                  <th>Contact Person</th>
                   <th>Phone</th>
                   <th>Status</th>
                   <th>Action</th>

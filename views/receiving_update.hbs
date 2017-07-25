@@ -26,19 +26,21 @@
             <!-- /.box-header -->
             <!-- form start -->
             <form class="form-horizontal form-approved" action="{{ __site_url 'receiving/receiving_update' }}" method="post">
+              <div class="box-body">
             <input type="hidden" name="id" value="{{ id }}">
                 <div class="form-group">
-                  <label for="Vendor" class="col-sm-2 control-label">Vendor / Request</label>
+                  <label for="Vendor" class="col-sm-2 control-label">Vendor</label>
 
                   <div class="col-sm-10">
-                        <span id="bp"></span>
+					  <select name="vendor" class="form-control" id="Vendor">
+                    </select>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="DatePicker" class="col-sm-2 control-label">Date</label>
 
                   <div class="col-sm-10">
-                    <input type="text" name="waktu" class="form-control" value="{{ data.rdate) }}" autocomplete="off" id="DatePicker" placeholder="Date Receiving">
+                    <input type="text" name="waktu" class="form-control" value="{{ __get_date data.rdate 1 }}" autocomplete="off" id="DatePicker" placeholder="Date Receiving">
                   </div>
                 </div>
                 <div class="form-group">
@@ -70,7 +72,7 @@
               <div class="box-footer">
                 <button type="button" onclick="javascript:history.go(-1);" class="btn btn-default">Cancel</button>
                 &nbsp;
-                <a href="{{ __site_url 'receiving/receiving_list_products/2/' }}{{ id }}" id="AddProduct" class="btn bg-green">Add Product</a>
+                <a href="{{ __site_url 'receiving/receiving_list_products/' }}{{ id }}" id="AddProduct" class="btn bg-green">Add Product</a>
                 &nbsp;
                 <button type="submit" class="btn btn-info pull-right">Submit</button>
                 &nbsp;
@@ -113,5 +115,6 @@ $(document).ready(function(){
 		$('form.form-approved').append('<input type="hidden" name="app" value="1">');
 		$('form.form-approved').submit();
 	});
+	$('#Vendor').selectAjax("/ajax/vendor/",{{ data.rvendor }});
 })
 </script>
