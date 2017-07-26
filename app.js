@@ -22,6 +22,7 @@ var express = require('express'),
 var app = express();
 
 global.helpers = helpers.helpers;
+
 var index = require('./routes/index'),
 	login = require('./routes/login'),
 	settings = require('./routes/settings'),
@@ -171,6 +172,8 @@ app.get('/users/users_delete/:id', users.users_delete);
 app.get('/receiving', receiving.list);
 app.get('/receiving/receiving_products/?:id?', receiving.products);
 app.get('/receiving/receiving_list_products/?:id?', receiving.list_products);
+app.post('/receiving/receiving_products_add', receiving.products_add);
+app.post('/receiving/receiving_products_delete', receiving.products_delete);
 app.get('/receiving/receiving_add', receiving.add);
 app.post('/receiving/receiving_add', receiving.receiving_add);
 app.get('/receiving/receiving_update/:id', receiving.receiving_detail);

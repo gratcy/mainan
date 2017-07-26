@@ -21,6 +21,7 @@
         <div class="box-body">
             {{{ error_msg }}}
 			<form action="{{ __site_url 'receiving/receiving_products_add' }}" method="post">
+				<input type="hidden" name="type" value="{{ type }}">
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -34,6 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
+        <input type="hidden" name="pid[null]" />
 				{{#each data}}
                 <tr>
 					<td><input type="checkbox" value="{{ pid }}" name="pid[]"></td>
