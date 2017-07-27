@@ -218,6 +218,7 @@ exports.receiving_update = function(req,res) {
 		}
 		else {
 			req.getConnection(function (err, connection) {
+				var app = input.app;
 				var str = input.waktu;
 				var rres = str.split('/');
 				var waktu = new Date(rres[2]+"-"+rres[1]+"-"+rres[0]).getTime() / 1000;
@@ -225,7 +226,8 @@ exports.receiving_update = function(req,res) {
 				var udate = helpers.__get_date('',2);
 				var status = input.status;
 				var rapproved = '';
-				if (input.app == 1) {
+				
+				if (app == 1) {
 					rapproved = JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate});
 					status = 3;
 				}
@@ -262,6 +264,23 @@ exports.receiving_update = function(req,res) {
 									connection.query("UPDATE receiving_item_tab SET ? WHERE riid = ? AND rpid = ? ",[rdata,id,index], function(err, rows) {
 										
 									});
+									if (app == 1) {
+										connection.query('SELECT * FROM inventory_tab WHERE istatus=1 AND ipid=' + index,function(ierr,inv) {
+											if (ierr) {
+												console.log("Error Selecting : %s ",ierr );
+											}
+											else {
+												var idata = {
+													istockin : (parseInt(inv[0].istockin) + parseInt(value)),
+													istock : (parseInt(inv[0].istock) + parseInt(value))
+												};
+												
+												connection.query("UPDATE inventory_tab SET ? WHERE iid = ? ",[idata,inv[0].iid], function(err, rows) {
+													
+												});
+											}
+										});
+									}
 								}
 							}
 						});
