@@ -56,9 +56,13 @@
                   <td>{{ __get_status rstatus 1 }}</td>
             {{/compare}}
                   <td>
+			{{#compare rstatus 3 operator="!="}}
 					<a href="{{ __site_url 'receiving/receiving_update/' }}{{ rid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'receiving/receiving_delete/' }}{{ rid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+            {{/compare}}
+			{{#compare rstatus 3 operator="=="}}
 					<a href="{{ __site_url 'receiving/receiving_detail/' }}{{ rid }}"><i class="fa fa-check"></i></a>
+			{{/compare}}
                   </td>
                 </tr>
                 {{/each}}

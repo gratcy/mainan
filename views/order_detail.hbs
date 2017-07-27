@@ -3,12 +3,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Item Receiving
-        <small>Receiving</small>
+        Sales &amp; Purchase
+        <small>Order Detail</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="#">Item Receiving Detail</a></li>
+        <li class="active"><a href="#">Order Detail</a></li>
       </ol>
     </section>
 
@@ -18,7 +18,7 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Item Receiving {{ data.rdocno }}</h3>
+              <h3 class="box-title">Order {{ data.tno }}</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -26,10 +26,10 @@
             
               <table class="table table-bordered table-striped">
                 <thead>
-				  <tr><th>Date</th><th>{{ data.rdate }}</th></tr>
-                  <tr><th>Vendor</th><th>{{ data.vname }}</th></tr>
-                  <tr><th>Doc No.</th><th>{{ data.rdocno }}</th></tr>
-                  <tr><th>Description</th><th>{{ data.rdesc }}></th></tr>
+				  <tr><th>Date</th><th>{{ __get_date data.tdate 2 }}</th></tr>
+                  <tr><th>Customer</th><th>{{ data.cname }}</th></tr>
+                  <tr><th>Doc No.</th><th>{{ data.tno }}</th></tr>
+                  <tr><th>Description</th><th>{{ data.tdesc }}</th></tr>
                   <tr><th>Status</th><th><span class="label label-primary">Approved</span></th></tr>
                 </tr>
                 </thead>
@@ -40,26 +40,31 @@
                 <thead>
                 <tr>
                   <th>Category</th>
+                  <th>Brand</th>
                   <th>Product</th>
                   <th>Description</th>
-                  <th>Price PCS</th>
-                  <th>Price Lusin</th>
-                  <th>Price Koli</th>
+                  <th>Price</th>
                   <th>QTY</th>
                 </tr>
                 </thead>
                 <tbody>
-				{{#each products }}
+				<?php
+				$tqty = 0;
+				$tprice = 0;
+				foreach($products as $k => $v) : ?>
                 <tr>
-                  <td>{{ cname }}</td>
-                  <td>{{ pname }}</td>
-                  <td>{{ pdesc }}</td>
-                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
-                  <td>{{ rqty }}</td>
+                  <td><?php echo $v -> cname; ?></td>
+                  <td><?php echo $v -> bname; ?></td>
+                  <td><?php echo $v -> pname; ?></td>
+                  <td><?php echo $v -> pdesc; ?></td>
+                  <td><?php echo __get_rupiah($v -> pprice,1); ?></td>
+                  <td><?php echo $v -> tqty; ?></td>
                 </tr>
-                {{/each}}
+                <?php
+                $tprice += $v -> pprice * $v -> tqty;
+                $tqty += $v -> tqty;
+                endforeach;
+                ?>
                 </tbody>
                 <tfoot>
                 <tr>
@@ -67,12 +72,27 @@
                   <th></th>
                   <th></th>
                   <th></th>
+                  <th><?php echo __get_rupiah($tprice,1); ?></th>
+                  <th><?php echo $tqty; ?></th>
+                </tr>
+                <tr>
+                  <th>Discount</th>
                   <th></th>
                   <th></th>
+                  <th></th>
+                  <th><?php echo __get_rupiah($detail[0] -> tdiscount,1); ?></th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <th>Grand Total</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th><?php echo __get_rupiah($detail[0] -> ttotal,1); ?></th>
                   <th></th>
                 </tr>
                 </tfoot>
-              </table>
+                </table>
               <div class="box-footer">
                 <button type="button" onclick="javascript:history.go(-1);" class="btn btn-default">Back!</button>
               </div>

@@ -1,0 +1,63 @@
+		<table class="table table-bordered" id="ProductTMP">
+		<thead>
+		<tr>
+                  <th>Category</th>
+                  <th>Product</th>
+                  <th>Price PCS</th>
+                  <th>Price Lusin</th>
+                  <th>Price Koli</th>
+                  <th>QTY</th>
+                  <th></th>
+		</tr>
+		</thead>
+		<tbody>
+        <input type="hidden" name="products[null]" />
+				{{#each data}}
+				<tr idnya="{{ pid }}">
+                  <td>{{ cname }}</td>
+                  <td>{{ pname }}</td>
+                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
+                  {{#if rqty}}
+				<td><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+				{{else}}
+				<td><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+				{{/if}}
+				<td style="text-align:center;">
+					<a href="javascript:void(0);" id="dellist" idnya="{{ pid }}"><i class="fa fa-times"></i></a>
+				</td>
+                </tr>
+                {{/each}}
+		</tbody>
+		<tfoot>
+		<tr>
+		<td>Total</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="totalqtyproduct"></td>
+		<td></td>
+		</tr>
+		</tfoot>
+		</table>
+<script type="text/javascript">
+$('a#dellist').click(function(){
+	var idnya = $(this).attr('idnya');
+	$('tr[idnya='+idnya+']').remove();
+	var data = {pid : idnya, type: '{{ type }}', rid: '{{ rid }}'};
+	$.post('{{ __site_url "order/order_products_delete" }}', data,
+	function(datas) {
+		
+	});
+});
+$('input[type="number"]').bind('change click keypress keyup',function(){
+	var totalqty = 0;
+	$('input[type="number"]').each(function(index){
+		totalqty += ($(this).val() == '' ? 0 : parseInt($(this).val()));
+	})
+	$('.totalqtyproduct').html(totalqty);
+});
+$('input[type="number"]').change();
+</script>

@@ -27,6 +27,7 @@ var index = require('./routes/index'),
 	login = require('./routes/login'),
 	settings = require('./routes/settings'),
 	vendor = require('./routes/vendor'),
+	order = require('./routes/order'),
 	receiving = require('./routes/receiving'),
 	categories = require('./routes/categories'),
 	products = require('./routes/products'),
@@ -126,7 +127,10 @@ app.get('/city/city_update/:id', city.city_detail);
 app.post('/city/city_update',city.city_update);
 app.get('/city/city_delete/:id', city.city_delete);
 
+app.get('/ajax/customers', customers.list_ajax);
 app.get('/customers', customers.list);
+app.get('/customers/customer_quick_add', customers.quick_add);
+app.post('/customers/customer_quick_add', customers.customers_quick_add);
 app.get('/customers/customers_add', customers.add);
 app.post('/customers/customers_add', customers.customers_add);
 app.get('/customers/customers_update/:id', customers.customers_detail);
@@ -177,6 +181,7 @@ app.post('/receiving/receiving_products_delete', receiving.products_delete);
 app.get('/receiving/receiving_add', receiving.add);
 app.post('/receiving/receiving_add', receiving.receiving_add);
 app.get('/receiving/receiving_update/:id', receiving.receiving_detail);
+app.get('/receiving/receiving_detail/:id', receiving.receiving_detail_approved);
 app.post('/receiving/receiving_update',receiving.receiving_update);
 app.get('/receiving/receiving_delete/:id', receiving.receiving_delete);
 
@@ -187,6 +192,18 @@ app.post('/users_group/users_group_add', users_group.users_group_add);
 app.get('/users_group/users_group_update/:id', users_group.users_group_detail);
 app.post('/users_group/users_group_update',users_group.users_group_update);
 app.get('/users_group/users_group_delete/:id', users_group.users_group_delete);
+
+app.get('/order', order.list);
+app.get('/order/order_products/?:id?', order.products);
+app.get('/order/order_list_products/?:id?', order.list_products);
+app.post('/order/order_products_add', order.products_add);
+app.post('/order/order_products_delete', order.products_delete);
+app.get('/order/order_add', order.add);
+app.post('/order/order_add', order.order_add);
+app.get('/order/order_update/:id', order.order_detail);
+app.get('/order/order_detail/:id', order.order_detail_approved);
+app.post('/order/order_update',order.order_update);
+app.get('/order/order_delete/:id', order.order_delete);
 
 app.use(function(req, res, next){
 	res.render('404', { status: 404, url: req.url });

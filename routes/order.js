@@ -1,10 +1,10 @@
 exports.list = function(req, res) {
-	req.session.receiving_products = {};
+	req.session.order_products = {};
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE (a.rstatus=1 OR a.rstatus=0 OR a.rstatus=3)',function(err,rows) {
+			var query = connection.query('SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3)',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
-					res.render('receiving',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+					res.render('order',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
 		});
 	});
@@ -13,7 +13,7 @@ exports.list = function(req, res) {
 exports.products_delete = function(req, res) {
 	var input = req.body;
 	if (input.type == 1) {
-		var pids = req.session.receiving_products;
+		var pids = req.session.order_products;
 		var tmpPids = [];
 		for(var i=0;i<pids.length;++i) {
 			var index = parseInt(pids[i]);
@@ -23,17 +23,17 @@ exports.products_delete = function(req, res) {
 				}
 			}
 		}
-		req.session.receiving_products = {};
-		req.session.receiving_products = tmpPids;
+		req.session.order_products = {};
+		req.session.order_products = tmpPids;
 		res.send('-1');
 	}
 	else {
 		req.getConnection(function (err, connection) {
 			var data = {
-				rstatus : 2
+				tstatus : 2
 			};
 			
-			connection.query("UPDATE receiving_item_tab SET ? WHERE riid = ? AND rpid = ? ",[data,input.rid,input.pid], function(err, rows) {
+			connection.query("UPDATE transaction_detail_tab SET ? WHERE ttid = ? AND tpid = ? ",[data,input.tid,input.pid], function(err, rows) {
 				if (err) {
 					console.log("Error Selecting : %s ",err );
 					res.send('-1');
@@ -51,18 +51,18 @@ exports.products_add = function(req, res) {
 	if (input.pid[0]) {
 		if (input.type == 1) {
 			var pids = input.pid;
-			if (typeof req.session.receiving_products != 'undefined') {
-				var target = pids.concat(req.session.receiving_products);
-				req.session.receiving_products = {};
-				req.session.receiving_products = target;
+			if (typeof req.session.order_products != 'undefined') {
+				var target = pids.concat(req.session.order_products);
+				req.session.order_products = {};
+				req.session.order_products = target;
 				req.session.save();
 			}
 			else {
-				req.session.receiving_products = pids;
+				req.session.order_products = pids;
 				req.session.save();
 			}
 			helpers.__set_error_msg({info: 'Produk berhasil ditambahkan.'},req.sessionID);
-			res.redirect('/receiving/receiving_list_products/' + input.type);
+			res.redirect('/order/order_list_products/' + input.type);
 		}
 		else {
 			
@@ -70,7 +70,7 @@ exports.products_add = function(req, res) {
 	}
 	else {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
-		res.redirect('/receiving/receiving_list_products/' + input.type);
+		res.redirect('/order/order_list_products/' + input.type);
 	}
 };
 
@@ -79,7 +79,7 @@ exports.list_products = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
 			var query = connection.query('SELECT a.*,b.cname,d.istock FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid JOIN inventory_tab d ON a.pid=d.ipid WHERE b.ctype=1 AND a.pstatus=1 ORDER BY a.pid DESC',function(err,rows) {
-				res.render('./tmp/receiving_list_products',{data:rows,type:type,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+				res.render('./tmp/order_list_products',{data:rows,type:type,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
 			});
 		});
 	});
@@ -92,28 +92,28 @@ exports.products = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		if (id > 0) {
 			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid='+id+' AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
+				var query = connection.query('SELECT a.rqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
 					if (rows)
-						res.render('./tmp/receiving_products',{rid:id,data:rows,type:2,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+						res.render('./tmp/order_products',{tid:id,data:rows,type:2,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
 					else
 						res.end();
 				});
 			});
 		}
 		else {
-			if (typeof req.session.receiving_products != 'undefined') {
-				pids = req.session.receiving_products;
-				var rpids = '';
+			if (typeof req.session.order_products != 'undefined') {
+				pids = req.session.order_products;
+				var tpids = '';
 				for(var i=0;i<pids.length;++i) {
 					var index = parseInt(pids[i]);
 					if (!isNaN(index)) {
 						if (index > 0) {
-							rpids += index + ',';
+							tpids += index + ',';
 						}
 					}
 				}
 				if (pids)
-					pids = rpids.slice(0,-1);
+					pids = tpids.slice(0,-1);
 				else
 					pids = 0;
 			}
@@ -124,7 +124,7 @@ exports.products = function(req, res) {
 			req.getConnection(function(err,connection){
 				var query = connection.query('SELECT a.*,b.cname FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid WHERE a.pstatus=1 AND a.pid IN ('+pids+') ORDER BY a.pid DESC',function(err,rows) {
 					if (rows)
-						res.render('./tmp/receiving_products',{rid:0,data:rows,type:1,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+						res.render('./tmp/order_products',{tid:0,data:rows,type:1,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
 					else
 						res.end();
 				});
@@ -135,45 +135,45 @@ exports.products = function(req, res) {
 
 exports.add = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('receiving_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+		res.render('order_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 	});
 };
 
-exports.receiving_detail = function(req, res) {
+exports.order_detail = function(req, res) {
 	var id = req.params.id;
 	
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM receiving_tab WHERE rid = ?',[id],function(err,rows) {
+			var query = connection.query('SELECT * FROM transaction_tab WHERE tid = ?',[id],function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
-				res.render('receiving_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+				res.render('order_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
 		});
 	});
 };
 
-exports.receiving_detail_approved = function(req, res) {
+exports.order_detail_approved = function(req, res) {
 	var id = req.params.id;
 	
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM receiving_tab WHERE rid = ?',[id],function(err,rows) {
+			var query = connection.query('SELECT * FROM transaction_tab WHERE tid = ?',[id],function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 				
-				connection.query('SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid='+id+' AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
+				connection.query('SELECT a.rqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
 					if (err) console.log("Error Selecting : %s ",err );
-					else res.render('receiving_detail',{id:id,products:drows,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+					else res.render('order_detail',{id:id,products:drows,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 				});
 			});
 		});
 	});
 };
 
-exports.receiving_add = function(req,res) {
+exports.order_add = function(req,res) {
 	var input = req.body;
 	if (!input.waktu || !input.vendor || !input.docno) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
-		res.redirect('/receiving/receiving_add');
+		res.redirect('/order/order_add');
 	}
 	else {
 		var products = input.products;
@@ -188,50 +188,50 @@ exports.receiving_add = function(req,res) {
 				rdocno : input.docno,
 				rdesc : input.desc,
 				rcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
-				rstatus : input.status
+				tstatus : input.status
 			};
 
-			var query = connection.query("INSERT INTO receiving_tab SET ? ",data, function(err, rows) {
+			var query = connection.query("INSERT INTO transaction_tab SET ? ",data, function(err, rows) {
 				if (err) {
 					console.log("Error Selecting : %s ",err );
 					helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
-					res.redirect('/receiving');
+					res.redirect('/order');
 				}
 				else {
 					var rdata = [];
-					var riid = rows.insertId;
+					var ttid = rows.insertId;
 					
 					Object.keys(products).map(function(objectKey, index) {
 						var index = parseInt(objectKey);
 						if (!isNaN(index)) {
 							if (index > 0) {
 								var value = products[index];
-								rdata.push([riid,index,parseInt(value),1]);
+								rdata.push([ttid,index,parseInt(value),1]);
 							}
 						}
 					});
 					
-					var query = connection.query("INSERT INTO receiving_item_tab (riid,rpid,rqty,rstatus) VALUES ?",[rdata], function(err, rows) {
+					var query = connection.query("INSERT INTO transaction_detail_tab (ttid,tpid,rqty,tstatus) VALUES ?",[rdata], function(err, rows) {
 						if (err) {
 							console.log("Error Selecting : %s ",err );
 						}
 					});
 						
 					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
-					res.redirect('/receiving');
+					res.redirect('/order');
 				}
 			});
 		});
 	}
 };
 
-exports.receiving_update = function(req,res) {
+exports.order_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
 	if (id) {
 		if (!input.waktu || !input.vendor || !input.docno) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
-			res.redirect('/receiving/receiving_update/' + id);
+			res.redirect('/order/order_update/' + id);
 		}
 		else {
 			req.getConnection(function (err, connection) {
@@ -256,19 +256,19 @@ exports.receiving_update = function(req,res) {
 					rdesc : input.desc,
 					rmodifiedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
 					rapprovedby : rapproved,
-					rstatus : status
+					tstatus : status
 				};
 
-				connection.query("UPDATE receiving_tab set ? WHERE rid = ? ",[data,id], function(err, rows) {
+				connection.query("UPDATE transaction_tab set ? WHERE tid = ? ",[data,id], function(err, rows) {
 					if (err) {
 						console.log("Error Selecting : %s ",err );
 						helpers.__set_error_msg({error : 'Gagal update data !!!'},req.sessionID);
-						res.redirect('/receiving');
+						res.redirect('/order');
 					}
 					else {
 						var products = input.products;
 						var rdata = [];
-						var riid = id;
+						var ttid = id;
 						
 						Object.keys(products).map(function(objectKey, index) {
 							var index = parseInt(objectKey);
@@ -278,7 +278,7 @@ exports.receiving_update = function(req,res) {
 									var rdata = {
 										rqty : value
 									};
-									connection.query("UPDATE receiving_item_tab SET ? WHERE riid = ? AND rpid = ? ",[rdata,id,index], function(err, rows) {
+									connection.query("UPDATE transaction_detail_tab SET ? WHERE ttid = ? AND tpid = ? ",[rdata,id,index], function(err, rows) {
 										
 									});
 									if (app == 1) {
@@ -303,7 +303,7 @@ exports.receiving_update = function(req,res) {
 						});
 					
 						helpers.__set_error_msg({info : 'Data berhasil diubah.'},req.sessionID);
-						res.redirect('/receiving');
+						res.redirect('/order');
 					}
 				});
 			});
@@ -311,27 +311,27 @@ exports.receiving_update = function(req,res) {
 	}
 	else {
 		helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
-		res.redirect('/receiving');
+		res.redirect('/order');
 	}
 };
 
-exports.receiving_delete = function(req,res){
+exports.order_delete = function(req,res){
 	var id = req.params.id;
 	
 	req.getConnection(function (err, connection) {
 		var data = {
-			rstatus : 2
+			tstatus : 2
 		};
 		
-		connection.query("UPDATE receiving_tab SET ? WHERE rid = ? ",[data,id], function(err, rows) {
+		connection.query("UPDATE transaction_tab SET ? WHERE tid = ? ",[data,id], function(err, rows) {
 			if (err) {
 				console.log("Error Selecting : %s ",err );
 				helpers.__set_error_msg({error : 'Gagal hapus data !!!'},req.sessionID);
-				res.redirect('/receiving');
+				res.redirect('/order');
 			}
 			else {
 				helpers.__set_error_msg({info : 'Data berhasil dihapus.'},req.sessionID);
-				res.redirect('/receiving');
+				res.redirect('/order');
 			}
 		});
 	});

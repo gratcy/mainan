@@ -9,10 +9,63 @@ exports.list = function(req, res) {
 	});
 };
 
+exports.list_ajax = function(req, res) {
+	req.getConnection(function(err,connection){
+		var query = connection.query('SELECT cid as id,cname as value FROM customers_tab WHERE (cstatus=1 OR cstatus=0)',function(err,rows) {
+			if (err) console.log("Error Selecting : %s ",err );
+				res.send({data:rows});
+		});
+	});
+};
+
 exports.add = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		res.render('customers_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 	});
+};
+
+exports.quick_add = function(req, res) {
+	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
+		res.render('./tmp/customers_quick_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
+	});
+};
+
+exports.customers_quick_add = function(req,res) {
+	var input = req.body;
+	
+	if (!input.name) {
+		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
+		res.redirect('/customers/customer_quick_add');
+	}
+	else {
+		req.getConnection(function (err, connection) {
+			var deposit = input.deposit;
+				deposit = deposit.replace(/(\,|\.)/g, "");
+			var data = {
+				ctype : input.ctype,
+				cname : input.name,
+				caddr : input.addr,
+				cprovince : input.province,
+				ccity : input.city,
+				cemail : input.email,
+				cphone : input.phone[0]+'*'+input.phone[1],
+				cdeposit : deposit,
+				cstatus : input.status
+			};
+
+			var query = connection.query("INSERT INTO customers_tab SET ? ",data, function(err, rows) {
+				if (err) {
+					console.log("Error Selecting : %s ",err );
+					helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
+					res.redirect('/customers/customer_quick_add');
+				}
+				else {
+					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
+					res.redirect('/customers/customer_quick_add');
+				}
+			});
+		});
+	}
 };
 
 exports.customers_detail = function(req, res) {
