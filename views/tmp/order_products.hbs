@@ -7,23 +7,38 @@
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
                   <th>QTY</th>
+                  <th>Type</th>
                   <th></th>
 		</tr>
 		</thead>
 		<tbody>
         <input type="hidden" name="products[null]" />
+        <input type="hidden" name="ppricepcs[null]" />
+        <input type="hidden" name="ppricedozen[null]" />
+        <input type="hidden" name="ppricekoli[null]" />
+        <input type="hidden" name="base_ppricepcs[null]" />
+        <input type="hidden" name="base_ppricedozen[null]" />
+        <input type="hidden" name="base_ppricekoli[null]" />
+        <input type="hidden" name="optype[null]" />
 				{{#each data}}
-				<tr idnya="{{ pid }}">
+				<tr class="listproducts" idnya="{{ pid }}">
+					<input type="hidden" name="ppricepcs[{{ pid }}]" value="{{ ppricepcs }}">
+					<input type="hidden" name="ppricedozen[{{ pid }}]" value="{{ ppricedozen }}">
+					<input type="hidden" name="ppricekoli[{{ pid }}]" value="{{ ppricekoli }}">
+					<input type="hidden" name="base_ppricepcs[{{ pid }}]" value="{{ ppricebasepcs }}">
+					<input type="hidden" name="base_ppricedozen[{{ pid }}]" value="{{ ppricebasedozen }}">
+					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
-                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
+                  <td class="ppricepcs" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td class="ppricedozen" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td class="ppricekoli" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
                   {{#if rqty}}
-				<td><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+				<td class="pqty"><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{else}}
-				<td><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+				<td class="pqty"><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{/if}}
+                  <td><select name="optype[{{ pid }}]" data-pid="{{ pid }}" class="optype form-control">{{{ __order_product_type 0 }}}</select></td>
 				<td style="text-align:center;">
 					<a href="javascript:void(0);" id="dellist" idnya="{{ pid }}"><i class="fa fa-times"></i></a>
 				</td>
@@ -36,8 +51,9 @@
 		<td></td>
 		<td></td>
 		<td></td>
-		<td></td>
+		<td class="totalpriceproduct"></td>
 		<td class="totalqtyproduct"></td>
+		<td></td>
 		<td></td>
 		</tr>
 		</tfoot>
@@ -52,12 +68,84 @@ $('a#dellist').click(function(){
 		
 	});
 });
+
+$('select.optype').change(function(){
+	var pid = $(this).attr('data-pid');
+	var totalprice = 0;
+	var price = 0;
+	var qty = 0;
+	$('tr.listproducts').each(function(){
+		var rpid = $(this).attr('idnya');
+		if (rpid != pid) {
+			console.log(rpid);
+			if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
+				price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+				qty = parseInt($('td.pqty > input', $(this)).val());
+				totalprice += price * qty;
+			}
+			else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
+				price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+				qty = parseInt($('td.pqty > input', $(this)).val());
+				totalprice += price * qty;
+			}
+			else {
+				price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+				qty = parseInt($('td.pqty > input', $(this)).val());
+				totalprice += price * qty;
+			}
+		}
+	});
+	
+	if ($(this).val() == 1) {
+		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricedozen').attr('data-ppricedozen'));
+		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
+		totalprice += price * qty;
+	}
+	else if ($(this).val() == 2) {
+		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricekoli').attr('data-ppricekoli'));
+		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
+		totalprice += price * qty;
+	}
+	else {
+		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
+		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
+		totalprice += price * qty;
+	}
+	$('.totalpriceproduct').html(number_format(totalprice, 0,'',','));
+	$('input[name="grandtotal"]').val(number_format(totalprice, 0,'',','));
+});
+
 $('input[type="number"]').bind('change click keypress keyup',function(){
 	var totalqty = 0;
 	$('input[type="number"]').each(function(index){
 		totalqty += ($(this).val() == '' ? 0 : parseInt($(this).val()));
 	})
 	$('.totalqtyproduct').html(totalqty);
+	
+	var totalprice = 0;
+	var price = 0;
+	var qty = 0;
+	$('tr.listproducts').each(function(){
+		var rpid = $(this).attr('idnya');
+		if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
+			price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+			qty = parseInt($('td.pqty > input', $(this)).val());
+			totalprice += price * qty;
+		}
+		else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
+			price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+			qty = parseInt($('td.pqty > input', $(this)).val());
+			totalprice += price * qty;
+		}
+		else {
+			price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+			qty = parseInt($('td.pqty > input', $(this)).val());
+			totalprice += price * qty;
+		}
+	});
+	$('.totalpriceproduct').html(number_format(totalprice, 0,'',','));
+	$('input[name="grandtotal"]').val(number_format(totalprice, 0,'',','));
 });
+
 $('input[type="number"]').change();
 </script>

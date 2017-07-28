@@ -20,9 +20,8 @@
           <div class="box">
         <div class="box-body">
             {{{ error_msg }}}
-			<form action="{{ __site_url 'order/order_products_add/' }}{{ type }}" method="post">
-			<input type="hidden" name="did" value="<?php echo $did; ?>">
-			<input type="hidden" name="ctype" value="<?php echo $ctype; ?>">
+			<form action="{{ __site_url 'order/order_products_add/' }}" method="post">
+				<input type="hidden" name="type" value="{{ type }}">
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>

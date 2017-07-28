@@ -92,7 +92,7 @@ exports.products = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		if (id > 0) {
 			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.rqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
+				var query = connection.query('SELECT a.tqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
 					if (rows)
 						res.render('./tmp/order_products',{tid:id,data:rows,type:2,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
 					else
@@ -160,7 +160,7 @@ exports.order_detail_approved = function(req, res) {
 			var query = connection.query('SELECT * FROM transaction_tab WHERE tid = ?',[id],function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 				
-				connection.query('SELECT a.rqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
+				connection.query('SELECT a.tqty,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
 					if (err) console.log("Error Selecting : %s ",err );
 					else res.render('order_detail',{id:id,products:drows,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 				});
@@ -171,26 +171,61 @@ exports.order_detail_approved = function(req, res) {
 
 exports.order_add = function(req,res) {
 	var input = req.body;
-	if (!input.waktu || !input.vendor || !input.docno) {
+	if (!input.waktu || !input.customer) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/order/order_add');
 	}
 	else {
+		var ppricepcs = input.ppricepcs;
+		var ppricedozen = input.ppricedozen;
+		var ppricekoli = input.ppricekoli;
+		
+		var base_ppricepcs = input.base_ppricepcs;
+		var base_ppricedozen = input.base_ppricedozen;
+		var base_ppricekoli = input.base_ppricekoli;
+		
 		var products = input.products;
+		var optype = input.optype;
+		var tdisc = parseFloat(input.disc);
+		var ttotal = 0;
+		var tammount = 0;
+		
 		req.getConnection(function (err, connection) {
 			var str = input.waktu;
 			var rres = str.split('/');
 			var waktu = new Date(rres[2]+"-"+rres[1]+"-"+rres[0]).getTime() / 1000;
 			var udate = helpers.__get_date('',2);
+			var tqty = 0;
+			
+			Object.keys(products).map(function(objectKey, index) {
+				var index = parseInt(objectKey);
+				if (!isNaN(index)) {
+					if (index > 0) {
+						if (optype[index] == 1)
+							tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
+						else if (optype[index] == 2)
+							tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
+						else
+							tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+						
+						tqty += parseInt(products[index]);
+					}
+				}
+			});
+			
 			var data = {
-				rdate : waktu,
-				rvendor : input.vendor,
-				rdocno : input.docno,
-				rdesc : input.desc,
-				rcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
+				ttype : 1,
+				tdate : waktu,
+				tcid : input.customer,
+				tqty : tqty,
+				tammount : tammount,
+				tdiscount : tdisc,
+				ttotal : (tammount - tdisc),
+				tdesc : input.desc,
+				tcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
 				tstatus : input.status
 			};
-
+			
 			var query = connection.query("INSERT INTO transaction_tab SET ? ",data, function(err, rows) {
 				if (err) {
 					console.log("Error Selecting : %s ",err );
@@ -206,15 +241,45 @@ exports.order_add = function(req,res) {
 						if (!isNaN(index)) {
 							if (index > 0) {
 								var value = products[index];
-								rdata.push([ttid,index,parseInt(value),1]);
+								var tprice = 0;
+								var tpricebase = 0;
+								
+								if (optype[index] == 1) {
+									tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
+									tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
+								}
+								else if (optype[index] == 2) {
+									tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
+									tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
+								}
+								else {
+									tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									tpricebase = parseInt(products[index]) * parseFloat(base_ppricepcs[index]);
+								}
+								rdata.push([ttid,index,tprice,tpricebase,parseInt(value),optype[index],1]);
 							}
 						}
 					});
 					
-					var query = connection.query("INSERT INTO transaction_detail_tab (ttid,tpid,rqty,tstatus) VALUES ?",[rdata], function(err, rows) {
+					var query = connection.query("INSERT INTO transaction_detail_tab (ttid,tpid,tprice,tpricebase,tqty,ttype,tstatus) VALUES ?",[rdata], function(err, rows) {
 						if (err) {
 							console.log("Error Selecting : %s ",err );
 						}
+					});
+					
+					connection.query('SELECT COUNT(*) as totaltoday FROM transaction_tab WHERE ttype=1 AND tstatus!=2 AND FROM_UNIXTIME(tdate, "%Y-%m-%d")=DATE_FORMAT(NOW(),"%Y-%m-%d")',function(err,ckt) {
+						var str = helpers.__get_date();	
+						var dt = str.replace(/\//g, "");
+						var tno = 'PO'+dt+helpers.__strpad('0000',(parseInt(ckt[0].totaltoday)+1),true);
+						var vdata = {
+							tno : tno
+						};
+						
+						connection.query("UPDATE transaction_tab SET ? WHERE tid = ? ",[vdata,ttid], function(err, rows) {
+							if (err) {
+								console.log("Error Selecting : %s ",err );
+							}
+						});
 					});
 						
 					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
@@ -276,7 +341,7 @@ exports.order_update = function(req,res) {
 								if (index > 0) {
 									var value = products[index];
 									var rdata = {
-										rqty : value
+										tqty : value
 									};
 									connection.query("UPDATE transaction_detail_tab SET ? WHERE ttid = ? AND tpid = ? ",[rdata,id,index], function(err, rows) {
 										
