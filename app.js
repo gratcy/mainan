@@ -102,6 +102,7 @@ app.use(function(req, res, next){
 });
 
 app.get('/', index.main);
+app.get('/ajax/index', index.main_stats);
 
 app.get('/ajax/categories', categories.list_ajax);
 app.get('/categories', categories.list);

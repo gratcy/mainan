@@ -1,7 +1,7 @@
 exports.list = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM vendor_tab WHERE (vstatus=1 OR vstatus=0)',function(err,rows) {
+			var query = connection.query('SELECT * FROM vendor_tab WHERE (vstatus=1 OR vstatus=0) ORDER BY vid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('vendor',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});

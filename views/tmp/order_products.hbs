@@ -33,12 +33,12 @@
                   <td class="ppricepcs" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td class="ppricedozen" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td class="ppricekoli" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
-                  {{#if rqty}}
-				<td class="pqty"><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+                  {{#if tqty}}
+				<td class="pqty"><input type="number" value="{{ tqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{else}}
 				<td class="pqty"><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{/if}}
-                  <td><select name="optype[{{ pid }}]" data-pid="{{ pid }}" class="optype form-control">{{{ __order_product_type 0 }}}</select></td>
+                  <td><select name="optype[{{ pid }}]" data-pid="{{ pid }}" class="optype form-control">{{{ __order_product_type ttype 2 }}}</select></td>
 				<td style="text-align:center;">
 					<a href="javascript:void(0);" id="dellist" idnya="{{ pid }}"><i class="fa fa-times"></i></a>
 				</td>

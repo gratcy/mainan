@@ -77,7 +77,7 @@
                   <label for="Discount" class="col-sm-2 control-label">Grand Total</label>
 
                   <div class="col-sm-10">
-                    <input type="text" name="grandtotal" class="form-control" value="0" id="GrandTotal" placeholder="Grand Total">
+                    <input type="text" name="grandtotal" class="form-control" value="0" id="GrandTotal" placeholder="Grand Total" readonly>
                   </div>
                 </div>
               </div>
@@ -111,14 +111,6 @@ $( document ).ajaxComplete(function() {
 	});
 });
 $(document).ready(function(){
-	$('input[name="ttype"]').click(function(){
-		if ($(this).prop('checked') == true && $(this).val() == 0) $('.reffer').hide();
-		else $('.reffer').show();
-		
-		$("#Reffer").trigger("chosen:updated");
-		$(".chosen-container").css("width","100%");
-	});
-	
 	$("#addCustomer").fancybox({
 		'width'				: '50%',
 		'height'			: '50%',

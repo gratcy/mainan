@@ -1,7 +1,7 @@
 exports.list = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname as city,c.pname as province FROM customers_tab a LEFT JOIN city_tab b ON a.ccity=b.cid LEFT JOIN province_tab c ON a.cprovince=c.pid WHERE (a.cstatus=1 OR a.cstatus=0)',function(err,rows) {
+			var query = connection.query('SELECT a.*,b.cname as city,c.pname as province FROM customers_tab a LEFT JOIN city_tab b ON a.ccity=b.cid LEFT JOIN province_tab c ON a.cprovince=c.pid WHERE (a.cstatus=1 OR a.cstatus=0) ORDER BY a.cid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('customers',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
@@ -103,7 +103,7 @@ exports.customers_add = function(req,res) {
 				cdeposit : deposit,
 				cstatus : input.status
 			};
-
+			
 			var query = connection.query("INSERT INTO customers_tab SET ? ",data, function(err, rows) {
 				if (err) {
 					console.log("Error Selecting : %s ",err );

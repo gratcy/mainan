@@ -55,18 +55,21 @@
                   <td class="aprice">{{ __number_format tdiscount 0 '' ',' }}</td>
                   <td class="aprice">{{ __number_format ttotal 0 '' ',' }}</td>
                   <td>{{ tdesc }}</td>
-				{{#compare rstatus 3 operator="!="}}
+				{{#compare tstatus 3 operator="!="}}
                   <td>{{ __parse_json tcreatedby 'uemail' }}</td>
 				{{/compare}}
-				{{#compare rstatus 3 operator="=="}}
+				{{#compare tstatus 3 operator="=="}}
                   <td>Approved by: {{ __parse_json tapprovedby 'uemail' }}</td>
 				{{/compare}}
                   <td style="text-align:center;margin:0 auto;width:50px">
+				{{#compare tstatus 3 operator="=="}}
 					<a href="javascript:void(0);" onclick="print_data('{{ __site_url 'order/faktur/' }}{{ tid }}');" title="Print Faktur"><i class="fa fa-print"></i></a>
+					{{/compare}}
 					<a href="{{ __site_url 'order/order_detail/'}}{{ tid }}"><i class="fa fa-check"></i></a>
-					<a href="{{ __site_url 'order/order_approved/'}}{{ tid }}"><i class="fa fa-hand-o-up"></i></a>
+				{{#compare tstatus 3 operator="!="}}
 					<a href="{{ __site_url 'order/order_update/'}}{{ tid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'order/order_delete/'}}{{ tid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+				{{/compare}}
                   </td>
                 </tr>
                 {{/each}}

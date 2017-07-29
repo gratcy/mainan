@@ -17,4 +17,13 @@
 		});
 	};
 
+	$.fn.statsAjax = function(url,id) {
+		$.get( url, function( data ) {
+			$('.label_stats_order').html(data.transaction);
+			$('.stats_order').html('You have '+data.transaction+' order un approved');
+			$('.label_stats_products').html(data.products);
+			$('.stats_products').html('You have '+data.products+' new products');
+		});
+	};
+
 }(jQuery));

@@ -2,7 +2,7 @@ exports.list = function(req, res) {
 	req.session.receiving_products = {};
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE (a.rstatus=1 OR a.rstatus=0 OR a.rstatus=3)',function(err,rows) {
+			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE (a.rstatus=1 OR a.rstatus=0 OR a.rstatus=3) ORDER BY a.rid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('receiving',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});

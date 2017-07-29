@@ -30,7 +30,9 @@
                   <tr><th>Customer</th><th>{{ data.cname }}</th></tr>
                   <tr><th>Doc No.</th><th>{{ data.tno }}</th></tr>
                   <tr><th>Description</th><th>{{ data.tdesc }}</th></tr>
+				{{#compare data.tstatus 3 operator="=="}}
                   <tr><th>Status</th><th><span class="label label-primary">Approved</span></th></tr>
+				{{/compare}}
                 </tr>
                 </thead>
                 </tbody>
@@ -40,31 +42,24 @@
                 <thead>
                 <tr>
                   <th>Category</th>
-                  <th>Brand</th>
                   <th>Product</th>
                   <th>Description</th>
                   <th>Price</th>
+                  <th>Price Base</th>
                   <th>QTY</th>
                 </tr>
                 </thead>
                 <tbody>
-				<?php
-				$tqty = 0;
-				$tprice = 0;
-				foreach($products as $k => $v) : ?>
+				{{#each products }}
                 <tr>
-                  <td><?php echo $v -> cname; ?></td>
-                  <td><?php echo $v -> bname; ?></td>
-                  <td><?php echo $v -> pname; ?></td>
-                  <td><?php echo $v -> pdesc; ?></td>
-                  <td><?php echo __get_rupiah($v -> pprice,1); ?></td>
-                  <td><?php echo $v -> tqty; ?></td>
+                  <td>{{ cname }}</td>
+                  <td>{{ pname }}</td>
+                  <td>{{ pdesc }}</td>
+                  <td>{{ __number_format tprice 0 '' ',' }}</td>
+                  <td>{{ __number_format tpricebase 0 '' ',' }}</td>
+                  <td>{{ tqty }} {{ __order_product_type ttype 1 }}</td>
                 </tr>
-                <?php
-                $tprice += $v -> pprice * $v -> tqty;
-                $tqty += $v -> tqty;
-                endforeach;
-                ?>
+                {{/each}}
                 </tbody>
                 <tfoot>
                 <tr>
@@ -72,15 +67,15 @@
                   <th></th>
                   <th></th>
                   <th></th>
-                  <th><?php echo __get_rupiah($tprice,1); ?></th>
-                  <th><?php echo $tqty; ?></th>
+                  <th>{{ __number_format data.tammount 0 '' ',' }}</th>
+                  <th>{{ data.tqty }}</th>
                 </tr>
                 <tr>
                   <th>Discount</th>
                   <th></th>
                   <th></th>
                   <th></th>
-                  <th><?php echo __get_rupiah($detail[0] -> tdiscount,1); ?></th>
+                  <th>{{ __number_format data.tdiscount 0 '' ',' }}</th>
                   <th></th>
                 </tr>
                 <tr>
@@ -88,7 +83,7 @@
                   <th></th>
                   <th></th>
                   <th></th>
-                  <th><?php echo __get_rupiah($detail[0] -> ttotal,1); ?></th>
+                  <th>{{ __number_format data.ttotal 0 '' ',' }}</th>
                   <th></th>
                 </tr>
                 </tfoot>

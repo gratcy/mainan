@@ -36,7 +36,7 @@
                 </tbody>
               </table>
               <p>&nbsp;</p>
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered table-striped products_receive">
                 <thead>
                 <tr>
                   <th>Category</th>
@@ -54,10 +54,10 @@
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
                   <td>{{ pdesc }}</td>
-                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
-                  <td>{{ rqty }}</td>
+                  <td data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
+                  <td data-rqty="{{ rqty }}">{{ rqty }}</td>
                 </tr>
                 {{/each}}
                 </tbody>
@@ -66,10 +66,10 @@
                   <th>Total</th>
                   <th></th>
                   <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
+                  <th class="ppricepcs"></th>
+                  <th class="ppricedozen"></th>
+                  <th class="ppricekoli"></th>
+                  <th class="rqty"></th>
                 </tr>
                 </tfoot>
               </table>
@@ -87,3 +87,22 @@
     </section>
     <!-- /.content -->
 </div>
+<script type="text/javascript">
+$('document').ready(function(){
+	var ppricepcs = 0;
+	var ppricedozen = 0;
+	var ppricekoli = 0;
+	var rqty = 0;
+	$('table.products_receive > tbody > tr').each(function(){
+		ppricepcs += parseFloat($('td:eq(3)', $(this)).attr('data-ppricepcs'));
+		ppricedozen += parseFloat($('td:eq(4)', $(this)).attr('data-ppricedozen'));
+		ppricekoli += parseFloat($('td:eq(5)', $(this)).attr('data-ppricekoli'));
+		rqty += parseInt($('td:eq(6)', $(this)).attr('data-rqty'));
+		
+		$('th.ppricepcs').html(number_format(ppricepcs,0,'',','));
+		$('th.ppricedozen').html(number_format(ppricedozen,0,'',','));
+		$('th.ppricekoli').html(number_format(ppricekoli,0,'',','));
+		$('th.rqty').html(rqty);
+	});
+});
+</script>

@@ -40,7 +40,7 @@
                   <label for="Customer" class="col-sm-2 control-label">Date</label>
 
                   <div class="col-sm-10">
-                    <input type="text" name="dateorder" class="form-control" id="DateTimePicker" placeholder="Date Order" value="{{ __get_date data.tdate 2 }}">
+                    <input type="text" name="waktu" class="form-control" id="DateTimePicker" placeholder="Date Order" value="{{ __get_date data.tdate 2 }}">
                   </div>
                 </div>
                 <div class="form-group">
@@ -76,14 +76,14 @@
                   <label for="Discount" class="col-sm-2 control-label">Discount</label>
 
                   <div class="col-sm-10">
-                    <input type="text" value="{{ __number_format data.tdiscount 0 '' ',' }}" autocomplete="off" name="disc" class="form-control" id="Discount" placeholder="Discount">
+                    <input type="text" onkeyup="formatharga(this.value,this)" value="{{ __number_format data.tdiscount 0 '' ',' }}" autocomplete="off" name="disc" class="form-control" id="Discount" placeholder="Discount">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="Discount" class="col-sm-2 control-label">Grand Total</label>
 
                   <div class="col-sm-10">
-                    <input type="text" value="{{ __number_format data.ttotal 0 '' ',' }}" autocomplete="off" name="grandtotal" class="form-control" id="GrandTotal" placeholder="Grand Total">
+                    <input type="text" value="{{ __number_format data.ttotal 0 '' ',' }}" autocomplete="off" name="grandtotal" class="form-control" id="GrandTotal" placeholder="Grand Total" readonly>
                   </div>
                 </div>
               </div>
@@ -112,32 +112,14 @@
 $( document ).ajaxComplete(function() {
 	$('input[name="disc"]').bind('change keyup', function(){
 		var gtotal = $('.totalpriceproduct').html();
-		gtotal = gtotal.replace(/(IDR |\.)/g, '');
+		gtotal = gtotal.replace(/(IDR |\.|\,)/g, '');
 		var disc = $(this).val();
 		disc = disc.replace(/,/g, '');
 		$('input[name="grandtotal"]').val(number_format(parseInt(gtotal)-parseInt(disc), 0, '.', ','));
 	});
-	$('input[type="number"]').bind('change click keypress keyup',function(){
-		var total = 0;
-		var disc = $('input[name="disc"]').val();
-		disc = disc.replace(/,/g, '');
-		$('.qtyproduct').each(function(key, val) {
-			total += parseInt($(val).val()) * parseInt($(val).attr('data-price'));
-		});
-			$('.totalpriceproduct').html(hood_price(total, 0));
-			$('input[name="grandtotal"]').val(number_format(parseInt(total) - parseInt(disc), 0, '.', ','));
-	});
+	$('input[name="disc"]').change();
 });
 $(document).ready(function(){
-	$('input[name="ttype"]').click(function(){
-		if ($(this).prop('checked') == true && $(this).val() == 0) $('.reffer').hide();
-		else $('.reffer').show();
-		
-		$("#Reffer").trigger("chosen:updated");
-		$(".chosen-container").css("width","100%");
-	});
-	$('input[name="ttype"][value="{{ data.ttype }}"]').click();
-	
 	$("#addCustomer").fancybox({
 		'width'				: '50%',
 		'height'			: '50%',

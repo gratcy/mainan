@@ -135,11 +135,11 @@
 				});
 			}
 		});
-		
+		$(window).statsAjax('/ajax/index');
 		$('.form-horizontal select').select2(); 
 		$('.form-horizontal select').on('change', function (evt) {
-    $('.select2-selection__rendered').removeAttr('title');
-});
+			$('.select2-selection__rendered').removeAttr('title');
+			});
 		$('#DatePicker').datepicker({
 			dateFormat: 'dd/mm/yy'
 		});

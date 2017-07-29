@@ -1,7 +1,7 @@
 exports.list = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM province_tab WHERE (pstatus=1 OR pstatus=0)',function(err,rows) {
+			var query = connection.query('SELECT * FROM province_tab WHERE (pstatus=1 OR pstatus=0) ORDER BY pid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('province',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});

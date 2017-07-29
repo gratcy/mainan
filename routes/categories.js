@@ -1,7 +1,7 @@
 exports.list = function(req, res) {
 	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
 		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM categories_tab WHERE (cstatus=1 OR cstatus=0)',function(err,rows) {
+			var query = connection.query('SELECT * FROM categories_tab WHERE (cstatus=1 OR cstatus=0) ORDER BY cid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 					res.render('categories',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
