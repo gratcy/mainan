@@ -3,9 +3,9 @@
 		<tr>
                   <th>Category</th>
                   <th>Product</th>
-                  <th>Price PCS</th>
-                  <th>Price Lusin</th>
-                  <th>Price Koli</th>
+                  <th class="hide">Price PCS</th>
+                  <th class="hide">Price Lusin</th>
+                  <th class="hide">Price Koli</th>
                   <th>QTY</th>
                   <th>Type</th>
                   <th></th>
@@ -30,9 +30,9 @@
 					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
-                  <td class="ppricepcs" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
-                  <td class="ppricedozen" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
-                  <td class="ppricekoli" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
+                  <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td class="ppricekoli hide" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
                   {{#if tqty}}
 				<td class="pqty"><input type="number" value="{{ tqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{else}}
@@ -48,12 +48,12 @@
 		<tfoot>
 		<tr>
 		<td>Total</td>
-		<td></td>
-		<td></td>
+		<td class="hide"></td>
+		<td class="hide"></td>
+		<td class="hide"></td>
 		<td></td>
 		<td class="totalpriceproduct"></td>
 		<td class="totalqtyproduct"></td>
-		<td></td>
 		<td></td>
 		</tr>
 		</tfoot>

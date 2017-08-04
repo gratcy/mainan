@@ -3,9 +3,6 @@
 		<tr>
                   <th>Category</th>
                   <th>Product</th>
-                  <th>Price PCS</th>
-                  <th>Price Lusin</th>
-                  <th>Price Koli</th>
                   <th>QTY</th>
                   <th></th>
 		</tr>
@@ -16,9 +13,6 @@
 				<tr idnya="{{ pid }}">
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
-                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
-                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
                   {{#if rqty}}
 				<td><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{else}}
@@ -33,9 +27,6 @@
 		<tfoot>
 		<tr>
 		<td>Total</td>
-		<td></td>
-		<td></td>
-		<td></td>
 		<td></td>
 		<td class="totalqtyproduct"></td>
 		<td></td>

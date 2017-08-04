@@ -36,6 +36,7 @@ var index = require('./routes/index'),
 	opname = require('./routes/opname'),
 	city = require('./routes/city'),
 	province = require('./routes/province'),
+	peticash = require('./routes/peticash'),
 	users_group = require('./routes/users_group'),
 	users = require('./routes/users');
 
@@ -205,6 +206,11 @@ app.get('/order/order_update/:id', order.order_detail);
 app.get('/order/order_detail/:id', order.order_detail_approved);
 app.post('/order/order_update',order.order_update);
 app.get('/order/order_delete/:id', order.order_delete);
+
+app.get('/peticash', peticash.list);
+app.post('/peticash', peticash.list_post);
+app.get('/peticash/peticash_add', peticash.add);
+app.post('/peticash/peticash_add', peticash.peticash_add);
 
 app.use(function(req, res, next){
 	res.render('404', { status: 404, url: req.url });
