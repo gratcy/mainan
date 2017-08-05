@@ -25,9 +25,11 @@
             {{{ error_msg }}}
             
             <div class="box-header">
+			{{#if (__check_permission 'ProductsExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'products/products_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> Add Product</a>
 			</h3>
+			{{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
@@ -35,9 +37,11 @@
                   <th>Category</th>
                   <th>Product</th>
                   <th>Description</th>
+                  {{#if (__check_permission 'ProductsPriceBase') }}
                   <th>Price Base PCS</th>
                   <th>Price Base Lusin</th>
                   <th>Price Base Koli</th>
+                  {{/if}}
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
@@ -51,16 +55,20 @@
                   <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
                   <td>{{ pdesc }}</td>
+                  {{#if (__check_permission 'ProductsPriceBase') }}
                   <td>{{ __number_format ppricebasepcs 0 '' ',' }}</td>
                   <td>{{ __number_format ppricebasedozen 0 '' ',' }}</td>
                   <td>{{ __number_format ppricebasekoli 0 '' ',' }}</td>
+                  {{/if}}
                   <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
                   <td>{{ __get_status pstatus 1 }}</td>
                   <td>
+					{{#if (__check_permission 'ProductsExecute') }}
 					<a href="{{ __site_url 'products/products_update/' }}{{ pid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'products/products_delete/' }}{{ pid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					{{/if}}
                   </td>
                 </tr>
                 {{/each}}
@@ -70,9 +78,11 @@
                   <th>Category</th>
                   <th>Product</th>
                   <th>Description</th>
+                  {{#if (__check_permission 'ProductsPriceBase') }}
                   <th>Price Base PCS</th>
                   <th>Price Base Lusin</th>
                   <th>Price Base Koli</th>
+                  {{/if}}
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>

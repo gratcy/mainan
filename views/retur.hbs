@@ -4,11 +4,11 @@
     <section class="content-header">
       <h1>
         Sales &amp; Purchase
-        <small>Order</small>
+        <small>Return</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="#">Purchase Order</a></li>
+        <li class="active"><a href="#">Purchase Return</a></li>
       </ol>
     </section>
 
@@ -18,28 +18,26 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Purchase Order</h3>
+              <h3 class="box-title">Purchase Return</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
             {{{ error_msg }}}
             
             <div class="box-header">
-			{{#if (__check_permission 'OrderExecute') }}
+			{{#if (__check_permission 'ReturExecute') }}
 		    <h3 class="box-title">
-			<a href="{{ __site_url 'order/order_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> New Purchase Order</a>
+			<a href="{{ __site_url 'retur/retur_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> New Purchase Return</a>
 			</h3>
             {{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th style="width:90px">Order No.</th>
+                  <th style="width:90px">Return No.</th>
                   <th>Date</th>
                   <th>Customer</th>
                   <th>QTY</th>
-                  <th>Ammount</th>
-                  <th>Discount</th>
                   <th>Total</th>
                   <th>Created By</th>
                   <th style="width:70px">Action</th>
@@ -52,8 +50,6 @@
                   <td>{{ __get_date tdate 2 }}</td>
                   <td>{{ cname }}</td>
                   <td>{{ tqty }}</td>
-                  <td class="aprice">{{ __number_format tammount 0 '' ',' }}</td>
-                  <td class="aprice">{{ __number_format tdiscount 0 '' ',' }}</td>
                   <td class="aprice">{{ __number_format ttotal 0 '' ',' }}</td>
 				{{#compare tstatus 3 operator="!="}}
                   <td>{{ __parse_json tcreatedby 'uemail' }}</td>
@@ -63,13 +59,13 @@
 				{{/compare}}
                   <td style="text-align:center;margin:0 auto;width:50px">
 				{{#compare tstatus 3 operator="=="}}
-					<a href="javascript:void(0);" onclick="print_data('{{ __site_url 'order/faktur/' }}{{ tid }}');" title="Print Faktur"><i class="fa fa-print"></i></a>
+					<a href="javascript:void(0);" onclick="print_data('{{ __site_url 'retur/faktur/' }}{{ tid }}');" title="Print Faktur"><i class="fa fa-print"></i></a>
 					{{/compare}}
-					<a href="{{ __site_url 'order/order_detail/'}}{{ tid }}"><i class="fa fa-check"></i></a>
+					<a href="{{ __site_url 'retur/retur_detail/'}}{{ tid }}"><i class="fa fa-check"></i></a>
 				{{#compare tstatus 3 operator="!="}}
-					{{#if (__check_permission 'OrderExecute') }}
-					<a href="{{ __site_url 'order/order_update/'}}{{ tid }}"><i class="fa fa-pencil"></i></a>
-					<a href="{{ __site_url 'order/order_delete/'}}{{ tid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					{{#if (__check_permission 'ReturExecute') }}
+						<a href="{{ __site_url 'retur/retur_update/'}}{{ tid }}"><i class="fa fa-pencil"></i></a>
+						<a href="{{ __site_url 'retur/retur_delete/'}}{{ tid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
 					{{/if}}
 				{{/compare}}
                   </td>
@@ -78,12 +74,10 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                  <th>Order No.</th>
+                  <th>Return No.</th>
                   <th>Date</th>
                   <th>Customer</th>
                   <th>QTY</th>
-                  <th>Ammount</th>
-                  <th>Discount</th>
                   <th>Total</th>
                   <th>Created By</th>
                   <th>Action</th>

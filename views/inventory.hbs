@@ -28,45 +28,45 @@
                 <thead>
                 <tr>
                   <th>Product</th>
-                  <th>Stock Begining</th>
-                  <th>Stock In</th>
-                  <th>Stock Out</th>
-                  <th>Stock Return</th>
-                  <th>Stock Final</th>
+                  <th>Begining</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Return</th>
+                  <th>Final</th>
                   <th>Adjust (+)</th>
                   <th>Adjust (-)</th>
-                  <th>Stock Process</th>
-                  <th>Stock Left</th>
+                  <th>Process</th>
+                  <th>Left</th>
                 </tr>
                 </thead>
                 <tbody>
 				{{#each data}}
-                <tr>
+                <tr class="pid_inventory" data-pid="{{ ipid }}">
                   <td>{{ pname }}</td>
                   <td>{{ istockbegining }}</td>
                   <td>{{ istockin }}</td>
                   <td>{{ istockout }}</td>
                   <td>{{ istockreturn }}</td>
-                  <td>{{ istock }}</td>
+                  <td class="final_{{ ipid }}">{{ istock }}</td>
                   <td>{{ aplus }}</td>
                   <td>{{ amin }}</td>
-                  <td></td>
-                  <td></td>
+                  <td class="proccess_{{ ipid }}">0</td>
+                  <td class="left_{{ ipid }}">0</td>
                 </tr>
                 {{/each}}
                 </tbody>
                 <tfoot>
                 <tr>
                   <th>Product</th>
-                  <th>Stock Begining</th>
-                  <th>Stock In</th>
-                  <th>Stock Out</th>
-                  <th>Stock Return</th>
-                  <th>Stock Final</th>
+                  <th>Begining</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Return</th>
+                  <th>Final</th>
                   <th>Adjust (+)</th>
                   <th>Adjust (-)</th>
-                  <th>Stock Process</th>
-                  <th>Stock Left</th>
+                  <th>Process</th>
+                  <th>Left</th>
                 </tr>
                 </tfoot>
               </table>
@@ -81,3 +81,15 @@
     </section>
     <!-- /.content -->
 </div>
+
+<script>
+$('tr.pid_inventory').each(function(k,v) {
+	$.post( "{{ __site_url 'ajax/stock_proccess' }}", {pids: $(v).attr('data-pid')}).done(function( data ) {
+		$('.left_'+$(v).attr('data-pid')).html($('.final_'+$(v).attr('data-pid')).html());
+		
+		var sfinal = parseInt($('.final_'+$(v).attr('data-pid')).html()) - data.total;
+		$('.proccess_'+$(v).attr('data-pid')).html(data.total);
+		$('.left_'+$(v).attr('data-pid')).html(sfinal);
+	});
+})
+</script>

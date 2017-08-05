@@ -41,6 +41,7 @@
                     <input type="text" name="name" class="form-control" id="inputEmail3" placeholder="Product Name">
                   </div>
                 </div>
+                  {{#if (__check_permission 'ProductsPriceBase') }}
                 <div class="form-group">
                   <label for="PriceBase" class="col-sm-2 control-label">Price Base PCS</label>
                   <div class="col-sm-10">
@@ -59,6 +60,11 @@
                     <input type="text" onkeyup="formatharga(this.value,this)" autocomplete="off" name="pricebasekoli" class="form-control" id="PriceBaseKoli" placeholder="Price Base Koli">
                   </div>
                 </div>
+			{{else}}
+                    <input type="hidden" onkeyup="formatharga(this.value,this)" autocomplete="off" name="pricebasepcs" class="form-control" id="PriceBase" placeholder="Price Base PCS" value="0">
+                    <input type="hidden" onkeyup="formatharga(this.value,this)" autocomplete="off" name="pricebasedozen" class="form-control" id="PriceBaseLusin" placeholder="Price Base Lusin" value="0">
+                    <input type="hidden" onkeyup="formatharga(this.value,this)" autocomplete="off" name="pricebasekoli" class="form-control" id="PriceBaseKoli" placeholder="Price Base Koli" value="0">
+            {{/if}}
                 <div class="form-group">
                   <label for="Price" class="col-sm-2 control-label">Price PCS</label>
                   <div class="col-sm-10">

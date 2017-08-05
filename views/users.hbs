@@ -25,9 +25,11 @@
             {{{ error_msg }}}
             
             <div class="box-header">
+			{{#if (__check_permission 'UserExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'users/users_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> Add User</a>
 			</h3>
+            {{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
@@ -49,8 +51,12 @@
           <td>{{ __explode_string ulastlogin '*' 1 }}</td>
 		  <td>{{ __get_status ustatus 1 }}</td>
 											<td>
+			{{#compare uid 1 operator="!="}}
+			{{#if (__check_permission 'VendorExecute') }}
               <a href="{{ __site_url 'users/users_update/' }}{{ uid }}"><i class="fa fa-pencil"></i></a>
               <a href="{{ __site_url 'users/users_delete/' }}{{ uid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+              {{/if}}
+		  {{/compare}}
 		</td>
 										</tr>
                 {{/each}}

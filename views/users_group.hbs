@@ -25,9 +25,11 @@
             {{{ error_msg }}}
             
             <div class="box-header">
+			{{#if (__check_permission 'UserGroupExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'users_group/users_group_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> Add Users Group</a>
 			</h3>
+            {{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
@@ -45,8 +47,10 @@
 				  <td>{{ udesc }}</td>
 				<td>{{ __get_status ustatus 1 }}</td>
 				  <td>
+					{{#if (__check_permission 'VendorExecute') }}
 					  <a href="{{ __site_url 'users_group/users_group_update/' }}{{ uid }}"><i class="fa fa-pencil"></i></a>
 					  <a href="{{ __site_url 'users_group/users_group_delete/' }}{{ uid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					  {{/if}}
 				  </td>
 				</tr>
                 {{/each}}

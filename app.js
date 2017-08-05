@@ -28,6 +28,7 @@ var index = require('./routes/index'),
 	settings = require('./routes/settings'),
 	vendor = require('./routes/vendor'),
 	order = require('./routes/order'),
+	retur = require('./routes/retur'),
 	receiving = require('./routes/receiving'),
 	categories = require('./routes/categories'),
 	products = require('./routes/products'),
@@ -95,7 +96,9 @@ app.use(function(req, res, next){
 	else {
 		if (req.session.login) {
 			if (/\/login/.test(req.path) === true) {
-				return res.redirect('/');
+				if (/\/login\/logout/.test(req.path) === false) {
+					return res.redirect('/');
+				}
 			}
 		}
 	}
@@ -161,6 +164,8 @@ app.post('/login/logging', login.login);
 app.get('/login/logout', login.logout);
 
 app.get('/inventory', inventory.list);
+app.post('/ajax/stock_proccess', inventory.stock_proccess);
+
 app.get('/opname', opname.list);
 app.get('/opname/opname_update/:id', opname.opname_detail);
 app.post('/opname/opname_update', opname.opname_update);
@@ -206,6 +211,18 @@ app.get('/order/order_update/:id', order.order_detail);
 app.get('/order/order_detail/:id', order.order_detail_approved);
 app.post('/order/order_update',order.order_update);
 app.get('/order/order_delete/:id', order.order_delete);
+
+app.get('/retur', retur.list);
+app.get('/retur/retur_products/?:id?', retur.products);
+app.get('/retur/retur_list_products/?:id?', retur.list_products);
+app.post('/retur/retur_products_add', retur.products_add);
+app.post('/retur/retur_products_delete', retur.products_delete);
+app.get('/retur/retur_add', retur.add);
+app.post('/retur/retur_add', retur.retur_add);
+app.get('/retur/retur_update/:id', retur.retur_detail);
+app.get('/retur/retur_detail/:id', retur.retur_detail_approved);
+app.post('/retur/retur_update',retur.retur_update);
+app.get('/retur/retur_delete/:id', retur.retur_delete);
 
 app.get('/peticash', peticash.list);
 app.post('/peticash', peticash.list_post);

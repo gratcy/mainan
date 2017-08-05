@@ -25,9 +25,11 @@
             {{{ error_msg }}}
             
             <div class="box-header">
+			{{#if (__check_permission 'VendorExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'vendor/vendor_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> Add vendor</a>
 			</h3>
+            {{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
@@ -49,8 +51,10 @@
                   <td>{{ __replace_string vphone }}</td>
                   <td>{{ __get_status vstatus 1 }}</td>
                   <td>
+					{{#if (__check_permission 'VendorExecute') }}
 					<a href="{{ __site_url 'vendor/vendor_update/' }}{{ vid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'vendor/vendor_delete/' }}{{ vid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					{{/if}}
                   </td>
                 </tr>
                 {{/each}}

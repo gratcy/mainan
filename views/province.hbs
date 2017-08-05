@@ -25,9 +25,11 @@
             {{{ error_msg }}}
             
             <div class="box-header">
+			{{#if (__check_permission 'ProvinceExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'province/province_add/' }}" class="btn btn-default"><i class="fa fa-plus"></i> Add Province</a>
 			</h3>
+            {{/if}}
             </div>
               <table id="sTable" class="table table-bordered table-striped">
                 <thead>
@@ -43,8 +45,10 @@
                   <td>{{ pname }}</td>
                   <td>{{ __get_status pstatus 1 }}</td>
                   <td>
+					{{#if (__check_permission 'ProvinceExecute') }}
 					<a href="{{ __site_url 'province/province_update/' }}{{ pid }}"><i class="fa fa-pencil"></i></a>
 					<a href="{{ __site_url 'province/province_delete/' }}{{ pid }}" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-times"></i></a>
+					{{/if}}
                   </td>
                 </tr>
                 {{/each}}

@@ -27,12 +27,24 @@
             </span>
           </a>
           <ul class="treeview-menu">
+			{{#if (__check_permission 'CategoryProductView') }}
             <li><a href="{{ __site_url 'categories' }}"><i class="fa fa-circle-o"></i> Category Product</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ProductsView') }}
             <li><a href="{{ __site_url 'products' }}"><i class="fa fa-circle-o"></i> Products</a></li>
+            {{/if}}
+			{{#if (__check_permission 'VendorView') }}
             <li><a href="{{ __site_url 'vendor' }}"><i class="fa fa-circle-o"></i> Vendor</a></li>
+            {{/if}}
+			{{#if (__check_permission 'CustomerView') }}
             <li><a href="{{ __site_url 'customers' }}"><i class="fa fa-circle-o"></i> Customers</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ProvinceView') }}
             <li><a href="{{ __site_url 'province' }}"><i class="fa fa-circle-o"></i> Province</a></li>
+            {{/if}}
+			{{#if (__check_permission 'CityView') }}
             <li><a href="{{ __site_url 'city' }}"><i class="fa fa-circle-o"></i> City</a></li>
+            {{/if}}
           </ul>
         </li>
 		<li class="treeview" rel="SalesPurchase">
@@ -45,8 +57,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
+			{{#if (__check_permission 'OrderView') }}
 				<li><a href="{{ __site_url 'order' }}"><i class="fa fa-circle-o"></i> Order</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ReturView') }}
 				<li><a href="{{ __site_url 'retur' }}"><i class="fa fa-circle-o"></i> Return</a></li>
+            {{/if}}
 		  </ul>
         </li>
 		<li class="treeview" rel="Inventory">
@@ -59,9 +75,15 @@
             </span>
           </a>
           <ul class="treeview-menu">
+			{{#if (__check_permission 'ItemReceivingView') }}
 				<li><a href="{{ __site_url 'receiving' }}"><i class="fa fa-circle-o"></i> Item Receiving</a></li>
+            {{/if}}
+			{{#if (__check_permission 'OpnameView') }}
 				<li><a href="{{ __site_url 'opname' }}"><i class="fa fa-circle-o"></i> Opname</a></li>
+            {{/if}}
+			{{#if (__check_permission 'InventoryView') }}
 				<li><a href="{{ __site_url 'inventory' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
+            {{/if}}
 		  </ul>
         </li>
 		<li class="treeview" rel="Reports">
@@ -79,11 +101,13 @@
 				<li><a href="{{ __site_url 'reportstock' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
 		  </ul>
         </li>
+			{{#if (__check_permission 'PetiCashView') }}
         <li>
 			<a href="{{ __site_url 'peticash' }}">
 			<i class="fa fa-outdent"></i> <span>Peti Cash</span>
 		</a>
 		</li>
+            {{/if}}
         <li class="treeview" rel="Users">
           <a href="#">
             <i class="fa fa-users"></i>
@@ -94,8 +118,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
+			{{#if (__check_permission 'UserView') }}
             <li><a href="{{ __site_url 'users' }}"><i class="fa fa-circle-o"></i> Users</a></li>
+            {{/if}}
+			{{#if (__check_permission 'UserGroupView') }}
             <li><a href="{{ __site_url 'users_group' }}"><i class="fa fa-circle-o"></i> Users Group</a></li>
+            {{/if}}
           </ul>
         </li>
         <li>

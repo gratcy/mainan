@@ -28,28 +28,32 @@
                 <thead>
                 <tr>
                   <th>Product</th>
-                  <th>Stock Begining</th>
-                  <th>Stock In</th>
-                  <th>Stock Out</th>
-                  <th>Stock Final</th>
-                  <th>Stock Process</th>
-                  <th>Stock Left</th>
+                  <th>Begining</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Return</th>
+                  <th>Final</th>
+                  <th>Process</th>
+                  <th>Left</th>
 				  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php endforeach; ?>
 				{{#each data}}
-                <tr>
+                <tr class="pid_inventory" data-pid="{{ ipid }}">
                   <td>{{ pname }}</td>
                   <td>{{ istockbegining }}</td>
                   <td>{{ istockin }}</td>
                   <td>{{ istockout }}</td>
-                  <td>{{ istock }}</td>
-                  <td></td>
-                  <td></td>
+                  <td>{{ istockreturn }}</td>
+                  <td class="final_{{ ipid }}">{{ istock }}</td>
+                  <td class="proccess_{{ ipid }}">0</td>
+                  <td class="left_{{ ipid }}">0</td>
 				  <td>
+					{{#if (__check_permission 'OpnameExecute') }}
 					<a href="{{ __site_url 'opname/opname_update/' }}{{ ipid }}"><i class="fa fa-pencil"></i></a>
+					{{/if}}
 				  </td>
                 </tr>
                 {{/each}}
@@ -57,12 +61,13 @@
                 <tfoot>
                 <tr>
                   <th>Product</th>
-                  <th>Stock Begining</th>
-                  <th>Stock In</th>
-                  <th>Stock Out</th>
-                  <th>Stock Final</th>
-                  <th>Stock Process</th>
-                  <th>Stock Left</th>
+                  <th>Begining</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Return</th>
+                  <th>Final</th>
+                  <th>Process</th>
+                  <th>Left</th>
 				  <th>Action</th>
                 </tr>
                 </tfoot>
@@ -78,3 +83,15 @@
     </section>
     <!-- /.content -->
 </div>
+
+<script>
+$('tr.pid_inventory').each(function(k,v) {
+	$.post( "{{ __site_url 'ajax/stock_proccess' }}", {pids: $(v).attr('data-pid')}).done(function( data ) {
+		$('.left_'+$(v).attr('data-pid')).html($('.final_'+$(v).attr('data-pid')).html());
+		
+		var sfinal = parseInt($('.final_'+$(v).attr('data-pid')).html()) - data.total;
+		$('.proccess_'+$(v).attr('data-pid')).html(data.total);
+		$('.left_'+$(v).attr('data-pid')).html(sfinal);
+	});
+})
+</script>

@@ -36,9 +36,11 @@
                 </form>
                 <p>&nbsp;</p>
             <div class="box-header">
+			{{#if (__check_permission 'PetiCashExecute') }}
 		    <h3 class="box-title">
 			<a href="{{ __site_url 'peticash/peticash_add' }}" class="btn btn-default"><i class="fa fa-plus"></i> New Transaction</a>
 			</h3>
+            {{/if}}
             </div>
               <table class="table table-bordered table-striped">
                               <thead>

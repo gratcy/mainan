@@ -63,7 +63,7 @@ $('a#dellist').click(function(){
 	var idnya = $(this).attr('idnya');
 	$('tr[idnya='+idnya+']').remove();
 	var data = {pid : idnya, type: '{{ type }}', rid: '{{ rid }}'};
-	$.post('{{ __site_url "order/order_products_delete" }}', data,
+	$.post('{{ __site_url "retur/retur_products_delete" }}', data,
 	function(datas) {
 		
 	});

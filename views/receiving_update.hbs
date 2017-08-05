@@ -76,7 +76,9 @@
                 &nbsp;
                 <button type="submit" class="btn btn-info pull-right">Submit</button>
                 &nbsp;
+				{{#if (__check_permission 'ItemReceivingApproved') }}
                 <button type="button" class="btn btn-danger pull-right" style="margin-right:3px" id="approved">Approved</button>
+				{{/if}}
               </div>
               <!-- /.box-footer -->
             </form>

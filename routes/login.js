@@ -22,24 +22,26 @@ exports.login = function(req,res) {
 		req.getConnection(function (err, connection) {
 			connection.query("SELECT * FROM users_tab WHERE uemail='"+input.uemail+"' AND upass='"+helpers.__hash_password(input.upass)+"' AND ustatus=1",function(err, rows) {
 				if (rows[0]) {
-					sauth.login = {uid: rows[0].uid, ugroup: rows[0].ugid, uemail: rows[0].uemail};
-					
-					if (err) {
-						console.log("Error Selecting : %s ",err );
-					}
-					
-					var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-					var data = {
-						ulastlogin : ip+'*'+helpers.__get_date_now()
-					};
-					
-					connection.query("UPDATE users_tab set ? WHERE uid = ? ",[data,rows[0].uid], function(err, rows) {
+						connection.query("SELECT a.uname as perm,a.uurl as url,b.uaccess as access from users_permission_tab a JOIN users_access_tab b ON a.uid=b.upid WHERE b.ugid="+rows[0].ugid,function(err, perms) {
+						sauth.login = {uid: rows[0].uid, ugroup: rows[0].ugid, uemail: rows[0].uemail, perms: perms};
+						
 						if (err) {
 							console.log("Error Selecting : %s ",err );
 						}
+						
+						var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+						var data = {
+							ulastlogin : ip+'*'+helpers.__get_date_now()
+						};
+						
+						connection.query("UPDATE users_tab set ? WHERE uid = ? ",[data,rows[0].uid], function(err, rows) {
+							if (err) {
+								console.log("Error Selecting : %s ",err );
+							}
+						});
+						
+						res.redirect('/');
 					});
-					
-					res.redirect('/');
 				}
 				else {
 					helpers.__set_error_msg({error: 'Username dan password tidak sesuai !!!'},req.sessionID);

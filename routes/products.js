@@ -3,7 +3,7 @@ exports.list = function(req, res) {
 		req.getConnection(function(err,connection){
 			var query = connection.query('SELECT a.*,b.cname FROM products_tab a LEFT JOIN categories_tab b ON a.pcid=b.cid WHERE (a.pstatus=1 OR a.pstatus=0) ORDER BY a.pid DESC',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
-					res.render('products',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+					res.render('products',{perm:true,data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
 		});
 	});

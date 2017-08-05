@@ -1,0 +1,81 @@
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="{{ __themes_url 'bootstrap/css/bootstrap.min.css' }}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ __themes_url 'bootstrap/css/font-awesome.min.css' }}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="{{ __themes_url 'bootstrap/css/ionicons.min.css' }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ __themes_url 'plugins/datatables/dataTables.bootstrap.css' }}">
+  <link rel="stylesheet" href="{{ __themes_url 'dist/css/AdminLTE.min.css' }}">
+  <link rel="stylesheet" href="{{ __themes_url 'dist/css/skins/_all-skins.min.css' }}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{{ __themes_url 'plugins/iCheck/flat/blue.css' }}">
+  <!-- Morris chart -->
+  <link rel="stylesheet" href="{{ __themes_url 'plugins/morris/morris.css' }}">
+  <!-- jvectormap -->
+  <script type="text/javascript" src="{{ __themes_url 'plugins/jQuery/jquery.min.js' }}"></script>
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+        <div class="box-body">
+            {{{ error_msg }}}
+			<form action="{{ __site_url 'retur/retur_products_add/' }}" method="post">
+				<input type="hidden" name="type" value="{{ type }}">
+              <table id="sTable" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th></th>
+                  <th>Category</th>
+                  <th>Product</th>
+                  <th>Description</th>
+                  <th>Price PCS</th>
+                  <th>Price Lusin</th>
+                  <th>Price Koli</th>
+                  <th>Stock</th>
+                </tr>
+                </thead>
+                <tbody>
+        <input type="hidden" name="pid[null]" />
+				{{#each data}}
+                <tr>
+					<td><input type="checkbox" value="{{ pid }}" name="pid[]"></td>
+                  <td>{{ cname }}</td>
+                  <td>{{ pname }}</td>
+                  <td>{{ pdesc }}</td>
+                  <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
+                  <td>{{ istock }}</td>
+                </tr>
+                {{/each}}
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th></th>
+                  <th>Category</th>
+                  <th>Product</th>
+                  <th>Description</th>
+                  <th>Price PCS</th>
+                  <th>Price Lusin</th>
+                  <th>Price Koli</th>
+                  <th>Stock</th>
+                </tr>
+                </tfoot>
+              </table>
+<button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Save</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<script src="{{ __themes_url 'bootstrap/js/bootstrap.min.js' }}"></script>
+<script src="{{ __themes_url 'plugins/datatables/jquery.dataTables.min.js' }}"></script>
+<script>
+  $(function () {
+    $("#sTable").DataTable({"pageLength": 100,"paging": false});
+  });
+</script>
