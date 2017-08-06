@@ -96,9 +96,15 @@
             </span>
           </a>
           <ul class="treeview-menu">
+			{{#if (__check_permission 'ReportTransaction') }}
 				<li><a href="{{ __site_url 'reporttransaction' }}"><i class="fa fa-circle-o"></i> Transaction</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ReportOpname') }}
 				<li><a href="{{ __site_url 'reportopname' }}"><i class="fa fa-circle-o"></i> Opname</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ReportStock') }}
 				<li><a href="{{ __site_url 'reportstock' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
+            {{/if}}
 		  </ul>
         </li>
 			{{#if (__check_permission 'PetiCashView') }}

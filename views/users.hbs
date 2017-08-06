@@ -48,7 +48,7 @@
           <td>{{ gname }}</td>
           <td>{{ uemail }}</td>
           <td>{{ __explode_string ulastlogin '*' 0 }}</td>
-          <td>{{ __explode_string ulastlogin '*' 1 }}</td>
+          <td>{{ __get_date (__explode_string ulastlogin '*' 1) 1 }}</td>
 		  <td>{{ __get_status ustatus 1 }}</td>
 											<td>
 			{{#compare uid 1 operator="!="}}

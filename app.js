@@ -29,6 +29,7 @@ var index = require('./routes/index'),
 	vendor = require('./routes/vendor'),
 	order = require('./routes/order'),
 	retur = require('./routes/retur'),
+	report = require('./routes/report'),
 	receiving = require('./routes/receiving'),
 	categories = require('./routes/categories'),
 	products = require('./routes/products'),
@@ -90,6 +91,18 @@ app.use(function(req, res, next){
 		else {
 			if (!req.session.login.uid || !req.session.login.uemail) {
 				return res.redirect('/login');
+			}
+			
+			for(var i=0;i<global.sauth.perms.length;++i) {
+				if (global.sauth.perms[i].url != null) {
+					var pattern = global.sauth.perms[i].url;
+					var regex = new RegExp(pattern,'g');
+					if (regex.test(req.path) === true && /\/ajax/.test(req.path) == false) {
+						if (global.sauth.perms[i].access != 1) {
+							return res.redirect('/');
+						}
+					}
+				}
 			}
 		}
 	}
@@ -173,6 +186,7 @@ app.post('/opname/opname_update', opname.opname_update);
 app.get('/settings', settings.settings);
 app.post('/settings/settings', settings.settings_update);
 
+app.get('/ajax/users', users.list_ajax);
 app.get('/users', users.list);
 app.get('/users/users_add', users.add);
 app.post('/users/users_add', users.users_add);
@@ -228,6 +242,13 @@ app.get('/peticash', peticash.list);
 app.post('/peticash', peticash.list_post);
 app.get('/peticash/peticash_add', peticash.add);
 app.post('/peticash/peticash_add', peticash.peticash_add);
+
+app.get('/reporttransaction', report.transaction);
+app.post('/reporttransaction', report.exec_transaction);
+app.get('/reportstock', report.stock);
+app.post('/reportstock/products', report.exec_stock);
+app.get('/reportopname', report.opname);
+app.post('/reportopname', report.exec_opname);
 
 app.use(function(req, res, next){
 	res.render('404', { status: 404, url: req.url });

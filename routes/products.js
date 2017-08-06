@@ -11,7 +11,7 @@ exports.list = function(req, res) {
 
 exports.list_ajax = function(req, res) {
 	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT pid as id,pname as value FROM products_tab WHERE (pstatus=1 OR pstatus=0)',function(err,rows) {
+		var query = connection.query('SELECT pid as id,pname as value FROM products_tab WHERE pstatus=1',function(err,rows) {
 			if (err) console.log("Error Selecting : %s ",err );
 				res.send({data:rows});
 		});

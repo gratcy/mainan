@@ -14,8 +14,8 @@ exports.stock_proccess = function(req, res) {
 	var input = req.body;
 	var pid = input.pids;
 	req.getConnection(function(err,connection) {
-		var query = connection.query('SELECT SUM(b.rqty) as total FROM receiving_tab a JOIN receiving_item_tab b ON a.rid=b.riid WHERE (a.rstatus=0 OR a.rstatus=1) AND b.rstatus=1 AND b.rpid='+pid,function(err,receive) {
-			var query = connection.query('SELECT SUM(b.tqty) as total FROM transaction_tab a JOIN transaction_detail_tab b ON a.tid=b.ttid WHERE (a.tstatus=0 OR a.tstatus=1) AND b.tstatus=1 AND b.tpid='+pid,function(err,rows) {
+		connection.query('SELECT SUM(b.rqty) as total FROM receiving_tab a JOIN receiving_item_tab b ON a.rid=b.riid WHERE (a.rstatus=0 OR a.rstatus=1) AND b.rstatus=1 AND b.rpid='+pid,function(err,receive) {
+			connection.query('SELECT SUM(b.tqty) as total FROM transaction_tab a JOIN transaction_detail_tab b ON a.tid=b.ttid WHERE (a.tstatus=0 OR a.tstatus=1) AND b.tstatus=1 AND b.tpid='+pid,function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
 				var rreceive = 0;
 				if (receive[0].total > 0) {

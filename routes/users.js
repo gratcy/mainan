@@ -3,8 +3,17 @@ exports.list = function(req, res) {
 		req.getConnection(function(err,connection){
 			var query = connection.query('SELECT a.*,b.uname as gname FROM users_tab a JOIN users_groups_tab b ON a.ugid=b.uid WHERE (a.ustatus=1 OR a.ustatus=0)',function(err,rows) {
 				if (err) console.log("Error Selecting : %s ",err );
-					res.render('users',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
+				res.render('users',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
 			});
+		});
+	});
+};
+
+exports.list_ajax = function(req, res) {
+	req.getConnection(function(err,connection){
+		var query = connection.query('SELECT uid as id,uemail as value FROM users_tab WHERE (ustatus=1 OR ustatus=0)',function(err,rows) {
+			if (err) console.log("Error Selecting : %s ",err );
+			res.send({data:rows});
 		});
 	});
 };

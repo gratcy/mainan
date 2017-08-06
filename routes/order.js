@@ -112,7 +112,7 @@ exports.products = function(req, res) {
 						}
 					}
 				}
-				if (pids)
+				if (tpids)
 					pids = tpids.slice(0,-1);
 				else
 					pids = 0;
