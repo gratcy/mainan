@@ -4,8 +4,10 @@ var path = require('path'),
     fs = require('fs'),
     mysql = require('mysql'),
     Memcached = require('memcached');
+var _ = require("underscore");
 
 global.conf = config;
+global._ = _;
 
 var memcached = new Memcached(conf.memcached.host+':'+conf.memcached.port,conf.memcached.options);
 

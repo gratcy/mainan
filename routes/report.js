@@ -34,6 +34,7 @@ exports.exec_transaction = function(req, res) {
 			var ttotalBru = 0;
 			var ttotalNet = 0;
 			for(var i=0;i<data.length;++i) {
+				var obj = JSON.parse(data[i].tcreatedby);
 				var qty = parseInt(data[i].tqty);
 				var price = parseInt(data[i].tprice);
 				var pricebase = (parseInt(data[i].tpricebase) / qty);
@@ -41,7 +42,7 @@ exports.exec_transaction = function(req, res) {
 				var netto = (((price/qty) - pricebase) * qty) - discount;
 				var bruto = price;
 				
-				rdata.push({no:(i+1)+'.',netto:netto,bruto:bruto,tprice:(price/qty),tpricebase:pricebase,tdate:data[i].tdate,tcreatedby:data[i].tcreatedby,tno:data[i].tno,tdesc:data[i].tdesc,tqty:data[i].tqty,tammount:data[i].tammount,tdiscount:discount,ttotal:data[i].ttotal,pname:data[i].pname});
+				rdata.push({no:(i+1)+'.',uid:obj.uid,ttype:data[i].ttype,uemail:obj.uemail,netto:netto,bruto:bruto,tprice:(price/qty),tpricebase:pricebase,tdate:data[i].tdate,tcreatedby:data[i].tcreatedby,tno:data[i].tno,tdesc:data[i].tdesc,tqty:data[i].tqty,tammount:data[i].tammount,tdiscount:discount,ttotal:data[i].ttotal,pname:data[i].pname});
 				
 				ttotalQTY += qty;
 				ttotalDisc += discount;
@@ -51,12 +52,61 @@ exports.exec_transaction = function(req, res) {
 			
 			var grantTotal = {ttotalNet:ttotalNet,ttotalQTY:ttotalQTY,ttotalDisc:ttotalDisc,ttotalBru:ttotalBru};
 			
+			if (rtype == 1) {
+				rdata = rdata;
+			}
+			else if (rtype == 2) {
+				var gTrans = [];
+				var transT = ['Purchase Order', 'Return Order', 'Item Receiving'];
+				var foo = _.groupBy(rdata, 'ttype');
+				Object.keys(foo).map(function(objectKey, index) {
+					var as = [];
+					for(var i=0;i<foo[objectKey].length;++i) {
+						bam = foo[objectKey][i];
+						var qty = parseInt(bam.tqty);
+						var price = parseInt(bam.tprice);
+						var pricebase = parseInt(bam.tpricebase);
+						var discount = parseInt(bam.tdiscount);
+						var netto = ((price - pricebase) * qty) - discount;
+						var bruto = price;
+						var uid = bam.uid;
+						
+						as.push({no:(i+1)+'.',ttype:bam.ttype,uid:bam.uid,uemail:bam.uemail,netto:netto,bruto:bruto,tprice:price,tpricebase:pricebase,tdate:bam.tdate,tcreatedby:bam.tcreatedby,tno:bam.tno,tdesc:bam.tdesc,tqty:bam.tqty,tammount:bam.tammount,tdiscount:discount,ttotal:bam.ttotal,pname:bam.pname});
+					}
+					gTrans.push(as);
+				});
+				rdata = gTrans;
+			}
+			else {
+				var guser = [];
+				var foo = _.groupBy(rdata, 'uid');
+				
+				Object.keys(foo).map(function(objectKey, index) {
+					var as = [];
+					for(var i=0;i<foo[objectKey].length;++i) {
+						bam = foo[objectKey][i];
+						var qty = parseInt(bam.tqty);
+						var price = parseInt(bam.tprice);
+						var pricebase = parseInt(bam.tpricebase);
+						var discount = parseInt(bam.tdiscount);
+						var netto = ((price - pricebase) * qty) - discount;
+						var bruto = price;
+						var uid = bam.uid;
+						
+						as.push({no:(i+1)+'.',uid:bam.uid,uemail:bam.uemail,netto:netto,bruto:bruto,tprice:price,tpricebase:pricebase,tdate:bam.tdate,tcreatedby:bam.tcreatedby,tno:bam.tno,tdesc:bam.tdesc,tqty:bam.tqty,tammount:bam.tammount,tdiscount:discount,ttotal:bam.ttotal,pname:bam.pname});
+					}
+					guser.push(as);
+				});
+				rdata = guser;
+			}
+			
+			
 			if (rtype == 1)
 				res.render('print/reporttransaction_all',{grantTotal:grantTotal,approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:rdata,layout: false});
 			else if (rtype == 2)
-				res.render('print/reporttransaction_group_transaction',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:data,layout: false});
+				res.render('print/reporttransaction_group_transaction',{grantTotal:grantTotal,approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:rdata,layout: false});
 			else
-				res.render('print/reporttransaction_group_user',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,layout: false});
+				res.render('print/reporttransaction_group_user',{grantTotal:grantTotal,approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:rdata,layout: false});
 		});
 	}
 };
