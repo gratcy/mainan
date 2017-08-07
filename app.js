@@ -20,7 +20,21 @@ var express = require('express'),
 	memcachedStore = require('connect-memcached')(session);
 
 var app = express();
+var q = require('q');
+var models = require('./lib/models');
 
+var getMySQLConnection = function() {
+    return mysql.createConnection({
+		host: conf.mysql.host,
+		user: conf.mysql.user,
+		password: conf.mysql.password,
+		database: conf.mysql.db
+    });
+}
+
+global.getMySQLConnection = getMySQLConnection;
+global.q = q;
+global.models = models;
 global.helpers = helpers.helpers;
 
 var index = require('./routes/index'),

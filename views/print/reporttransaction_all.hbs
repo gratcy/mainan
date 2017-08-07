@@ -8,7 +8,6 @@
                     <div class="row">
                         <div class="col-xs-12">
 <div class="box box-primary">
-
                                 <!-- form start -->
                                     <div class="box-body">
 									<h2 style="border-bottom:1px solid #000">Report Transaction</h2>
@@ -28,82 +27,54 @@
 										<th style="border:1px solid #000;padding:3px;">Date</th>
 										<th style="border:1px solid #000;padding:3px;">User</th>
 										<th style="border:1px solid #000;padding:3px;">Trans No.</th>
-										<th style="border:1px solid #000;padding:3px;">Invoice No.</th>
-										<th style="border:1px solid #000;padding:3px;">Reffer</th>
 										<th style="border:1px solid #000;padding:3px;">Descrpiton</th>
 										<th style="border:1px solid #000;padding:3px;">Product</th>
 										<th style="border:1px solid #000;padding:3px;">Price</th>
-										 {{#if (__check_permission 'ProductsPriceBase') }}
+										{{#if (__check_permission 'ProductsPriceBase') }}
 										<th style="border:1px solid #000;padding:3px;">Price Base</th>
 										{{/if}}
 										<th style="border:1px solid #000;padding:3px;width:5%;">QTY</th>
 										<th style="border:1px solid #000;padding:3px;">Bruto</th>
 										<th style="border:1px solid #000;padding:3px;">Discount</th>
-										 {{#if (__check_permission 'ProductsPriceBase') }}
+										{{#if (__check_permission 'ProductsPriceBase') }}
 										<th style="border:1px solid #000;padding:3px;">Netto</th>
-										<?php endif; ?>
+										{{/if}}
 										</tr>
 										</thead>
 										<tbody>
-										<?php
-										$i = 1;
-										$tgl = '';
-										$tqty = 0;
-										$tdiscount = 0;
-										$tbruto = 0;
-										$tnetto = 0;
-										$tprice = 0;
-										$tpricebase = 0;
-										foreach($data as $k => $v) :
-										$createdby = json_decode($v -> createdby);
-										?>
+										{{#each data}}
 										<tr style="border:1px solid #000;padding:3px;">
-										<td style="border:1px solid #000;padding:3px;"><?php echo $i; ?>.</td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo __get_date($v -> tdate,1); ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $createdby -> unick; ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $v -> tno; ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $v -> tinv; ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $v -> reffer; ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $v -> tdesc; ?></td>
-										<td style="border:1px solid #000;padding:3px;"><?php echo $v -> pname; ?></td>
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah(($v -> tprice/$v -> tqty),$etype); ?></td>
+										<td style="border:1px solid #000;padding:3px;">{{ no }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ __get_date tdate 2 }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ __parse_json tcreatedby 'uemail' }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ tno }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ tdesc }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ pname }}</td>
+                  <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format tprice 0 '' ',' }}</td>
 										{{#if (__check_permission 'ProductsPriceBase') }}
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($v -> tpricebase,$etype); ?></td>
+                  <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format tpricebase 0 '' ',' }}</td>
 										{{/if}}
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo $v -> tqty; ?></td>
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah(($v -> tprice/$v -> tqty)*$v -> tqty,$etype); ?></td>
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($v -> tdiscount / $v -> ttypeitem,$etype); ?></td>
+										<td style="border:1px solid #000;padding:3px;text-align:right;">{{ tqty }}</td>
+                  <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format bruto 0 '' ',' }}</td>
+                  <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format tdiscount 0 '' ',' }}</td>
 										{{#if (__check_permission 'ProductsPriceBase') }}
-										<td style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah(((($v -> tprice/$v -> tqty) - $v -> tpricebase)*$v -> tqty)-$v -> tdiscount,$etype); ?></td>
+                  <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format netto 0 '' ',' }}</td>
 										{{/if}}
 										</tr>
-										<?php
-										$tqty += $v -> tqty;
-										$tdiscount += $v -> tdiscount;
-										$tpricebase += $v -> tpricebase;
-										$tprice += ($v -> tprice/$v -> tqty);
-										$tbruto += ($v -> tprice/$v -> tqty)*$v -> tqty;
-										$tnetto += ((($v -> tprice/$v -> tqty)-$v->tpricebase)*$v -> tqty)-$v -> tdiscount;
-										++$i;
-										endforeach;
-										?>
+										{{/each}}
 										<tbody>
 										<tfoot>
 										<tr style="border:1px solid #000;">
 											<th colspan="4" style="border:1px solid #000;padding:3px;">Total</th>
 											<th style="border:1px solid #000;padding:3px;"></th>
 											<th style="border:1px solid #000;padding:3px;"></th>
-											<th style="border:1px solid #000;padding:3px;"></th>
-											<th style="border:1px solid #000;padding:3px;"></th>
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($tprice, $etype); ?></th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;"></th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;"></th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalQTY 0 '' ',' }}</th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalBru 0 '' ',' }}</th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalDisc 0 '' ',' }}</th>
 										 {{#if (__check_permission 'ProductsPriceBase') }}
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($tpricebase, $etype); ?></th>
-										 {{/if}}
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo $tqty; ?></th>
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($tbruto, $etype); ?></th>
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($tdiscount, $etype); ?></th>
-										 {{#if (__check_permission 'ProductsPriceBase') }}
-											<th style="border:1px solid #000;padding:3px;text-align:right;"><?php echo __get_rupiah($tnetto, $etype); ?></th>
+											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalNet 0 '' ',' }}</th>
 										 {{/if}}
 										</tr>
 										</tfoot>
@@ -112,10 +83,7 @@
                             </div>
                         </div>
                     </div>
-
                 </section><!-- /.content -->
             </aside><!-- /.right-side -->
-
-
 </body>
 </html>

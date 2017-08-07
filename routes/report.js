@@ -26,12 +26,38 @@ exports.exec_transaction = function(req, res) {
 			res.setHeader('Content-type', 'application/vnd.ms-excel');
 		}
 		approval = (approval == 1 ? 'Yes' : (approval == 2 ? 'All' : 'No'));
-		if (type == 1)
-		res.render('print/reporttransaction_all',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,layout: false});
-		else if (type == 2)
-		res.render('print/reporttransaction_group_transaction',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,layout: false});
-		else
-		res.render('print/reporttransaction_group_user',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,layout: false});
+		var data = [];
+		models.getOrder(req,input).then(function(data) {
+			var rdata = [];
+			var ttotalQTY = 0;
+			var ttotalDisc = 0;
+			var ttotalBru = 0;
+			var ttotalNet = 0;
+			for(var i=0;i<data.length;++i) {
+				var qty = parseInt(data[i].tqty);
+				var price = parseInt(data[i].tprice);
+				var pricebase = (parseInt(data[i].tpricebase) / qty);
+				var discount = parseInt(data[i].tdiscount) / qty;
+				var netto = (((price/qty) - pricebase) * qty) - discount;
+				var bruto = price;
+				
+				rdata.push({no:(i+1)+'.',netto:netto,bruto:bruto,tprice:(price/qty),tpricebase:pricebase,tdate:data[i].tdate,tcreatedby:data[i].tcreatedby,tno:data[i].tno,tdesc:data[i].tdesc,tqty:data[i].tqty,tammount:data[i].tammount,tdiscount:discount,ttotal:data[i].ttotal,pname:data[i].pname});
+				
+				ttotalQTY += qty;
+				ttotalDisc += discount;
+				ttotalBru += bruto;
+				ttotalNet += netto;
+			}
+			
+			var grantTotal = {ttotalNet:ttotalNet,ttotalQTY:ttotalQTY,ttotalDisc:ttotalDisc,ttotalBru:ttotalBru};
+			
+			if (rtype == 1)
+				res.render('print/reporttransaction_all',{grantTotal:grantTotal,approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:rdata,layout: false});
+			else if (rtype == 2)
+				res.render('print/reporttransaction_group_transaction',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,data:data,layout: false});
+			else
+				res.render('print/reporttransaction_group_user',{approval:approval,type:type,rtype:rtype,from:rfrom,to:rto,layout: false});
+		});
 	}
 };
 
