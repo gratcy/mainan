@@ -47,6 +47,8 @@ exports.exec_transaction = function(req, res) {
 					data = OrderData;
 				}
 				
+				data = _.sortBy( data, 'tdate').reverse();
+				
 				var rdata = [];
 				var ttotalQTY = 0;
 				var ttotalDisc = 0;
