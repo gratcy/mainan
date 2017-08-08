@@ -26,6 +26,7 @@
 										<th style="border:1px solid #000;padding:3px;width:5%;">No.</th>
 										<th style="border:1px solid #000;padding:3px;">Date</th>
 										<th style="border:1px solid #000;padding:3px;">User</th>
+										<th style="border:1px solid #000;padding:3px;">Customer</th>
 										<th style="border:1px solid #000;padding:3px;">Trans No.</th>
 										<th style="border:1px solid #000;padding:3px;">Descrpiton</th>
 										<th style="border:1px solid #000;padding:3px;">Product</th>
@@ -47,6 +48,7 @@
 										<td style="border:1px solid #000;padding:3px;">{{ no }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ __get_date tdate 2 }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ __parse_json tcreatedby 'uemail' }}</td>
+										<td style="border:1px solid #000;padding:3px;">{{ cname }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ tno }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ tdesc }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ pname }}</td>
@@ -65,7 +67,7 @@
 										<tbody>
 										<tfoot>
 										<tr style="border:1px solid #000;">
-											<th colspan="4" style="border:1px solid #000;padding:3px;">Total</th>
+											<th colspan="5" style="border:1px solid #000;padding:3px;">Total</th>
 											<th style="border:1px solid #000;padding:3px;"></th>
 											<th style="border:1px solid #000;padding:3px;"></th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;"></th>
