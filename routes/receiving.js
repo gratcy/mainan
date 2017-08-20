@@ -86,7 +86,7 @@ exports.list_products = async function(req, res) {
 
 exports.products = async function(req, res) {
 	var id = req.params.id;
-	var pids;
+	var pids = 0;
 	
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
@@ -110,7 +110,8 @@ exports.products = async function(req, res) {
 					}
 				}
 			}
-			if (pids)
+			
+			if (rpids)
 				pids = rpids.slice(0,-1);
 			else
 				pids = 0;

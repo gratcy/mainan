@@ -110,6 +110,7 @@ exports.products = async function(req, res) {
 					}
 				}
 			}
+			
 			if (tpids)
 				pids = tpids.slice(0,-1);
 			else
