@@ -53,7 +53,7 @@ exports.get_list_products = function(conn) {
 exports.get_receiving_detail = function(conn, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
-        var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE a.rid = ?', [id], function(err, rows, fields){
+        var query = connection.query('SELECT * FROM receiving_tab WHERE (rstatus=1 OR rstatus=0) AND rid = ?', [id], function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }
@@ -65,10 +65,15 @@ exports.get_receiving_detail = function(conn, id) {
     return deferred.promise;
 };
 
-exports.get_receiving_detail_approved = function(conn, id) {
+exports.get_receiving_detail_approved = function(conn, type, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
-        var query = connection.query('SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid = ? AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC', [id], function(err, rows, fields){
+		if (type == 1)
+			var query_str = 'SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE a.rid = ?';
+		else
+			var query_str = 'SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid = ? AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC';
+        
+        var query = connection.query(query_str, [id], function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }

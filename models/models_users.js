@@ -1,9 +1,9 @@
 var exports = module.exports = {};
 
-exports.get_categories_detail = function(conn, id) {
+exports.get_users_detail = function(conn, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
-        var query = connection.query('SELECT * FROM categories_tab WHERE ctype=1 AND cid = ?', [id], function(err, rows, fields){
+        var query = connection.query('SELECT * FROM users_tab WHERE (ustatus=1 OR ustatus=0) AND uid = ?', [id], function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }
@@ -15,10 +15,10 @@ exports.get_categories_detail = function(conn, id) {
     return deferred.promise;
 };
 
-exports.get_categories_select = function(conn) {
+exports.get_users_select = function(conn, id) {
     var deferred = q.defer();
     conn.getConnection(function(err,connection){
-        var query = connection.query('SELECT cid as id,cname as value FROM categories_tab WHERE (cstatus=1 OR cstatus=0)', function(err, rows, fields){
+        var query = connection.query('SELECT uid as id,uemail as value FROM users_tab WHERE (ustatus=1 OR ustatus=0)', function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }
@@ -30,10 +30,10 @@ exports.get_categories_select = function(conn) {
     return deferred.promise;
 };
 
-exports.get_categories = function(conn) {
+exports.get_users = function(conn) {
     var deferred = q.defer();
     conn.getConnection(function(err,connection){
-        var query = connection.query('SELECT * FROM categories_tab WHERE (cstatus=1 OR cstatus=0) ORDER BY cid DESC', function (err, rows, fields) {
+        var query = connection.query('SELECT a.*,b.uname as gname FROM users_tab a JOIN users_groups_tab b ON a.ugid=b.uid WHERE (a.ustatus=1 OR a.ustatus=0)', function (err, rows, fields) {
             if (err) {
                 deferred.reject(err);
             }

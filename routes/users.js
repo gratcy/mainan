@@ -1,40 +1,33 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.uname as gname FROM users_tab a JOIN users_groups_tab b ON a.ugid=b.uid WHERE (a.ustatus=1 OR a.ustatus=0)',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('users',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_users from '../models/models_users';
+
+exports.list = async function(req, res) {
+    var rows = await models_users.get_users(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('users',{data:rows,error_msg:errorMsg});
 };
 
-exports.list_ajax = function(req, res) {
-	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT uid as id,uemail as value FROM users_tab WHERE (ustatus=1 OR ustatus=0)',function(err,rows) {
-			if (err) console.log("Error Selecting : %s ",err );
-			res.send({data:rows});
-		});
-	});
-};
-
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('users_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
-};
-
-exports.users_detail = function(req, res) {
-	var id = req.params.id;
+exports.list_ajax = async function(req, res) {
+	var rows = await models_users.get_users_select(req);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM users_tab WHERE uid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('users_update',{data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.send({data:rows});
+};
+
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('users_add',{error_msg:errorMsg});
+};
+
+exports.users_detail = async function(req, res) {
+	var id = req.params.id;
+    var rows = await models_users.get_users_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+	
+	res.render('users_update',{data:rows[0],error_msg:errorMsg});
 };
 
 exports.users_add = function(req,res) {

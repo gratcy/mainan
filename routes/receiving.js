@@ -47,7 +47,9 @@ exports.products_delete = function(req, res) {
 
 exports.products_add = function(req, res) {
 	var input = req.body;
-	if (input.pid[0]) {
+	var pids = input.pid;
+	
+	if (typeof(pids) != 'undefined') {
 		if (input.type == 1) {
 			var pids = input.pid;
 			if (typeof req.session.receiving_products != 'undefined') {
@@ -143,8 +145,8 @@ exports.receiving_detail = async function(req, res) {
 
 exports.receiving_detail_approved = async function(req, res) {
 	var id = req.params.id;
-    var rows = await models_receiving.get_receiving_detail(req, id);
-    var drows = await models_receiving.get_receiving_detail_approved(req, id);
+    var rows = await models_receiving.get_receiving_detail_approved(req, 1, id);
+    var drows = await models_receiving.get_receiving_detail_approved(req, 2, id);
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
 	

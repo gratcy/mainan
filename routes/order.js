@@ -1,13 +1,12 @@
-exports.list = function(req, res) {
+import models_order from '../models/models_order';
+
+exports.list = async function(req, res) {
 	req.session.order_products = {};
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND a.ttype=1 ORDER BY a.tid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('order',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+    var rows = await models_order.get_order(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('order',{data:rows,error_msg:errorMsg});
 };
 
 exports.products_delete = function(req, res) {
@@ -48,9 +47,10 @@ exports.products_delete = function(req, res) {
 
 exports.products_add = function(req, res) {
 	var input = req.body;
-	if (input.pid[0]) {
+	var pids = input.pid;
+
+	if (typeof(pids) != 'undefined') {
 		if (input.type == 1) {
-			var pids = input.pid;
 			if (typeof req.session.order_products != 'undefined') {
 				var target = pids.concat(req.session.order_products);
 				req.session.order_products = {};
@@ -74,99 +74,83 @@ exports.products_add = function(req, res) {
 	}
 };
 
-exports.list_products = function(req, res) {
+exports.list_products = async function(req, res) {
 	var type = req.params.id;
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname,d.istock FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid JOIN inventory_tab d ON a.pid=d.ipid WHERE b.ctype=1 AND a.pstatus=1 ORDER BY a.pid DESC',function(err,rows) {
-				res.render('./tmp/order_list_products',{data:rows,type:type,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-			});
-		});
-	});
+    var rows = await models_order.get_list_products(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('./tmp/order_list_products',{data:rows,type:type,error_msg:errorMsg,layout:false});
 };
 
-exports.products = function(req, res) {
+exports.products = async function(req, res) {
 	var id = req.params.id;
 	var pids;
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		if (id > 0) {
-			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.tqty,a.ttype,b.*,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
-					if (rows)
-						res.render('./tmp/order_products',{tid:id,data:rows,type:2,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-					else
-						res.end();
-				});
-			});
-		}
-		else {
-			if (typeof req.session.order_products != 'undefined') {
-				pids = req.session.order_products;
-				var tpids = '';
-				for(var i=0;i<pids.length;++i) {
-					var index = parseInt(pids[i]);
-					if (!isNaN(index)) {
-						if (index > 0) {
-							tpids += index + ',';
-						}
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	if (id > 0) {
+		var rows = await models_order.get_order_product(req,1,id);
+
+		if (rows)
+			res.render('./tmp/order_products',{tid:id,data:rows,type:2,error_msg:errorMsg,layout:false});
+		else
+			res.end();
+	}
+	else {
+		if (typeof req.session.order_products != 'undefined') {
+			pids = req.session.order_products;
+			var tpids = '';
+			for(var i=0;i<pids.length;++i) {
+				var index = parseInt(pids[i]);
+				if (!isNaN(index)) {
+					if (index > 0) {
+						tpids += index + ',';
 					}
 				}
-				if (tpids)
-					pids = tpids.slice(0,-1);
-				else
-					pids = 0;
 			}
-			else {
+			if (tpids)
+				pids = tpids.slice(0,-1);
+			else
 				pids = 0;
-			}
-			
-			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.*,b.cname,0 as ttype FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid WHERE a.pstatus=1 AND a.pid IN ('+pids+') ORDER BY a.pid DESC',function(err,rows) {
-					if (rows)
-						res.render('./tmp/order_products',{tid:0,data:rows,type:1,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-					else
-						res.end();
-				});
-			});
 		}
-	});
+		else {
+			pids = 0;
+		}
+		
+		var rows = await models_order.get_order_products(req,2,pids);
+		if (rows)
+			res.render('./tmp/order_products',{tid:0,data:rows,type:1,error_msg:errorMsg,layout:false});
+		else
+			res.end();
+	}
 };
 
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('order_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('order_add',{error_msg:errorMsg});
 };
 
-exports.order_detail = function(req, res) {
+exports.order_detail = async function(req, res) {
 	var id = req.params.id;
+    var rows = await models_order.get_order_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM transaction_tab WHERE tid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('order_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.render('order_update',{id:id,data:rows[0],error_msg:errorMsg});
 };
 
-exports.order_detail_approved = function(req, res) {
+exports.order_detail_approved = async function(req, res) {
 	var id = req.params.id;
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    var rows = await models_order.get_order_detail_approved(req, 1, id);
+    var drows = await models_order.get_order_detail_approved(req, 2, id);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE a.ttype=1 AND a.tid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				
-				connection.query('SELECT a.tqty,a.tprice,a.tpricebase,a.ttype,b.pname,b.pdesc,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid='+id+' AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
-					if (err) console.log("Error Selecting : %s ",err );
-					else res.render('order_detail',{id:id,products:drows,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-				});
-			});
-		});
-	});
+	res.render('order_detail',{id:id,products:drows,data:rows[0],error_msg:errorMsg});
 };
 
 exports.order_add = function(req,res) {

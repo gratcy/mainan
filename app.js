@@ -11,7 +11,7 @@ var _ = require("underscore");
 global.conf = config;
 global._ = _;
 
-var memcached = new Memcached(conf.memcached.host+':'+conf.memcached.port,conf.memcached.options);
+export const memcached = new Memcached(conf.memcached.host+':'+conf.memcached.port,conf.memcached.options);
 
 global.memcached = memcached;
 
