@@ -1,40 +1,33 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM categories_tab WHERE (cstatus=1 OR cstatus=0) ORDER BY cid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('categories',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_categories from '../models/models_categories';
+
+exports.list = async function(req, res) {
+    var rows = await models_categories.get_categories(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('categories',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:errorMsg});
 };
 
-exports.list_ajax = function(req, res) {
-	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT cid as id,cname as value FROM categories_tab WHERE (cstatus=1 OR cstatus=0)',function(err,rows) {
-			if (err) console.log("Error Selecting : %s ",err );
-				res.send({data:rows});
-		});
-	});
-};
-
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('categories_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
-};
-
-exports.categories_detail = function(req, res) {
-	var id = req.params.id;
+exports.list_ajax = async function(req, res) {
+	var rows = await models_categories.get_categories_select(req);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM categories_tab WHERE ctype=1 AND cid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('categories_update',{data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.send({data:rows});
+};
+
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('categories_add',{error_msg:errorMsg});
+};
+
+exports.categories_detail = async function(req, res) {
+	var id = req.params.id;
+    var rows = await models_categories.get_categories_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+
+	res.render('categories_update',{data:rows[0],error_msg:errorMsg});
 };
 
 exports.categories_add = function(req,res) {

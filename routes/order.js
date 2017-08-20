@@ -192,8 +192,11 @@ exports.order_add = function(req,res) {
 		
 		req.getConnection(function (err, connection) {
 			var str = input.waktu;
-			var rres = str.replace(/\//g,'-');
+			var strdate = str.split(" ");
+			var dt = strdate[0];
+			var rres = dt.split("/").reverse().join("-") + ' ' + strdate[1];
 			var waktu = new Date(rres).getTime() / 1000;
+			
 			var udate = helpers.__get_date('',2);
 			var tqty = 0;
 			
@@ -340,10 +343,13 @@ exports.order_update = function(req,res) {
 					rapproved = JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate});
 					status = 3;
 				}
-				
+					
 				var str = input.waktu;
-				var rres = str.replace(/\//g,'-');
+				var strdate = str.split(" ");
+				var dt = strdate[0];
+				var rres = dt.split("/").reverse().join("-") + ' ' + strdate[1];
 				var waktu = new Date(rres).getTime() / 1000;
+			
 				var udate = helpers.__get_date('',2);
 				var tqty = 0;
 				

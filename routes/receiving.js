@@ -1,13 +1,12 @@
-exports.list = function(req, res) {
+import models_receiving from '../models/models_receiving';
+
+exports.list = async function(req, res) {
 	req.session.receiving_products = {};
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.vname FROM receiving_tab a LEFT JOIN vendor_tab b ON a.rvendor=b.vid WHERE (a.rstatus=1 OR a.rstatus=0 OR a.rstatus=3) ORDER BY a.rid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('receiving',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+    var rows = await models_receiving.get_receiving(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('receiving',{execute:helpers.__get_roles('CategoriesExecute'),data:rows,error_msg:errorMsg});
 };
 
 exports.products_delete = function(req, res) {
@@ -74,99 +73,82 @@ exports.products_add = function(req, res) {
 	}
 };
 
-exports.list_products = function(req, res) {
+exports.list_products = async function(req, res) {
 	var type = req.params.id;
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname,d.istock FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid JOIN inventory_tab d ON a.pid=d.ipid WHERE b.ctype=1 AND a.pstatus=1 ORDER BY a.pid DESC',function(err,rows) {
-				res.render('./tmp/receiving_list_products',{data:rows,type:type,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-			});
-		});
-	});
+    var rows = await models_receiving.get_list_products(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('./tmp/receiving_list_products',{data:rows,type:type,error_msg:errorMsg,layout:false});
 };
 
-exports.products = function(req, res) {
+exports.products = async function(req, res) {
 	var id = req.params.id;
 	var pids;
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		if (id > 0) {
-			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid='+id+' AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,rows) {
-					if (rows)
-						res.render('./tmp/receiving_products',{rid:id,data:rows,type:2,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-					else
-						res.end();
-				});
-			});
-		}
-		else {
-			if (typeof req.session.receiving_products != 'undefined') {
-				pids = req.session.receiving_products;
-				var rpids = '';
-				for(var i=0;i<pids.length;++i) {
-					var index = parseInt(pids[i]);
-					if (!isNaN(index)) {
-						if (index > 0) {
-							rpids += index + ',';
-						}
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+
+	if (id > 0) {
+		var rows = await models_receiving.get_receiving_product(req,1,id);
+		if (rows)
+			res.render('./tmp/receiving_products',{rid:id,data:rows,type:2,error_msg:errorMsg,layout:false});
+		else
+			res.end();
+	}
+	else {
+		if (typeof req.session.receiving_products != 'undefined') {
+			pids = req.session.receiving_products;
+			var rpids = '';
+			for(var i=0;i<pids.length;++i) {
+				var index = parseInt(pids[i]);
+				if (!isNaN(index)) {
+					if (index > 0) {
+						rpids += index + ',';
 					}
 				}
-				if (pids)
-					pids = rpids.slice(0,-1);
-				else
-					pids = 0;
 			}
-			else {
+			if (pids)
+				pids = rpids.slice(0,-1);
+			else
 				pids = 0;
-			}
-			console.log(pids);
-			req.getConnection(function(err,connection){
-				var query = connection.query('SELECT a.*,b.cname FROM products_tab a JOIN categories_tab b ON a.pcid=b.cid WHERE a.pstatus=1 AND a.pid IN ('+pids+') ORDER BY a.pid DESC',function(err,rows) {
-					if (rows)
-						res.render('./tmp/receiving_products',{rid:0,data:rows,type:1,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-					else
-						res.end();
-				});
-			});
 		}
-	});
+		else {
+			pids = 0;
+		}
+		
+		var rows = await models_receiving.get_receiving_product(req,2,pids);
+		if (rows)
+			res.render('./tmp/receiving_products',{rid:0,data:rows,type:1,error_msg:errorMsg,layout:false});
+		else
+			res.end();
+	}
 };
 
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('receiving_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('receiving_add',{error_msg:errorMsg});
 };
 
-exports.receiving_detail = function(req, res) {
+exports.receiving_detail = async function(req, res) {
 	var id = req.params.id;
+    var rows = await models_receiving.get_receiving_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM receiving_tab WHERE rid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('receiving_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.render('receiving_update',{id:id,data:rows[0],error_msg:errorMsg});
 };
 
-exports.receiving_detail_approved = function(req, res) {
+exports.receiving_detail_approved = async function(req, res) {
 	var id = req.params.id;
+    var rows = await models_receiving.get_receiving_detail(req, id);
+    var drows = await models_receiving.get_receiving_detail_approved(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM receiving_tab WHERE rid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				
-				connection.query('SELECT a.rqty,b.*,c.cname FROM receiving_item_tab a INNER JOIN products_tab b ON a.rpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.riid='+id+' AND a.rstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC',function(err,drows) {
-					if (err) console.log("Error Selecting : %s ",err );
-					else res.render('receiving_detail',{id:id,products:drows,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-				});
-			});
-		});
-	});
+	res.render('receiving_detail',{id:id,products:drows,data:rows[0],error_msg:errorMsg});
 };
 
 exports.receiving_add = function(req,res) {

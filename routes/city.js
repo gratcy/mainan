@@ -1,42 +1,35 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.pname FROM city_tab a JOIN province_tab b ON a.cpid=b.pid WHERE (a.cstatus=1 OR a.cstatus=0) ORDER BY a.cid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('city',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_city from '../models/models_city';
+
+exports.list = async function(req, res) {
+    var rows = await models_city.get_city(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('city',{data:rows,error_msg:errorMsg});
 };
 
-exports.list_ajax = function(req, res) {
+exports.list_ajax = async function(req, res) {
 	var input = req.query;
 	var id = input.province_id;
-	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT cid as id,cname as value FROM city_tab WHERE cpid='+id+' AND (cstatus=1 OR cstatus=0)',function(err,rows) {
-			if (err) console.log("Error Selecting : %s ",err );
-				res.send({data:rows});
-		});
-	});
-};
-
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('city_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
-};
-
-exports.city_detail = function(req, res) {
-	var id = req.params.id;
+	var rows = await models_city.get_city_select(req, id);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM city_tab WHERE cid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('city_update',{data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.send({data:rows});
+};
+
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('city_add',{error_msg:errorMsg});
+};
+
+exports.city_detail = async function(req, res) {
+	var id = req.params.id;
+    var rows = await models_city.get_city_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+	
+	res.render('city_update',{data:rows[0],error_msg:errorMsg});
 };
 
 exports.city_add = function(req,res) {

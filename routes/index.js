@@ -1,40 +1,20 @@
-exports.main = function(req, res) {
-	req.getConnection(function(err,connection){
-		var d = new Date();
-		var month = parseInt(d.getMonth()) + 1;
-		var year = d.getFullYear();
-			
-		connection.query('SELECT COUNT(*) as total FROM products_tab WHERE (pstatus=0 OR pstatus=1)',function(err,products) {
-			if (err) console.log("Error Selecting : %s ",err );
-			connection.query('SELECT COUNT(*) as total FROM customers_tab WHERE (cstatus=0 OR cstatus=1)',function(err,customers) {
-				if (err) console.log("Error Selecting : %s ",err );
-				connection.query('SELECT COUNT(*) as total FROM transaction_tab WHERE (tstatus=0 OR tstatus=1)',function(err,transaction) {
-					if (err) console.log("Error Selecting : %s ",err );
-					connection.query("SELECT psaldo as total FROM `peticash_tab` where MONTH(FROM_UNIXTIME( pdate,  '%Y-%m-%d' ))="+month+" and YEAR(FROM_UNIXTIME( pdate,  '%Y-%m-%d' ))="+year+" order by pid desc LIMIT 0,1",function(err,saldo) {
-						if (err) console.log("Error Selecting : %s ",err );
-						res.render('index',{products:products[0],customers:customers[0],transaction:transaction[0],saldo:saldo[0]});
-					});
-				});
-			});
-		});
-	});
+import models_index from '../models/models_index';
+
+exports.main = async function(req, res) {
+	let totalProduct = await models_index.getHomeSummary(req,1);
+	let totalCustomer = await models_index.getHomeSummary(req,2);
+	let totalTransaction = await models_index.getHomeSummary(req,3);
+	let totalSaldo = await models_index.getHomeSummary(req,4);
+
+	res.render('index',{products:totalProduct[0],customers:totalCustomer[0],transaction:totalTransaction[0],saldo:totalSaldo[0]});
 };
 
-exports.main_stats = function(req, res) {
-	req.getConnection(function(err,connection){
-		connection.query('SELECT COUNT(*) as total FROM products_tab WHERE (pstatus=0 OR pstatus=1)',function(err,products) {
-			if (err) console.log("Error Selecting : %s ",err );
-			connection.query('SELECT COUNT(*) as total FROM customers_tab WHERE (cstatus=0 OR cstatus=1)',function(err,customers) {
-				if (err) console.log("Error Selecting : %s ",err );
-				connection.query('SELECT COUNT(*) as total FROM transaction_tab WHERE (tstatus=0 OR tstatus=1)',function(err,transaction) {
-					if (err) console.log("Error Selecting : %s ",err );
-					connection.query('SELECT SUM(a.istock) as total FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0)',function(err,stock) {
-						if (err) console.log("Error Selecting : %s ",err );
-						res.send({products:products[0],customers:customers[0],transaction:transaction[0],stock:stock[0]});
-					});
-				});
-			});
-		});
-	});
+exports.main_stats = async function(req, res) {
+	let totalProduct = await models_index.getHomeSummary(req,1);
+	let totalCustomer = await models_index.getHomeSummary(req,2);
+	let totalTransaction = await models_index.getHomeSummary(req,3);
+	let totalStock = await models_index.getHomeSummary(req,5);
+	
+	res.send({products:totalProduct[0],customers:totalCustomer[0],transaction:totalTransaction[0],stock:totalStock[0]});
 };
 

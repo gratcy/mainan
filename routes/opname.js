@@ -1,25 +1,20 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.pname FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid ORDER BY a.ipid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('opname',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_opname from '../models/models_opname';
+
+exports.list = async function(req, res) {
+    var rows = await models_opname.get_opname(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('opname',{data:rows,error_msg:errorMsg});
 };
 
-exports.opname_detail = function(req, res) {
+exports.opname_detail = async function(req, res) {
 	var id = req.params.id;
+    var rows = await models_opname.get_opname_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.pname,b.pdesc FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (a.istatus=1 OR a.istatus=0) AND a.ipid= ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('opname_update',{data:rows[0],id:id,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.render('opname_update',{data:rows[0],id:id,error_msg:errorMsg});
 };
 
 exports.opname_update = function(req,res) {

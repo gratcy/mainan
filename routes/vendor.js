@@ -1,40 +1,33 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM vendor_tab WHERE (vstatus=1 OR vstatus=0) ORDER BY vid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('vendor',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_vendor from '../models/models_vendor';
+
+exports.list = async function(req, res) {
+    var rows = await models_vendor.get_vendor(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('vendor',{data:rows,error_msg:errorMsg});
 };
 
-exports.list_ajax = function(req, res) {
-	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT vid as id,vname as value FROM vendor_tab WHERE (vstatus=1 OR vstatus=0)',function(err,rows) {
-			if (err) console.log("Error Selecting : %s ",err );
-				res.send({data:rows});
-		});
-	});
-};
-
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('vendor_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
-};
-
-exports.vendor_detail = function(req, res) {
-	var id = req.params.id;
+exports.list_ajax = async function(req, res) {
+	var rows = await models_vendor.get_vendor_select(req);
 	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM vendor_tab WHERE vid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('vendor_update',{id:id,data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	res.send({data:rows});
+};
+
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('vendor_add',{error_msg:errorMsg});
+};
+
+exports.vendor_detail = async function(req, res) {
+	var id = req.params.id;
+    var rows = await models_vendor.get_vendor_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('vendor_update',{id:id,data:rows[0],error_msg:errorMsg});
 };
 
 exports.vendor_add = function(req,res) {

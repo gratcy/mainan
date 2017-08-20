@@ -1,5 +1,7 @@
+require('dotenv').config();
+import config from './config/settings';
+
 var path = require('path'),
-	config = require('./config/settings'),
 	http = require('http'),
     fs = require('fs'),
     mysql = require('mysql'),
@@ -23,7 +25,6 @@ var express = require('express'),
 
 var app = express();
 var q = require('q');
-var models = require('./lib/models');
 
 var getMySQLConnection = function() {
     return mysql.createConnection({
@@ -36,7 +37,6 @@ var getMySQLConnection = function() {
 
 global.getMySQLConnection = getMySQLConnection;
 global.q = q;
-global.models = models;
 global.helpers = helpers.helpers;
 
 var index = require('./routes/index'),

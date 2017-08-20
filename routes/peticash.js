@@ -1,45 +1,43 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var d = new Date();
-			var month = parseInt(d.getMonth()) + 1;
-			var year = d.getFullYear();
-			
-			var query = connection.query('SELECT * FROM peticash_tab WHERE pstatus=1 AND MONTH(FROM_UNIXTIME( pdate,  \'%Y-%m-%d\' ))='+month+' and YEAR(FROM_UNIXTIME( pdate,  \'%Y-%m-%d\' ))='+year+' ORDER BY pid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('peticash',{monthyear:month+','+year,execute:helpers.__get_roles('peticashExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_peticash from '../models/models_peticash';
+
+exports.list = async function(req, res) {
+	var d = new Date();
+	var month = parseInt(d.getMonth()) + 1;
+	var year = d.getFullYear();
+	
+    var rows = await models_peticash.get_peticash(req, month, year);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('peticash',{monthyear:month+','+year,execute:helpers.__get_roles('peticashExecute'),data:rows,error_msg:errorMsg});
+
 };
 
-exports.list_post = function(req, res) {
+exports.list_post = async function(req, res) {
 	var input = req.body;
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var monthyear = input.monthyear;
-			var my = monthyear.split(',');
-			var month = parseInt(my[0]);
-			var year = my[1];
-			
-			var query = connection.query('SELECT * FROM peticash_tab WHERE pstatus=1 AND MONTH(FROM_UNIXTIME( pdate,  \'%Y-%m-%d\' ))='+month+' and YEAR(FROM_UNIXTIME( pdate,  \'%Y-%m-%d\' ))='+year+' ORDER BY pid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('peticash',{monthyear:monthyear,execute:helpers.__get_roles('peticashExecute'),data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+	var monthyear = input.monthyear;
+	var my = monthyear.split(',');
+	var month = parseInt(my[0]);
+	var year = my[1];
+	
+    var rows = await models_peticash.get_peticash(req, month, year);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+
+	res.render('peticash',{monthyear:monthyear,execute:helpers.__get_roles('peticashExecute'),data:rows,error_msg:errorMsg});
 };
 
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('peticash_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('peticash_add',{error_msg:errorMsg});
 };
 
 exports.peticash_add = function(req,res) {
 	var input = req.body;
-	if (!input.nominal) {
-		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
+	if (!input.nominal || input.nominal == 0) {
+		helpers.__set_error_msg({error: 'Nominal harus di isi !!!'},req.sessionID);
 		res.redirect('/peticash/peticash_add');
 	}
 	else {

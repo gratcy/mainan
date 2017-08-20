@@ -28,7 +28,6 @@
 										<th style="border:1px solid #000;padding:3px;width:5%;">No.</th>
 										<th style="border:1px solid #000;padding:3px;">Date</th>
 										<th style="border:1px solid #000;padding:3px;">Trans No.</th>
-										<th style="border:1px solid #000;padding:3px;">Customer</th>
 										<th style="border:1px solid #000;padding:3px;">Descrpiton</th>
 										<th style="border:1px solid #000;padding:3px;">Product</th>
 										<th style="border:1px solid #000;padding:3px;">Price</th>
@@ -49,7 +48,6 @@
 										<td style="border:1px solid #000;padding:3px;">{{ no }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ __get_date tdate 2 }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ tno }}</td>
-										<td style="border:1px solid #000;padding:3px;">{{ cname }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ tdesc }}</td>
 										<td style="border:1px solid #000;padding:3px;">{{ pname }}</td>
                   <td style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format tprice 0 '' ',' }}</td>
@@ -67,7 +65,7 @@
 										<tbody>
 										<tfoot>
 										<tr style="border:1px solid #000;">
-											<th colspan="8" style="border:1px solid #000;padding:3px;">Total</th>
+											<th colspan="7" style="border:1px solid #000;padding:3px;">Total</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalQTY 0 '' ',' }}</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalBru 0 '' ',' }}</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalDisc 0 '' ',' }}</th>
@@ -85,7 +83,7 @@
 							<table border="0" style="border-collapse: collapse;width:100%">
 										<thead>
 										<tr style="padding:3px;">
-										<th colspan="8" style="padding:3px;"></th>
+										<th colspan="7" style="padding:3px;"></th>
 										<th style="padding:3px;"></th>
 										<th style="padding:3px;"></th>
 										<th style="padding:3px;"></th>
@@ -96,7 +94,7 @@
 										</thead>
 										</tbody>
 										<tr style="border:1px solid #000;">
-											<th colspan="8" style="border:1px solid #000;padding:3px;">Total</th>
+											<th colspan="7" style="border:1px solid #000;padding:3px;">Total</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalQTY 0 '' ',' }}</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalBru 0 '' ',' }}</th>
 											<th style="border:1px solid #000;padding:3px;text-align:right;">{{ __number_format grantTotal.ttotalDisc 0 '' ',' }}</th>

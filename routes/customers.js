@@ -1,33 +1,31 @@
-exports.list = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT a.*,b.cname as city,c.pname as province FROM customers_tab a LEFT JOIN city_tab b ON a.ccity=b.cid LEFT JOIN province_tab c ON a.cprovince=c.pid WHERE (a.cstatus=1 OR a.cstatus=0) ORDER BY a.cid DESC',function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-					res.render('customers',{data:rows,error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+import models_customers from '../models/models_customers';
+
+exports.list = async function(req, res) {
+    var rows = await models_customers.get_customers(req);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('customers',{data:rows,error_msg:errorMsg});
 };
 
-exports.list_ajax = function(req, res) {
-	req.getConnection(function(err,connection){
-		var query = connection.query('SELECT cid as id,cname as value FROM customers_tab WHERE (cstatus=1 OR cstatus=0)',function(err,rows) {
-			if (err) console.log("Error Selecting : %s ",err );
-				res.send({data:rows});
-		});
-	});
+exports.list_ajax = async function(req, res) {
+	var rows = await models_customers.get_customers_select(req);
+	
+	res.send({data:rows});
 };
 
-exports.add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('customers_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-	});
+exports.add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('customers_add',{error_msg:errorMsg});
 };
 
-exports.quick_add = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('./tmp/customers_quick_add',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),layout:false});
-	});
+exports.quick_add = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('./tmp/customers_quick_add',{error_msg:errorMsg,layout:false});
 };
 
 exports.customers_quick_add = function(req,res) {
@@ -68,17 +66,13 @@ exports.customers_quick_add = function(req,res) {
 	}
 };
 
-exports.customers_detail = function(req, res) {
+exports.customers_detail = async function(req, res) {
 	var id = req.params.id;
-	
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		req.getConnection(function(err,connection){
-			var query = connection.query('SELECT * FROM customers_tab WHERE cid = ?',[id],function(err,rows) {
-				if (err) console.log("Error Selecting : %s ",err );
-				res.render('customers_update',{data:rows[0],error_msg:helpers.__get_error_msg(mem_msg,req.sessionID)});
-			});
-		});
-	});
+    var rows = await models_customers.get_customers_detail(req, id);
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    
+	res.render('customers_update',{data:rows[0],error_msg:errorMsg});
 };
 
 exports.customers_add = function(req,res) {
