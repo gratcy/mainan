@@ -212,6 +212,7 @@ exports.order_add = function(req,res) {
 			}
 			
 			var data = {
+				tuid : sauth.uid,
 				ttype : 1,
 				tdate : waktu,
 				tcid : input.customer,
@@ -486,4 +487,14 @@ exports.order_delete = function(req,res){
 			}
 		});
 	});
+};
+
+
+exports.order_faktur = async function(req,res){
+	var id = req.params.id;
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    var rows = await models_order.get_order_detail_approved(req, 1, id);
+    var drows = await models_order.get_order_detail_approved(req, 2, id);
+	res.render('print/faktur',{rows:rows[0],products:drows,error_msg:errorMsg,layout:false});
 };

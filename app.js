@@ -99,6 +99,7 @@ app.set('view engine', '.hbs');
 var sauth;
 
 app.use(function(req, res, next){
+	global.sauth = '';
 	if (/\/login/.test(req.path) === false) {
 		global.sauth = req.session.login;
 		if (!req.session.login) {
@@ -231,6 +232,7 @@ app.post('/users_group/users_group_update',users_group.users_group_update);
 app.get('/users_group/users_group_delete/:id', users_group.users_group_delete);
 
 app.get('/order', order.list);
+app.get('/order/faktur/?:id?', order.order_faktur);
 app.get('/order/order_products/?:id?', order.products);
 app.get('/order/order_list_products/?:id?', order.list_products);
 app.post('/order/order_products_add', order.products_add);

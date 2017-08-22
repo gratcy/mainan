@@ -81,6 +81,22 @@
       <!-- /.row -->
       <!-- Main row -->
       <div class="row">
+        <div class="col-xs-12">
+		<div class="box">
+              <table class="table table-bordered table-striped">
+                <thead>
+					<tr><th>Email</th><th>Total</th></tr>
+				</thead>
+				<tbody>
+				{{#each sum_orders}}
+				<tr><td>{{ uemail }}</td><td>{{ __number_format ttotal 0 '' ',' }}</td></tr>
+                {{/each}}
+				</tbody>
+				</table>
+		</div>
+		</div>
+      </div>
+      <div class="row">
 		<div class="box" style="padding:5px;margin:15px;">
 					<p>Selamat Datang <b>{{ __global_login 'uemail' }}</b> Di Sistem Informasi Toko Mainan.</p>
 					<p><i>*) Disaranakan Menggunakan Tidak Menggunakan Internet Explorer</i></p>
