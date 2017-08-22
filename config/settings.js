@@ -16,6 +16,6 @@ settings.mysql.db = 'mainan_db';
 
 settings.web.host = "0.0.0.0";
 settings.web.port = 3000;
-settings.web.url = 'http://0.0.0.0:3000/';
+settings.web.url = 'http://192.168.2.27:3000/';
 
 module.exports = settings;

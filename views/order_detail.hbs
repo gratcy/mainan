@@ -89,7 +89,16 @@
                 </tfoot>
                 </table>
               <div class="box-footer">
+				{{#if (__check_permission 'OrderExecute') }}
+                <a href="{{ __site_url 'order/order_update/'}}{{ id }}" class="btn btn-primary"><i class="fa fa-pencil"></i> &nbsp; Edit &nbsp;</a>
+                <a href="{{ __site_url 'order/order_delete/'}}{{ id }}" class="btn btn-danger"><i class="fa fa-times"></i>&nbsp; Delete &nbsp;</a>
+                {{/if}}
                 <button type="button" onclick="javascript:history.go(-1);" class="btn btn-default">Back!</button>
+                <div style="float:right;">
+				{{#if (__check_permission 'OrderExecute') }}
+                <a target="_blank" href="{{ __site_url 'order/faktur/'}}{{ id }}" class="btn btn-primary"><i class="fa fa-print"></i> Print</a>
+                {{/if}}
+                </div>
               </div>
             </div>
             <!-- /.box-body -->

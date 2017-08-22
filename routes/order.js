@@ -89,9 +89,8 @@ exports.products = async function(req, res) {
 	
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
-    
 	if (id > 0) {
-		var rows = await models_order.get_order_product(req,1,id);
+		var rows = await models_order.get_order_products(req,1,id);
 
 		if (rows)
 			res.render('./tmp/order_products',{tid:id,data:rows,type:2,error_msg:errorMsg,layout:false});
@@ -290,7 +289,7 @@ exports.order_add = function(req,res) {
 					});
 						
 					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
-					res.redirect('/order');
+					res.redirect('/order/order_detail/' + ttid);
 				}
 			});
 		});
@@ -450,11 +449,11 @@ exports.order_update = function(req,res) {
 						
 						if (app == 1) {
 							helpers.__set_error_msg({info : 'Data berhasil diapproved.'},req.sessionID);
-							res.redirect('/order');
+							res.redirect('/order/order_detail/' + ttid);
 						}
 						else {
 							helpers.__set_error_msg({info : 'Data berhasil diubah.'},req.sessionID);
-							res.redirect('/order');
+							res.redirect('/order/order_detail/' + ttid);
 						}
 					}
 				});
