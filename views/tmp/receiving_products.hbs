@@ -1,7 +1,6 @@
 		<table class="table table-bordered" id="ProductTMP">
 		<thead>
 		<tr>
-                  <th>Category</th>
                   <th>Product</th>
                   <th>QTY</th>
                   <th></th>
@@ -11,7 +10,6 @@
         <input type="hidden" name="products[null]" />
 				{{#each data}}
 				<tr idnya="{{ pid }}">
-                  <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
                   {{#if rqty}}
 				<td><input type="number" value="{{ rqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
@@ -27,7 +25,6 @@
 		<tfoot>
 		<tr>
 		<td>Total</td>
-		<td></td>
 		<td class="totalqtyproduct"></td>
 		<td></td>
 		</tr>

@@ -1,7 +1,6 @@
 		<table class="table table-bordered" id="ProductTMP">
 		<thead>
 		<tr>
-                  <th>Category</th>
                   <th>Product</th>
                   <th class="hide">Price PCS</th>
                   <th class="hide">Price Lusin</th>
@@ -28,7 +27,6 @@
 					<input type="hidden" name="base_ppricepcs[{{ pid }}]" value="{{ ppricebasepcs }}">
 					<input type="hidden" name="base_ppricedozen[{{ pid }}]" value="{{ ppricebasedozen }}">
 					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
-                  <td>{{ cname }}</td>
                   <td>{{ pname }}</td>
                   <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
@@ -47,13 +45,12 @@
 		</tbody>
 		<tfoot>
 		<tr>
-		<td>Total</td>
+		<td><b>Total</b></td>
 		<td class="hide"></td>
 		<td class="hide"></td>
 		<td class="hide"></td>
-		<td></td>
-		<td class="totalpriceproduct"></td>
 		<td class="totalqtyproduct"></td>
+		<td class="totalpriceproduct"></td>
 		<td></td>
 		</tr>
 		</tfoot>

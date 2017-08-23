@@ -66,6 +66,22 @@ exports.get_retur = function(conn) {
     return deferred.promise;
 };
 
+exports.get_product_exists = function(conn,tid,pid) {
+    var deferred = q.defer();
+    conn.getConnection(function(err,connection){
+        var query = connection.query('SELECT * FROM transaction_detail_tab WHERE ttid='+tid+' AND tpid=' + pid, function (err, rows, fields) {
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+
+    return deferred.promise;
+};
+
 exports.get_retur_detail_approved = function(conn, type, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){

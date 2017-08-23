@@ -7,9 +7,8 @@ exports.main = async function(req, res) {
 	let totalSaldo = await models_index.getHomeSummary(req,4);
 	
 	let SumOrders = await models_index.getTotalOrderPerUser(req);
-	console.log(SumOrders);
 
-	res.render('index',{products:totalProduct[0],customers:totalCustomer[0],transaction:totalTransaction[0],saldo:totalSaldo[0],sum_orders:SumOrders});
+	res.render('index',{products:totalProduct[0],customers:totalCustomer[0],transaction:totalTransaction[0],saldo:totalSaldo[0],sum_orders:SumOrders,gid:sauth.ugroup});
 };
 
 exports.main_stats = async function(req, res) {

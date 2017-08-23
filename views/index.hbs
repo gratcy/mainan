@@ -80,6 +80,7 @@
       </div>
       <!-- /.row -->
       <!-- Main row -->
+	{{#compare gid 1 operator="=="}}
       <div class="row">
         <div class="col-xs-12">
 		<div class="box">
@@ -96,6 +97,7 @@
 		</div>
 		</div>
       </div>
+	{{/compare}}
       <div class="row">
 		<div class="box" style="padding:5px;margin:15px;">
 					<p>Selamat Datang <b>{{ __global_login 'uemail' }}</b> Di Sistem Informasi Toko Mainan.</p>

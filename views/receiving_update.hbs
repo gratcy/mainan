@@ -66,6 +66,17 @@
                   </div>
                   </div>
                 </div>
+<p>&nbsp;</p>
+				<hr />
+                <div class="form-group">
+                  <label for="Customer" class="col-sm-2 control-label">Add Product</label>
+
+                  <div class="col-sm-10">
+					<select name="product" class="form-control" id="AddDomProduct">
+                    </select>
+                  </div>
+                </div>
+				<hr />
 				<div id="Products"></div>
               </div>
               <!-- /.box-body -->
@@ -118,5 +129,14 @@ $(document).ready(function(){
 		$('form.form-approved').submit();
 	});
 	$('#Vendor').selectAjax("/ajax/vendor/",{{ data.rvendor }});
+	$('#AddDomProduct').selectAjax("/ajax/products/",0);
+	$('#AddDomProduct').change(function(){
+		var productId = $(this).val();
+		$.post( "/receiving/receiving_products_add", { pid: productId,type:2,oid:'{{ id }}' }).done(function( data ) {
+			if (data == -1) {
+				$('div#Products').load('{{ __site_url "receiving/receiving_products/" }}{{ id }}');
+			}
+		});
+	});
 })
 </script>

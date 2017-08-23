@@ -45,9 +45,10 @@ exports.products_delete = function(req, res) {
 	}
 };
 
-exports.products_add = function(req, res) {
+exports.products_add = async function(req, res) {
 	var input = req.body;
 	var pids = input.pid;
+	var oid = parseInt(input.oid);
 
 	if (typeof(pids) != 'undefined') {
 		if (input.type == 1) {
@@ -61,16 +62,36 @@ exports.products_add = function(req, res) {
 				req.session.order_products = pids;
 				req.session.save();
 			}
-			helpers.__set_error_msg({info: 'Produk berhasil ditambahkan.'},req.sessionID);
-			res.redirect('/order/order_list_products/' + input.type);
+			res.send('-1');
 		}
 		else {
-			
+			if (oid) {
+				var ck = await models_order.get_product_exists(req, oid, pids);
+				
+				if (ck[0]) {
+					res.send('-1');
+				}
+				else {
+					var data = {
+						ttid : oid,
+						tpid : pids,
+						tqty : 1,
+						tstatus : 1
+					};
+					req.getConnection(function (err, connection) {
+						var query = connection.query("INSERT INTO transaction_detail_tab SET ? ",data, function(err, rows) {
+							res.send('-1');
+						});
+					});
+				}
+			}
+			else {
+				res.send('1');
+			}
 		}
 	}
 	else {
-		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
-		res.redirect('/order/order_list_products/' + input.type);
+		res.send('1');
 	}
 };
 

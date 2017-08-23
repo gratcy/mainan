@@ -58,9 +58,6 @@
                   <td>Approved by: {{ __parse_json tapprovedby 'uemail' }}</td>
 				{{/compare}}
                   <td style="text-align:center;margin:0 auto;width:50px">
-				{{#compare tstatus 3 operator="=="}}
-					<a href="javascript:void(0);" onclick="print_data('{{ __site_url 'retur/faktur/' }}{{ tid }}');" title="Print Faktur"><i class="fa fa-print"></i></a>
-					{{/compare}}
 					<a href="{{ __site_url 'retur/retur_detail/'}}{{ tid }}"><i class="fa fa-check"></i></a>
 				{{#compare tstatus 3 operator="!="}}
 					{{#if (__check_permission 'ReturExecute') }}
