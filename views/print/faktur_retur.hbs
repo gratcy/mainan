@@ -1,0 +1,83 @@
+<html>
+<title>Faktur Retur</title>
+<style>
+html,body{margin:0;padding:0;font-size:9px}
+table{font-size:9px;border-collapse:collapse;margin:0;padding:0;}
+table th {border:1px solid #000;margin:0;padding:0;}
+table td {margin:0;padding:0;}
+table > tfoot > tr > td{border-top:1px solid #000;margin:0;padding:0;}
+</style>
+<script>
+window.print();
+</script>
+<body>
+            <!-- Right side column. Contains tde navbar and content of tde page -->
+            <aside class="right-side">                
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+<div class="box box-primary">
+
+                                <!-- form start -->
+                                    <div class="box-body">
+										<div style="text-align:left;font-weight:bold;font-size:8px">
+									VICTORY TOYS
+              <br />
+									JL. WINAON NO. 2
+              <br /> CIREBON
+              <br />
+									TELP: 0231 203 441
+									</div>
+              <br />
+									<div  style="border-bottom:1px solid #000"></div>
+              <br />
+									<table border="0" style="border-collapse: collapse;">
+                <thead>
+				  <tr><td style="font-weight:bold;">Date</td><td style="">: {{ __get_date rows.tdate 2 }} </td></tr>
+                  <tr><td style="font-weight:bold;">Customer</td><td style="">: {{ rows.cname }}</td></tr>
+                  <tr><td style="font-weight:bold;">Retur No.</td><td style="">: {{ rows.tno }}</td></tr>
+                </tr>
+                </thead>
+                </tbody>
+              </table>
+              <br />
+
+									<div  style="border-bottom:1px solid #000"></div>
+				<table border="0" style="border-collapse: collapse;width:100%">
+                <thead>
+                <tr>
+                  <td style="width:30%"></td>
+                  <td></td>
+                </tr>
+                </thead>
+				{{#each products }}
+                <tr>
+                  <td>{{ pname }}</td>
+                  <td>{{ __number_format tprice 0 '' ',' }}</td>
+                </tr>
+                {{/each}}
+                <tfoot>
+                <tr>
+                  <td style="font-weight:bold;border-top: 1px solid #000">Grand Total</td>
+                  <td style="font-weight:bold;border-top: 1px solid #000">{{ __number_format rows.ttotal 0 '' ',' }}</td>
+               </tr>
+                </tfoot>
+                </table>
+              <br />
+              <p style="text-align:left">
+				  <i>Pusat grosir mainan terlengkap dan termurah di Cirebon</i>
+              </p>
+                                        <div class="form-group">
+											
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section><!-- /.content -->
+            </aside><!-- /.right-side -->
+
+
+</body>
+</html>

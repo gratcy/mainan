@@ -498,3 +498,12 @@ exports.retur_delete = function(req,res){
 		});
 	});
 };
+
+exports.retur_faktur = async function(req,res){
+	var id = req.params.id;
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    var rows = await models_retur.get_retur_detail_approved(req, 1, id);
+    var drows = await models_retur.get_retur_detail_approved(req, 2, id);
+	res.render('print/faktur_retur',{rows:rows[0],products:drows,error_msg:errorMsg,layout:false});
+};

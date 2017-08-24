@@ -245,6 +245,7 @@ app.post('/order/order_update',order.order_update);
 app.get('/order/order_delete/:id', order.order_delete);
 
 app.get('/retur', retur.list);
+app.get('/retur/faktur/?:id?', retur.retur_faktur);
 app.get('/retur/retur_products/?:id?', retur.products);
 app.get('/retur/retur_list_products/?:id?', retur.list_products);
 app.post('/retur/retur_products_add', retur.products_add);
