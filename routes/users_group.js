@@ -47,7 +47,7 @@ exports.users_group_add = function(req,res) {
 			};
 
 			var query = connection.query("INSERT INTO users_groups_tab SET ? ",data, function(err, rows) {
-				gid = rows.insertId;
+				var gid = rows.insertId;
 				
 				var perm = input.perm;
 				Object.keys(perm).map(function(objectKey, index) {
