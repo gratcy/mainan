@@ -114,9 +114,12 @@ app.use(function(req, res, next){
 				if (global.sauth.perms[i].url != null) {
 					var pattern = global.sauth.perms[i].url;
 					var regex = new RegExp(pattern,'g');
-					if (regex.test(req.path) === true && /\/ajax/.test(req.path) == false) {
-						if (global.sauth.perms[i].access != 1) {
-							//~ return res.redirect('/');
+					if (regex.test(req.path) === true) {
+						if (req.path != '/' && /\/ajax/.test(req.path) == false) {
+							if (global.sauth.perms[i].access != 1) {
+								return res.redirect('/');
+							}
+							break;
 						}
 					}
 				}
