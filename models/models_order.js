@@ -87,7 +87,7 @@ exports.get_order_detail_approved = function(conn, type, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
 		if (type == 1)
-			var query_str = 'SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE a.ttype=1 AND a.tid = ?';
+			var query_str = 'SELECT a.*,b.cname,c.unick FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid JOIN users_tab c ON a.tuid=c.uid WHERE a.ttype=1 AND a.tid = ?';
 		else
 			var query_str = 'SELECT a.tqty,a.tprice,a.tpricebase,a.ttype,b.pname,b.pdesc,c.cname FROM transaction_detail_tab a INNER JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid WHERE a.ttid = ? AND a.tstatus=1 AND b.pstatus=1 ORDER BY b.pid DESC';
      

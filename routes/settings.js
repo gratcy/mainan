@@ -1,22 +1,38 @@
-exports.settings = function(req, res) {
-	memcached.get('__msg' + req.sessionID, function (mem_err, mem_msg) {
-		res.render('settings',{error_msg:helpers.__get_error_msg(mem_msg,req.sessionID),data:req.session.login});
-	});
+import models_users from '../models/models_users';
+
+exports.settings = async function(req, res) {
+    var mem_msg = await helpers.__get_memcached_data(req);
+    var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
+    var rows = await models_users.get_users_detail(req, sauth.uid);
+	res.render('settings',{data:rows[0],error_msg:errorMsg});
 };
 
 exports.settings_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
 	if (id) {
-		if (!input.uemail) {
+		if (!input.uemail || !input.unick) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 			res.redirect('/settings');
 		}
 		else {
 			req.getConnection(function (err, connection) {
 				if (!input.confpass || !input.newpass) {
-					helpers.__set_error_msg({info: 'Tidak ada data yang diubah !!!'},req.sessionID);
-					res.redirect('/settings');
+					var data = {
+						unick : input.unick
+					};
+
+					connection.query("UPDATE users_tab set ? WHERE uid = ? ",[data,id], function(err, rows) {
+						if (err) {
+							console.log("Error Selecting : %s ",err );
+							helpers.__set_error_msg({error : 'Gagal update data !!!'},req.sessionID);
+							res.redirect('/settings');
+						}
+						else {
+							helpers.__set_error_msg({info : 'Data berhasil diubah.'},req.sessionID);
+							res.redirect('/settings');
+						}
+					});
 				}
 				else {
 					if (input.confpass !== input.newpass) {
@@ -32,6 +48,7 @@ exports.settings_update = function(req,res) {
 						}
 						else {
 							var data = {
+								unick : input.unick,
 								upass : helpers.__hash_password(input.confpass)
 							};
 

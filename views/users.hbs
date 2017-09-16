@@ -36,6 +36,7 @@
                 <tr>
           <th>Group</th>
           <th>Email</th>
+          <th>Full Name</th>
           <th>History IP Address</th>
           <th>History Date</th>
           <th>Status</th>
@@ -47,6 +48,7 @@
 		  <tr>
           <td>{{ gname }}</td>
           <td>{{ uemail }}</td>
+          <td>{{ unick }}</td>
           <td>{{ __explode_string ulastlogin '*' 0 }}</td>
           <td>{{ __get_date (__explode_string ulastlogin '*' 1) 1 }}</td>
 		  <td>{{ __get_status ustatus 1 }}</td>
@@ -65,6 +67,7 @@
                 <tr>
           <th>Group</th>
           <th>Email</th>
+          <th>Full Name</th>
           <th>History IP Address</th>
           <th>History Date</th>
           <th>Status</th>

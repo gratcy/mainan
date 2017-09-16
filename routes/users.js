@@ -32,7 +32,7 @@ exports.users_detail = async function(req, res) {
 
 exports.users_add = function(req,res) {
 	var input = req.body;
-	if (!input.uemail || !input.group || !input.newpass || !input.confpass) {
+	if (!input.uemail || !input.group || !input.newpass || !input.confpass || !input.unick) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/users/users_add');
 	}
@@ -49,6 +49,7 @@ exports.users_add = function(req,res) {
 			var data = {
 				ugid : input.group,
 				uemail : input.uemail,
+				unick : input.unick,
 				upass : helpers.__hash_password(input.confpass),
 				ustatus : input.status
 			};
@@ -72,7 +73,7 @@ exports.users_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
 	if (id) {
-		if (!input.uemail || !input.group) {
+		if (!input.uemail || !input.group || !input.unick) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 			res.redirect('/users/users_update/' + id);
 		}
@@ -92,6 +93,7 @@ exports.users_update = function(req,res) {
 					var data = {
 						ugid : input.group,
 						uemail : input.uemail,
+						unick : input.unick,
 						upass : helpers.__hash_password(input.confpass),
 						ustatus : input.status
 					};
@@ -100,6 +102,7 @@ exports.users_update = function(req,res) {
 					var data = {
 						ugid : input.group,
 						uemail : input.uemail,
+						unick : input.unick,
 						ustatus : input.status
 					};
 				}
