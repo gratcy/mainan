@@ -67,6 +67,7 @@
             {{/if}}
 		  </ul>
         </li>
+		{{#if (__check_permission 'InventoryView') }}
 		<li class="treeview" rel="Inventory">
           <a href="#">
             <i class="fa fa-th"></i>
@@ -88,6 +89,8 @@
             {{/if}}
 		  </ul>
         </li>
+            {{/if}}
+			{{#if (__check_permission 'ReportTransaction') }}
 		<li class="treeview" rel="Reports">
           <a href="#">
             <i class="fa fa-table"></i>
@@ -109,6 +112,7 @@
             {{/if}}
 		  </ul>
         </li>
+        {{/if}}
 			{{#if (__check_permission 'PetiCashView') }}
         <li>
 			<a href="{{ __site_url 'peticash' }}">
@@ -116,6 +120,7 @@
 		</a>
 		</li>
             {{/if}}
+		{{#if (__check_permission 'UserView') }}
         <li class="treeview" rel="Users">
           <a href="#">
             <i class="fa fa-users"></i>
@@ -134,6 +139,7 @@
             {{/if}}
           </ul>
         </li>
+            {{/if}}
         <li>
 		<a href="{{ __site_url 'login/logout' }}" onclick="return confirm('{{ __global_login 'uemail' }}, are you sure you want to logout?');">
 			<i class="fa fa-sign-in"></i> <span>Logout</span>
