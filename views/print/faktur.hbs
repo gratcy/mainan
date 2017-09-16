@@ -53,7 +53,7 @@ window.print();
                 </thead>
 				{{#each products }}
                 <tr>
-                  <td>{{ pname }}</td>
+                  <td>{{ pname }} {{ tqty }} {{ __order_product_type ttype 1 }}</td>
                   <td>{{ __number_format tprice 0 '' ',' }}</td>
                 </tr>
                 {{/each}}
