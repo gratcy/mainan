@@ -15,6 +15,21 @@ exports.get_users_detail = function(conn, id) {
     return deferred.promise;
 };
 
+exports.check_email = function(conn, email) {
+    var deferred = q.defer();
+    conn.getConnection(function(err, connection){
+        var query = connection.query('SELECT * FROM users_tab WHERE (ustatus=1 OR ustatus=0) AND uemail = ?', [email], function(err, rows, fields){
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+    return deferred.promise;
+};
+
 exports.get_users_select = function(conn, id) {
     var deferred = q.defer();
     conn.getConnection(function(err,connection){

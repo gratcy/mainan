@@ -30,8 +30,9 @@ exports.users_detail = async function(req, res) {
 	res.render('users_update',{data:rows[0],error_msg:errorMsg});
 };
 
-exports.users_add = function(req,res) {
+exports.users_add = async function(req,res) {
 	var input = req.body;
+	
 	if (!input.uemail || !input.group || !input.newpass || !input.confpass || !input.unick) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/users/users_add');
@@ -46,27 +47,34 @@ exports.users_add = function(req,res) {
 	}
 	else {
 		var email = input.uemail;
-		req.getConnection(function (err, connection) {
-			var data = {
-				ugid : input.group,
-				uemail : email.toLowerCase(),
-				unick : input.unick,
-				upass : helpers.__hash_password(input.confpass),
-				ustatus : input.status
-			};
+		var ck = await models_users.check_email(req, email);
+		if (ck[0]) {
+			helpers.__set_error_msg({error : 'Email sudah terdaftar !!!'},req.sessionID);
+			res.redirect('/users/users_add');
+		}
+		else {
+			req.getConnection(function (err, connection) {
+				var data = {
+					ugid : input.group,
+					uemail : email.toLowerCase(),
+					unick : input.unick,
+					upass : helpers.__hash_password(input.confpass),
+					ustatus : input.status
+				};
 
-			var query = connection.query("INSERT INTO users_tab SET ? ",data, function(err, rows) {
-				if (err) {
-					console.log("Error Selecting : %s ",err );
-					helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
-					res.redirect('/users');
-				}
-				else {
-					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
-					res.redirect('/users');
-				}
+				var query = connection.query("INSERT INTO users_tab SET ? ",data, function(err, rows) {
+					if (err) {
+						console.log("Error Selecting : %s ",err );
+						helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
+						res.redirect('/users');
+					}
+					else {
+						helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
+						res.redirect('/users');
+					}
+				});
 			});
-		});
+		}
 	}
 };
 
