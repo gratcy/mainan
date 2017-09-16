@@ -1,4 +1,5 @@
 import models_order from '../models/models_order';
+import models_products from '../models/models_products';
 
 exports.list = async function(req, res) {
 	req.session.order_products = {};
@@ -62,7 +63,8 @@ exports.products_add = async function(req, res) {
 				req.session.order_products = pids;
 				req.session.save();
 			}
-			res.send('-1');
+			var rows = await models_products.get_products_detail(req, pids[0]);
+			res.send({status: '-1',product:rows});
 		}
 		else {
 			if (oid) {
