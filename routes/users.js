@@ -45,10 +45,11 @@ exports.users_add = function(req,res) {
 		res.redirect('/users/users_add');
 	}
 	else {
+		var email = input.uemail;
 		req.getConnection(function (err, connection) {
 			var data = {
 				ugid : input.group,
-				uemail : input.uemail,
+				uemail : email.toLowerCase(),
 				unick : input.unick,
 				upass : helpers.__hash_password(input.confpass),
 				ustatus : input.status
