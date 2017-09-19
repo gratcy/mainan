@@ -3,7 +3,7 @@ var exports = module.exports = {};
 exports.getTotalOrderPerUser = function(conn) {
 	var deferred = q.defer();
 	conn.getConnection(function(err,connection) {
-		var query = connection.query('SELECT a.uemail,(SELECT SUM(b.ttotal) FROM transaction_tab b WHERE a.uid=b.tuid AND b.tstatus!=2) as ttotal FROM users_tab a WHERE a.ustatus!=2', function (err, rows, fields) {
+		var query = connection.query('SELECT a.uemail,(SELECT SUM(b.ttotal) FROM transaction_tab b WHERE a.uid=b.tuid AND FROM_UNIXTIME( b.tdate,  \'%Y-%m-%d\' )=DATE(NOW()) AND b.tstatus!=2) as ttotal FROM users_tab a WHERE a.ustatus!=2', function (err, rows, fields) {
 			if (err) {
 				deferred.reject(err);
 			}

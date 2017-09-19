@@ -244,3 +244,18 @@ exports.stock = function(req, res) {
 	res.render('reportstock',{from:from,to:to});
 };
 
+exports.bestseller = async function(req, res) {
+	var d = new Date();
+    d.setMonth(d.getMonth()-1);
+	var month = d.getUTCMonth() + 1; //months from 1-12
+	month = (month < 10 ? '0'+month : month)
+	var day = d.getUTCDate();
+	var year = d.getUTCFullYear();
+	var from = year + "-" + month + "-" + day;
+	var to = year + "-" + parseInt(month)+1 + "-" + day;
+	
+    var rows = await models_report.get_bestseller(req,from);
+    
+	res.render('report_bestseller',{data:rows,from:from,to:to});
+};
+

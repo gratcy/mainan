@@ -97,7 +97,7 @@
             <span>Reports</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
-              <span class="label bg-aqua pull-right">3</span>
+              <span class="label bg-aqua pull-right">4</span>
             </span>
           </a>
           <ul class="treeview-menu">
@@ -109,6 +109,9 @@
             {{/if}}
 			{{#if (__check_permission 'ReportStock') }}
 				<li><a href="{{ __site_url 'reportstock' }}"><i class="fa fa-circle-o"></i> Stock</a></li>
+            {{/if}}
+			{{#if (__check_permission 'ReportBestSeller') }}
+				<li><a href="{{ __site_url 'reportbestseller' }}"><i class="fa fa-circle-o"></i> Best Seller</a></li>
             {{/if}}
 		  </ul>
         </li>

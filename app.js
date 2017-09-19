@@ -271,6 +271,7 @@ app.get('/reportstock', report.stock);
 app.post('/reportstock/products', report.exec_stock);
 app.get('/reportopname', report.opname);
 app.post('/reportopname', report.exec_opname);
+app.get('/reportbestseller', report.bestseller);
 
 app.use(function(req, res, next){
 	res.render('404', { status: 404, url: req.url });

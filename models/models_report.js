@@ -108,3 +108,18 @@ exports.get_report_opname = function(conn, from, to) {
     });
     return deferred.promise;
 };
+
+exports.get_bestseller = function(conn, from) {
+    var deferred = q.defer();
+    conn.getConnection(function(err, connection){
+        var query = connection.query("SELECT a.tpid,b.pname,b.pdesc,b.ppricepcs,b.ppricekoli,b.ppricedozen,SUM(a.tqty) as total,c.cname FROM mainan_db.transaction_detail_tab a JOIN products_tab b ON a.tpid=b.pid JOIN categories_tab c ON b.pcid=c.cid LEFT JOIN transaction_tab d ON a.ttid=d.tid WHERE from_unixtime(d.tdate,'%Y-%m-%d')>='"+from+"' AND from_unixtime(d.tdate,'%Y-%m-%d')<=DATE(NOW()) GROUP BY a.tpid ORDER BY total DESC LIMIT 10", function(err, rows, fields){
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+    return deferred.promise;
+};
