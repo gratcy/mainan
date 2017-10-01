@@ -45,7 +45,6 @@
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -63,7 +62,6 @@
                   <td>{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td>{{ __number_format ppricekoli 0 '' ',' }}</td>
-                  <td>{{ __get_status pstatus 1 }}</td>
                   <td>
 					{{#if (__check_permission 'ProductsExecute') }}
 					<a href="{{ __site_url 'products/products_update/' }}{{ pid }}"><i class="fa fa-pencil"></i></a>
@@ -86,7 +84,6 @@
                   <th>Price PCS</th>
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </tfoot>

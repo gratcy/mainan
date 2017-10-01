@@ -1,7 +1,7 @@
 import models_retur from '../models/models_retur';
 
 exports.list = async function(req, res) {
-	req.session.retur_products = {};
+	delete req.session.retur_products;
     var rows = await models_retur.get_retur(req);
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);

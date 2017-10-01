@@ -45,3 +45,35 @@ exports.get_customers = function(conn) {
 
     return deferred.promise;
 };
+
+exports.insert_customers = function(conn, data) {
+    var deferred = q.defer();
+    conn.getConnection(function(err,connection){
+        var query = connection.query('INSERT INTO customers_tab SET ? ', data, function (err, rows) {
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+
+    return deferred.promise;
+};
+
+exports.update_customers = function(conn, data, id) {
+    var deferred = q.defer();
+    conn.getConnection(function(err,connection){
+        var query = connection.query("UPDATE customers_tab set ? WHERE cid = ? ",[data,id], function(err, rows) {
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+
+    return deferred.promise;
+};

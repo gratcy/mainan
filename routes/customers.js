@@ -13,6 +13,12 @@ exports.list_ajax = async function(req, res) {
 	
 	res.send({data:rows});
 };
+exports.customers_detail_ajax = async function(req, res) {
+	var id = req.params.id;
+	var rows = await models_customers.get_customers_detail(req, id);
+	
+	res.send({data:rows});
+};
 
 exports.add = async function(req, res) {
     var mem_msg = await helpers.__get_memcached_data(req);

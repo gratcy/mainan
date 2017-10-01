@@ -1,8 +1,9 @@
 import models_order from '../models/models_order';
 import models_products from '../models/models_products';
+import models_customers from '../models/models_customers';
 
 exports.list = async function(req, res) {
-	req.session.order_products = {};
+	delete  req.session.order_products;
     var rows = await models_order.get_order(req);
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
@@ -176,13 +177,16 @@ exports.order_detail_approved = async function(req, res) {
 	res.render('order_detail',{id:id,products:drows,data:rows[0],error_msg:errorMsg});
 };
 
-exports.order_add = function(req,res) {
+exports.order_add = async function(req,res) {
 	var input = req.body;
-	if (!input.waktu || !input.customer) {
+
+	if (!input.waktu) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/order/order_add');
 	}
 	else {
+		var newcust = input.newcust;
+		var customer = input.customer;
 		var ppricepcs = input.ppricepcs;
 		var ppricedozen = input.ppricedozen;
 		var ppricekoli = input.ppricekoli;
@@ -197,125 +201,156 @@ exports.order_add = function(req,res) {
 		var ttotal = 0;
 		var tammount = 0;
 		
-		req.getConnection(function (err, connection) {
-			var str = input.waktu;
-			var strdate = str.split(" ");
-			var dt = strdate[0];
-			var rres = dt.split("/").reverse().join("-") + ' ' + strdate[1];
-			var waktu = new Date(rres).getTime() / 1000;
-			
-			var udate = helpers.__get_date('',2);
-			var tqty = 0;
-			
-			if (typeof products != 'undefined') {
-				Object.keys(products).map(function(objectKey, index) {
-					var index = parseInt(objectKey);
-					if (!isNaN(index)) {
-						if (index > 0) {
-							if (optype[index] == 1) {
-								tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
-							}
-							else if (optype[index] == 2) {
-								tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
-							}
-							else {
-								if (parseInt(products[index]) > 2) {
-									tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
-								}
-								else {
-									tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
-								}
-							}
-							
-							tqty += parseInt(products[index]);
-						}
-					}
-				});
+		if (newcust == 0 && !customer) {
+			helpers.__set_error_msg({error: 'Customer harus di isi !!!'},req.sessionID);
+			res.redirect('/order/order_add');
+		}
+		else if (newcust == 1 && !input.nname) {
+			helpers.__set_error_msg({error: 'Customer harus di isi !!!'},req.sessionID);
+			res.redirect('/order/order_add');
+		}
+		else {
+			if (newcust == 1) {
+				var dataCustomer = {
+					ctype : 1,
+					cname : input.nname,
+					cemail : input.nemail,
+					cphone : input.nphone1+'*'+input.nphone2,
+					cstatus : 1
+				}
+				
+				var insCust = await models_customers.insert_customers(req, dataCustomer);
+				customer = insCust.insertId;
+			}
+			else {
+				var dataCustomer = {
+					cname : input.oname,
+					cemail : input.oemail,
+					cphone : input.ophone1+'*'+input.ophone2
+				}
+				var uptCust = await models_customers.update_customers(req, dataCustomer, customer);
 			}
 			
-			var data = {
-				tuid : sauth.uid,
-				ttype : 1,
-				tdate : waktu,
-				tcid : input.customer,
-				tqty : tqty,
-				tammount : tammount,
-				tdiscount : tdisc,
-				ttotal : (tammount - tdisc),
-				tdesc : input.desc,
-				tcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
-				tstatus : input.status
-			};
-			
-			var query = connection.query("INSERT INTO transaction_tab SET ? ",data, function(err, rows) {
-				if (err) {
-					console.log("Error Selecting : %s ",err );
-					helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
-					res.redirect('/order');
-				}
-				else {
-					var rdata = [];
-					var ttid = rows.insertId;
-					
-					if (typeof products != 'undefined') {
-						Object.keys(products).map(function(objectKey, index) {
-							var index = parseInt(objectKey);
-							if (!isNaN(index)) {
-								if (index > 0) {
-									var value = products[index];
-									var tprice = 0;
-									var tpricebase = 0;
-									
-									if (optype[index] == 1) {
-										tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
-										tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
-									}
-									else if (optype[index] == 2) {
-										tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
-										tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
+			req.getConnection(function (err, connection) {
+				var str = input.waktu;
+				var strdate = str.split(" ");
+				var dt = strdate[0];
+				var rres = dt.split("/").reverse().join("-") + ' ' + strdate[1];
+				var waktu = new Date(rres).getTime() / 1000;
+				
+				var udate = helpers.__get_date('',2);
+				var tqty = 0;
+				
+				if (typeof products != 'undefined') {
+					Object.keys(products).map(function(objectKey, index) {
+						var index = parseInt(objectKey);
+						if (!isNaN(index)) {
+							if (index > 0) {
+								if (optype[index] == 1) {
+									tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
+								}
+								else if (optype[index] == 2) {
+									tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
+								}
+								else {
+									if (parseInt(products[index]) > 2) {
+										tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 									}
 									else {
-										if (products[index] > 2) {
-											tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
-											tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
+										tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									}
+								}
+								
+								tqty += parseInt(products[index]);
+							}
+						}
+					});
+				}
+				
+				var data = {
+					tuid : sauth.uid,
+					ttype : 1,
+					tdate : waktu,
+					tcid : customer,
+					tqty : tqty,
+					tammount : tammount,
+					tdiscount : tdisc,
+					ttotal : (tammount - tdisc),
+					tdesc : input.desc,
+					tcreatedby : JSON.stringify({uid: sauth.uid, uemail: sauth.uemail, udate: udate}),
+					tstatus : input.status
+				};
+				
+				var query = connection.query("INSERT INTO transaction_tab SET ? ",data, function(err, rows) {
+					if (err) {
+						console.log("Error Selecting : %s ",err );
+						helpers.__set_error_msg({error : 'Kesalahan input data !!!'},req.sessionID);
+						res.redirect('/order');
+					}
+					else {
+						var rdata = [];
+						var ttid = rows.insertId;
+						
+						if (typeof products != 'undefined') {
+							Object.keys(products).map(function(objectKey, index) {
+								var index = parseInt(objectKey);
+								if (!isNaN(index)) {
+									if (index > 0) {
+										var value = products[index];
+										var tprice = 0;
+										var tpricebase = 0;
+										
+										if (optype[index] == 1) {
+											tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
+											tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
+										}
+										else if (optype[index] == 2) {
+											tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
+											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
 										}
 										else {
-											tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
-											tpricebase = parseInt(products[index]) * parseFloat(base_ppricepcs[index]);
+											if (products[index] > 2) {
+												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
+											}
+											else {
+												tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
+												tpricebase = parseInt(products[index]) * parseFloat(base_ppricepcs[index]);
+											}
 										}
+										rdata.push([ttid,index,tprice,tpricebase,parseInt(value),optype[index],1]);
 									}
-									rdata.push([ttid,index,tprice,tpricebase,parseInt(value),optype[index],1]);
 								}
-							}
-						});
+							});
+							
+							var query = connection.query("INSERT INTO transaction_detail_tab (ttid,tpid,tprice,tpricebase,tqty,ttype,tstatus) VALUES ?",[rdata], function(err, rows) {
+								if (err) {
+									console.log("Error Selecting : %s ",err );
+								}
+							});
+						}
 						
-						var query = connection.query("INSERT INTO transaction_detail_tab (ttid,tpid,tprice,tpricebase,tqty,ttype,tstatus) VALUES ?",[rdata], function(err, rows) {
-							if (err) {
-								console.log("Error Selecting : %s ",err );
-							}
+						connection.query('SELECT COUNT(*) as totaltoday FROM transaction_tab WHERE ttype=1 AND tstatus!=2 AND FROM_UNIXTIME(tdate, "%Y-%m-%d")=DATE_FORMAT(NOW(),"%Y-%m-%d")',function(err,ckt) {
+							var str = helpers.__get_date();	
+							var dt = str.replace(/\//g, "");
+							var tno = 'PO'+dt+helpers.__strpad('0000',(parseInt(ckt[0].totaltoday)+1),true);
+							var vdata = {
+								tno : tno
+							};
+							
+							connection.query("UPDATE transaction_tab SET ? WHERE tid = ? ",[vdata,ttid], function(err, rows) {
+								if (err) {
+									console.log("Error Selecting : %s ",err );
+								}
+							});
 						});
+							
+						helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
+						res.redirect('/order/order_detail/' + ttid);
 					}
-					
-					connection.query('SELECT COUNT(*) as totaltoday FROM transaction_tab WHERE ttype=1 AND tstatus!=2 AND FROM_UNIXTIME(tdate, "%Y-%m-%d")=DATE_FORMAT(NOW(),"%Y-%m-%d")',function(err,ckt) {
-						var str = helpers.__get_date();	
-						var dt = str.replace(/\//g, "");
-						var tno = 'PO'+dt+helpers.__strpad('0000',(parseInt(ckt[0].totaltoday)+1),true);
-						var vdata = {
-							tno : tno
-						};
-						
-						connection.query("UPDATE transaction_tab SET ? WHERE tid = ? ",[vdata,ttid], function(err, rows) {
-							if (err) {
-								console.log("Error Selecting : %s ",err );
-							}
-						});
-					});
-						
-					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
-					res.redirect('/order/order_detail/' + ttid);
-				}
+				});
 			});
-		});
+		}
 	}
 };
 

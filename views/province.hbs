@@ -35,7 +35,6 @@
                 <thead>
                 <tr>
                   <th>Province</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -43,7 +42,6 @@
 				{{#each data}}
                 <tr>
                   <td>{{ pname }}</td>
-                  <td>{{ __get_status pstatus 1 }}</td>
                   <td>
 					{{#if (__check_permission 'ProvinceExecute') }}
 					<a href="{{ __site_url 'province/province_update/' }}{{ pid }}"><i class="fa fa-pencil"></i></a>
@@ -56,7 +54,6 @@
                 <tfoot>
                 <tr>
                   <th>Province</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </tfoot>

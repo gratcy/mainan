@@ -35,7 +35,6 @@
                 <tr>
                   <th>Category</th>
                   <th>Description</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -44,7 +43,6 @@
                 <tr>
                   <td>{{ cname }}</td>
                   <td>{{ cdesc }}</td>
-                  <td>{{ __get_status cstatus 1 }}</td>
                   <td>
 					{{#if (__check_permission 'CategoryProductExecute') }}
 					<a href="{{ __site_url 'categories/categories_update/' }}{{ cid }}"><i class="fa fa-pencil"></i></a>
@@ -58,7 +56,6 @@
                 <tr>
                   <th>Category</th>
                   <th>Description</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </tfoot>

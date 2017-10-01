@@ -5,7 +5,7 @@ exports.main = function(req, res) {
 };
 
 exports.logout = function(req,res) {
-	req.session.login = {};
+	delete req.session.login;
 	req.session.destroy();
 	res.redirect('/login');
 };

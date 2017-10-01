@@ -166,6 +166,7 @@ app.post('/city/city_update',city.city_update);
 app.get('/city/city_delete/:id', city.city_delete);
 
 app.get('/ajax/customers', customers.list_ajax);
+app.get('/ajax/customers_detail/:id', customers.customers_detail_ajax);
 app.get('/customers', customers.list);
 app.get('/customers/customer_quick_add', customers.quick_add);
 app.post('/customers/customer_quick_add', customers.customers_quick_add);

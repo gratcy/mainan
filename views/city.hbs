@@ -36,7 +36,6 @@
                 <tr>
                   <th>Province</th>
                   <th>City</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -45,7 +44,6 @@
                 <tr>
                   <td>{{ pname }}</td>
                   <td>{{ cname }}</td>
-                  <td>{{ __get_status cstatus 1 }}</td>
                   <td>
 					{{#if (__check_permission 'CityExecute') }}
 					<a href="{{ __site_url 'city/city_update/' }}{{ cid }}"><i class="fa fa-pencil"></i></a>
@@ -59,7 +57,6 @@
                 <tr>
                   <th>Province</th>
                   <th>City</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </tfoot>

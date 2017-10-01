@@ -38,7 +38,6 @@
                   <th>Address</th>
                   <th>Contact Person</th>
                   <th>Phone</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -49,7 +48,6 @@
                   <td>{{ vaddr }}</td>
                   <td>{{ vcpname }}</td>
                   <td>{{ __replace_string vphone }}</td>
-                  <td>{{ __get_status vstatus 1 }}</td>
                   <td>
 					{{#if (__check_permission 'VendorExecute') }}
 					<a href="{{ __site_url 'vendor/vendor_update/' }}{{ vid }}"><i class="fa fa-pencil"></i></a>
@@ -65,7 +63,6 @@
                   <th>Address</th>
                   <th>Contact Person</th>
                   <th>Phone</th>
-                  <th>Status</th>
                   <th>Action</th>
                 </tr>
                 </tfoot>
