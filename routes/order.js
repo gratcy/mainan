@@ -179,6 +179,7 @@ exports.order_detail_approved = async function(req, res) {
 
 exports.order_add = async function(req,res) {
 	var input = req.body;
+	var retail = input.retail;
 
 	if (!input.waktu) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
@@ -255,7 +256,7 @@ exports.order_add = async function(req,res) {
 									else tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
 								}
 								else {
-									if (parseInt(products[index]) > 2) {
+									if (retail == 1) {
 										if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
 										else tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 									}
@@ -273,6 +274,7 @@ exports.order_add = async function(req,res) {
 				var data = {
 					tuid : sauth.uid,
 					ttype : 1,
+					tretail : retail,
 					tdate : waktu,
 					tcid : customer,
 					tqty : tqty,
@@ -314,7 +316,7 @@ exports.order_add = async function(req,res) {
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
 										}
 										else {
-											if (products[index] > 2) {
+											if (retail == 1) {
 												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 												if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
@@ -363,6 +365,7 @@ exports.order_add = async function(req,res) {
 exports.order_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
+	var retail = input.retail;
 	if (id) {
 		if (!input.waktu || !input.customer) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
@@ -416,7 +419,7 @@ exports.order_update = function(req,res) {
 									else tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
 								}
 								else {
-									if (parseInt(products[index]) > 2) {
+									if (retail == 1) {
 										if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
 										else tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 									}
@@ -432,6 +435,7 @@ exports.order_update = function(req,res) {
 				}
 				
 				var data = {
+					tretail : retail,
 					tdate : waktu,
 					tcid : input.customer,
 					tqty : tqty,
@@ -473,7 +477,7 @@ exports.order_update = function(req,res) {
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
 										}
 										else {
-											if (products[index] > 2) {
+											if (retail == 1) {
 												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 												if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);

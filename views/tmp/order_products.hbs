@@ -70,6 +70,7 @@ $('a#dellist').click(function(){
 });
 
 $('select.optype').change(function(){
+	var isRetail = $('input[name="retail"]:checked').val();
 	var pid = $(this).attr('data-pid');
 	var totalprice = 0;
 	var price = 0;
@@ -90,6 +91,10 @@ $('select.optype').change(function(){
 		}
 		else {
 			wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+			if (isRetail == 1) {
+				wprice = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen')) / 12;
+				if (!wprice) wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+			}
 			wqty = parseInt($('td.pqty > input', $(this)).val());
 		}
 		$('input[name="pricew['+rpid+']"]').val(number_format(wprice * wqty));
@@ -109,6 +114,10 @@ $('select.optype').change(function(){
 			}
 			else {
 				price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+				if (isRetail == 1) {
+					price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen')) / 12;
+					if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+				}
 				qty = parseInt($('td.pqty > input', $(this)).val());
 				totalprice += price * qty;
 			}
@@ -129,6 +138,10 @@ $('select.optype').change(function(){
 	}
 	else {
 		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
+		if (isRetail == 1) {
+			price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricedozen').attr('data-ppricedozen')) / 12;
+			if (!price) price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
+		}
 		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
 		totalprice += price * qty;
 	}
@@ -137,6 +150,7 @@ $('select.optype').change(function(){
 });
 
 $('input[type="number"]').bind('change click keypress keyup',function(){
+	var isRetail = $('input[name="retail"]:checked').val();
 	var totalqty = 0;
 	$('input[type="number"]').each(function(index){
 		totalqty += ($(this).val() == '' ? 0 : parseInt($(this).val()));
@@ -163,7 +177,7 @@ $('input[type="number"]').bind('change click keypress keyup',function(){
 		else {
 			price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			qty = parseInt($('td.pqty > input', $(this)).val());
-			if (qty > 2) {
+			if (isRetail == 1) {
 				price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen')) / 12;
 				if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			}
