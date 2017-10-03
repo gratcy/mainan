@@ -18,7 +18,7 @@ exports.get_products_detail = function(conn, id) {
 exports.get_products_select = function(conn) {
     var deferred = q.defer();
     conn.getConnection(function(err,connection){
-        var query = connection.query('SELECT pid as id,pname as value FROM products_tab WHERE (pstatus=1 OR pstatus=0)', function(err, rows, fields){
+        var query = connection.query('SELECT pid as id,CONCAT(pcode,\' | \',pname) as value FROM products_tab WHERE (pstatus=1 OR pstatus=0)', function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }
