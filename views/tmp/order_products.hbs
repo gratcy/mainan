@@ -73,11 +73,26 @@ $('select.optype').change(function(){
 	var pid = $(this).attr('data-pid');
 	var totalprice = 0;
 	var price = 0;
+	var wprice = 0;
 	var qty = 0;
+	var wqty = 0;
 	$('tr.listproducts').each(function(){
 		var rpid = $(this).attr('idnya');
+		if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
+			wprice = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+			wqty = parseInt($('td.pqty > input', $(this)).val());
+		}
+		else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
+			wprice = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+			wqty = parseInt($('td.pqty > input', $(this)).val());
+		}
+		else {
+			wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
+			wqty = parseInt($('td.pqty > input', $(this)).val());
+		}
+		$('input[name="pricew['+rpid+']"]').val(number_format(wprice * wqty));
+			
 		if (rpid != pid) {
-			console.log(rpid);
 			if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 				price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
 				qty = parseInt($('td.pqty > input', $(this)).val());

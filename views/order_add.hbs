@@ -365,6 +365,7 @@ $(document).ready(function(){
 						totalprice += price * qty;
 					}
 				});
+				$('input[name="pricew['+rpid+']"]').val(number_format(price * qty));
 				$('.totalpriceproduct').html(number_format(totalprice, 0,'',','));
 				$('input[name="grandtotal"]').val(number_format(totalprice, 0,'',','));
 			});
