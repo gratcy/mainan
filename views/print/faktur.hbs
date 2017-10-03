@@ -68,12 +68,14 @@ window.print();
                   <td style="border: none;"></td>
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tammount 0 '' ',' }}</td>
                 </tr>
+				{{#if rows.tdiscount }}
                 <tr>
                   <td style="border: none;font-weight:bold;">Discount</td>
                   <td style="border: none;"></td>
                   <td style="border: none;"></td>
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tdiscount 0 '' ',' }}</td>
                 </tr>
+				{{/if}}
                 <tr>
                   <td style="font-weight:bold;border-top: 1px solid #000">Grand Total</td>
                   <td style="border-top: 1px solid #000;"></td>
