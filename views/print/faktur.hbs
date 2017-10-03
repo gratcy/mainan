@@ -8,7 +8,7 @@ table td {margin:0;padding:0;}
 table > tfoot > tr > td{border-top:1px solid #000;margin:0;padding:0;}
 </style>
 <script>
-window.print();
+//window.print();
 </script>
 <body>
             <!-- Right side column. Contains tde navbar and content of tde page -->
@@ -49,25 +49,35 @@ window.print();
                 <tr>
                   <td style="width:30%"></td>
                   <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
                 </thead>
 				{{#each products }}
                 <tr>
-                  <td>{{ pname }} {{ tqty }} {{ __order_product_type ttype 1 }}</td>
+                  <td>{{ pname }}</td>
+                  <td>{{ tqty }} {{ __order_product_type ttype 1 }}</td>
+                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td>{{ __number_format tprice 0 '' ',' }}</td>
                 </tr>
                 {{/each}}
                 <tfoot>
                 <tr>
                   <td style="border: none;font-weight:bold;">Total</td>
+                  <td style="border: none;"></td>
+                  <td style="border: none;"></td>
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tammount 0 '' ',' }}</td>
                 </tr>
                 <tr>
                   <td style="border: none;font-weight:bold;">Discount</td>
+                  <td style="border: none;"></td>
+                  <td style="border: none;"></td>
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tdiscount 0 '' ',' }}</td>
                 </tr>
                 <tr>
                   <td style="font-weight:bold;border-top: 1px solid #000">Grand Total</td>
+                  <td style="border-top: 1px solid #000;"></td>
+                  <td style="border-top: 1px solid #000;"></td>
                   <td style="font-weight:bold;border-top: 1px solid #000">{{ __number_format rows.ttotal 0 '' ',' }}</td>
                </tr>
                 </tfoot>
