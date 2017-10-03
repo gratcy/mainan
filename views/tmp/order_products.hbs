@@ -80,10 +80,12 @@ $('select.optype').change(function(){
 		var rpid = $(this).attr('idnya');
 		if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 			wprice = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+			if (!wprice) wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			wqty = parseInt($('td.pqty > input', $(this)).val());
 		}
 		else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
 			wprice = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+			if (!wprice) wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			wqty = parseInt($('td.pqty > input', $(this)).val());
 		}
 		else {
@@ -95,11 +97,13 @@ $('select.optype').change(function(){
 		if (rpid != pid) {
 			if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 				price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+				if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 				qty = parseInt($('td.pqty > input', $(this)).val());
 				totalprice += price * qty;
 			}
 			else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
 				price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+				if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 				qty = parseInt($('td.pqty > input', $(this)).val());
 				totalprice += price * qty;
 			}
@@ -113,11 +117,13 @@ $('select.optype').change(function(){
 	
 	if ($(this).val() == 1) {
 		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricedozen').attr('data-ppricedozen'));
+		if (!price) price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
 		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
 		totalprice += price * qty;
 	}
 	else if ($(this).val() == 2) {
 		price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricekoli').attr('data-ppricekoli'));
+		if (!price) price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
 		qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
 		totalprice += price * qty;
 	}
@@ -144,11 +150,13 @@ $('input[type="number"]').bind('change click keypress keyup',function(){
 		var rpid = $(this).attr('idnya');
 		if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 			price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+			if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			qty = parseInt($('td.pqty > input', $(this)).val());
 			totalprice += price * qty;
 		}
 		else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
 			price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+			if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			qty = parseInt($('td.pqty > input', $(this)).val());
 			totalprice += price * qty;
 		}
@@ -157,6 +165,7 @@ $('input[type="number"]').bind('change click keypress keyup',function(){
 			qty = parseInt($('td.pqty > input', $(this)).val());
 			if (qty > 2) {
 				price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen')) / 12;
+				if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 			}
 			totalprice += price * qty;
 		}

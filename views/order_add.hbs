@@ -299,11 +299,13 @@ $(document).ready(function(){
 						console.log(rpid);
 						if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 							price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+							if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 							qty = parseInt($('td.pqty > input', $(this)).val());
 							totalprice += price * qty;
 						}
 						else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
 							price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+							if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 							qty = parseInt($('td.pqty > input', $(this)).val());
 							totalprice += price * qty;
 						}
@@ -317,11 +319,13 @@ $(document).ready(function(){
 				
 				if ($(this).val() == 1) {
 					price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricedozen').attr('data-ppricedozen'));
+					if (!price) price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
 					qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
 					totalprice += price * qty;
 				}
 				else if ($(this).val() == 2) {
 					price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricekoli').attr('data-ppricekoli'));
+					if (!price) price = parseFloat($('tr[idnya="'+pid+'"] > td.ppricepcs').attr('data-ppricepcs'));
 					qty = parseInt($('tr[idnya="'+pid+'"] > td.pqty > input').val());
 					totalprice += price * qty;
 				}
@@ -348,11 +352,13 @@ $(document).ready(function(){
 					var rpid = $(this).attr('idnya');
 					if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 						price = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
+						if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 						qty = parseInt($('td.pqty > input', $(this)).val());
 						totalprice += price * qty;
 					}
 					else if ($('select[name="optype['+rpid+']"] option:selected').val() == 2) {
 						price = parseFloat($('td.ppricekoli', $(this)).attr('data-ppricekoli'));
+						if (!price) price = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
 						qty = parseInt($('td.pqty > input', $(this)).val());
 						totalprice += price * qty;
 					}
