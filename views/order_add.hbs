@@ -279,6 +279,7 @@ $(document).ready(function(){
 					res += '<td class="ppricekoli hide" data-ppricekoli="'+data.product[0].ppricekoli+'">'+number_format(data.product[0].ppricekoli, 0, '', ',')+'</td>';
 					res += '<td class="pqty"><input type="number" value="1" name="products['+pid+']" class="form-control" style="width:100px;"></td>';
 					res += '<td><select name="optype['+pid+']" data-pid="'+pid+'" class="optype form-control">{{{ __order_product_type ttype 2 }}}</select></td>';
+					res += '<td class="pricew"><input name="pricew['+pid+']" value="'+number_format(data.product[0].ppricepcs, 0, '', ',')+'" class="form-control" readonly></td>';
 					res += '<td style="text-align:center;">';
 					res += '<a href="javascript:void(0);" id="dellist" idnya="'+pid+'"><i class="fa fa-times"></i></a>';
 					res += '</td>';
