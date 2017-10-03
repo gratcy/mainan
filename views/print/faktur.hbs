@@ -8,7 +8,7 @@ table td {margin:0;padding:0;}
 table > tfoot > tr > td{border-top:1px solid #000;margin:0;padding:0;}
 </style>
 <script>
-window.print();
+//window.print();
 </script>
 <body>
             <!-- Right side column. Contains tde navbar and content of tde page -->
@@ -49,7 +49,9 @@ window.print();
                 <tr>
                   <td style="width:30%"></td>
                   <td></td>
+				{{#compare rows.tretail 1 operator="=="}}
                   <td></td>
+				{{/compare}}
                   <td></td>
                 </tr>
                 </thead>
@@ -57,7 +59,9 @@ window.print();
                 <tr>
                   <td>{{ pname }}</td>
                   <td>{{ tqty }} {{ __order_product_type ttype 1 }}</td>
+				{{#compare tretail 1 operator="=="}}
                   <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
+				{{/compare}}
                   <td>{{ __number_format tprice 0 '' ',' }}</td>
                 </tr>
                 {{/each}}
@@ -65,21 +69,27 @@ window.print();
                 <tr>
                   <td style="border: none;font-weight:bold;">Total</td>
                   <td style="border: none;"></td>
+				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border: none;"></td>
+				{{/compare}}
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tammount 0 '' ',' }}</td>
                 </tr>
 				{{#if rows.tdiscount }}
                 <tr>
                   <td style="border: none;font-weight:bold;">Discount</td>
                   <td style="border: none;"></td>
+				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border: none;"></td>
+				{{/compare}}
                   <td style="border: none;font-weight:bold;">{{ __number_format rows.tdiscount 0 '' ',' }}</td>
                 </tr>
 				{{/if}}
                 <tr>
                   <td style="font-weight:bold;border-top: 1px solid #000">Grand Total</td>
                   <td style="border-top: 1px solid #000;"></td>
+				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border-top: 1px solid #000;"></td>
+				{{/compare}}
                   <td style="font-weight:bold;border-top: 1px solid #000">{{ __number_format rows.ttotal 0 '' ',' }}</td>
                </tr>
                 </tfoot>

@@ -569,5 +569,11 @@ exports.order_faktur = async function(req,res){
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
     var rows = await models_order.get_order_detail_approved(req, 1, id);
     var drows = await models_order.get_order_detail_approved(req, 2, id);
-	res.render('print/faktur',{rows:rows[0],products:drows,error_msg:errorMsg,layout:false});
+	var arows = [];
+	
+	for(var i=0;i<drows.length;++i) {
+		arows.push({tqty:drows[i].tqty,tprice:drows[i].tprice,pname:drows[i].pname,ppricedozen:drows[i].ppricedozen,cname:drows[i].cname,pdesc:drows[i].pdesc,tretail:rows[0].tretail});
+	}
+	console.log(drows);
+	res.render('print/faktur',{rows:rows[0],products:arows,error_msg:errorMsg,layout:false});
 };
