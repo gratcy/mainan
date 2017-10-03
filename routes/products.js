@@ -160,7 +160,7 @@ exports.products_update = function(req,res) {
 
 exports.export_product = async function(req,res){
     var rows = await models_products.get_products(req);
-	var rdata = 'Product ID,Product Code,Product Name,Price PCS,Price Lusin,Price Koli'+"\r\n";
+	var rdata = 'Product ID,Product Code,Product Name,Price PCS,Price Lusin,Price Dus'+"\r\n";
 			for(var i=0;i<rows.length;++i) {
 			// console.log(rows[i].pid);
 				rdata += rows[i].pid+',"'+rows[i].pcode+'","'+rows[i].pname+'",'+rows[i].ppricepcs+','+rows[i].ppricedozen+','+rows[i].ppricekoli+"\r\n";
