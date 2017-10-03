@@ -247,14 +247,17 @@ exports.order_add = async function(req,res) {
 						if (!isNaN(index)) {
 							if (index > 0) {
 								if (optype[index] == 1) {
-									tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
+									if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									else tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
 								}
 								else if (optype[index] == 2) {
-									tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
+									if (!parseFloat(ppricepcs[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									else tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
 								}
 								else {
 									if (parseInt(products[index]) > 2) {
-										tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+										if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+										else tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 									}
 									else {
 										tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
@@ -302,15 +305,18 @@ exports.order_add = async function(req,res) {
 										
 										if (optype[index] == 1) {
 											tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
+											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
 										}
 										else if (optype[index] == 2) {
 											tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
+											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
 										}
 										else {
 											if (products[index] > 2) {
 												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+												if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
 											}
 											else {
@@ -402,14 +408,17 @@ exports.order_update = function(req,res) {
 						if (!isNaN(index)) {
 							if (index > 0) {
 								if (optype[index] == 1) {
-									tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
+									if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									else tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
 								}
 								else if (optype[index] == 2) {
-									tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
+									if (!parseFloat(ppricekoli[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+									else tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
 								}
 								else {
 									if (parseInt(products[index]) > 2) {
-										tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+										if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+										else tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
 									}
 									else {
 										tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
@@ -455,15 +464,18 @@ exports.order_update = function(req,res) {
 										
 										if (optype[index] == 1) {
 											tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
+											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
 										}
 										else if (optype[index] == 2) {
 											tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
+											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
 										}
 										else {
 											if (products[index] > 2) {
 												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+												if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
 												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
 											}
 											else {
