@@ -572,7 +572,7 @@ exports.order_faktur = async function(req,res){
 	var arows = [];
 	
 	for(var i=0;i<drows.length;++i) {
-		arows.push({tqty:drows[i].tqty,tprice:drows[i].tprice,pname:drows[i].pname,ppricedozen:drows[i].ppricedozen,cname:drows[i].cname,pdesc:drows[i].pdesc,tretail:rows[0].tretail});
+		arows.push({tqty:drows[i].tqty,tprice:drows[i].tprice,pname:drows[i].pname,ppricedozen:drows[i].ppricedozen,cname:drows[i].cname,pdesc:drows[i].pdesc,ttype:drows[i].ttype,tretail:rows[0].tretail});
 	}
 	console.log(drows);
 	res.render('print/faktur',{rows:rows[0],products:arows,error_msg:errorMsg,layout:false});

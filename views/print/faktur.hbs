@@ -8,7 +8,7 @@ table td {margin:0;padding:0;}
 table > tfoot > tr > td{border-top:1px solid #000;margin:0;padding:0;}
 </style>
 <script>
-window.print();
+//window.print();
 </script>
 <body>
             <!-- Right side column. Contains tde navbar and content of tde page -->
@@ -33,7 +33,7 @@ window.print();
               <br />
 									<table border="0" style="border-collapse: collapse;">
                 <thead>
-				  <tr><td style="font-weight:bold;">Date</td><td style="">: {{ __get_date rows.tdate 2 }} </td></tr>
+				  <tr><td style="font-weight:bold;width:50%;">Date</td><td style="">: {{ __get_date rows.tdate 2 }} </td></tr>
                   <tr><td style="font-weight:bold;">Customer</td><td style="">: {{ rows.cname }}</td></tr>
                   <tr><td style="font-weight:bold;">Order No.</td><td style="">: {{ rows.tno }}</td></tr>
                   <tr><td style="font-weight:bold;">Staff</td><td style="">: {{ rows.unick }}</td></tr>
@@ -47,22 +47,22 @@ window.print();
 				<table border="0" style="border-collapse: collapse;width:100%">
                 <thead>
                 <tr>
-                  <td style="width:30%"></td>
-                  <td></td>
+                  <td style="font-weight:bold;">QTY</td>
+                  <td style="font-weight:bold;width:30%">Nama</td>
 				{{#compare rows.tretail 1 operator="=="}}
-                  <td></td>
+                  <td style="font-weight:bold;">/Lusin</td>
 				{{/compare}}
-                  <td></td>
+                  <td style="font-weight:bold;">Jumlah</td>
                 </tr>
                 </thead>
 				{{#each products }}
                 <tr>
-                  <td>{{ pname }}</td>
                   <td>{{ tqty }} {{ __order_product_type ttype 1 }}</td>
+                  <td>{{ pname }}</td>
 				{{#compare tretail 1 operator="=="}}
-                  <td>{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td>Rp. {{ __number_format ppricedozen 0 '' ',' }}</td>
 				{{/compare}}
-                  <td>{{ __number_format tprice 0 '' ',' }}</td>
+                  <td>Rp. {{ __number_format tprice 0 '' ',' }}</td>
                 </tr>
                 {{/each}}
                 <tfoot>
@@ -72,7 +72,7 @@ window.print();
 				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border: none;"></td>
 				{{/compare}}
-                  <td style="border: none;font-weight:bold;">{{ __number_format rows.tammount 0 '' ',' }}</td>
+                  <td style="border: none;font-weight:bold;">Rp. {{ __number_format rows.tammount 0 '' ',' }}</td>
                 </tr>
 				{{#if rows.tdiscount }}
                 <tr>
@@ -81,7 +81,7 @@ window.print();
 				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border: none;"></td>
 				{{/compare}}
-                  <td style="border: none;font-weight:bold;">{{ __number_format rows.tdiscount 0 '' ',' }}</td>
+                  <td style="border: none;font-weight:bold;">Rp. {{ __number_format rows.tdiscount 0 '' ',' }}</td>
                 </tr>
 				{{/if}}
                 <tr>
@@ -90,7 +90,7 @@ window.print();
 				{{#compare rows.tretail 1 operator="=="}}
                   <td style="border-top: 1px solid #000;"></td>
 				{{/compare}}
-                  <td style="font-weight:bold;border-top: 1px solid #000">{{ __number_format rows.ttotal 0 '' ',' }}</td>
+                  <td style="font-weight:bold;border-top: 1px solid #000">Rp. {{ __number_format rows.ttotal 0 '' ',' }}</td>
                </tr>
                 </tfoot>
                 </table>
