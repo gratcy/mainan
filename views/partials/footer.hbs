@@ -95,6 +95,18 @@
 <script>
   $(function () {
     $("#sTable").DataTable({"aaSorting": [], "pageLength": 25, "scrollX": true});
+	
+	$('#sAjaxTable').DataTable( {
+		"processing": true,
+		"serverSide": true,
+		"bFilter": true,
+		"ordering": true,
+		"scrollX": true,
+		"pageLength": 25,
+		"ajax": '/products/list_datatables',
+		"columnDefs": [
+		]
+	} );
   });
 </script>
 <script type="text/javascript">

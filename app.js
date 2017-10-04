@@ -192,6 +192,7 @@ app.get('/products/products_update/:id', products.products_detail);
 app.post('/products/products_update',products.products_update);
 app.get('/products/products_delete/:id', products.products_delete);
 app.get('/products/export_product', products.export_product);
+app.get('/products/list_datatables', products.list_datatables);
 
 app.get('/login/logging', login.main);
 app.get('/login', login.main);

@@ -1,11 +1,34 @@
 import models_products from '../models/models_products';
 
 exports.list = async function(req, res) {
-    var rows = await models_products.get_products(req);
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
     
-	res.render('products',{perm:true,data:rows,error_msg:errorMsg});
+	res.render('products',{perm:true,error_msg:errorMsg});
+};
+
+exports.list_datatables = async function(req, res) {
+	var params = req.query;
+	var draw = params.draw;
+    var rows = await models_products.get_products(req,2,params);
+    var total = await models_products.get_products_total(req,2,params);
+	var data = [];
+	
+	for(var i=0;i<rows.length;++i) {
+		var execute = '<a href="'+helpers.__site_url('products/products_update/'+rows[i].pid)+'"><i class="fa fa-pencil"></i></a><a href="'+helpers.__site_url('products/products_update/'+rows[i].pid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
+		if (!helpers.__check_permission('ProductsExecute')) {
+			execute = '';
+		}
+		
+		if (helpers.__check_permission('ProductsPriceBase')) {
+			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,rows[i].ppricebasepcs,rows[i].ppricebasekoli,rows[i].ppricebasedozen,rows[i].ppricepcs,rows[i].ppricedozen,rows[i].ppricekoli,execute]);
+		}
+		else {
+			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,rows[i].ppricepcs,rows[i].ppricedozen,rows[i].ppricekoli,execute]);
+		}
+	}
+	
+	res.send({data:data,draw:draw,recordsTotal:total[0].total,recordsFiltered:total[0].total});
 };
 
 exports.list_ajax = async function(req, res) {
@@ -162,7 +185,6 @@ exports.export_product = async function(req,res){
     var rows = await models_products.get_products(req);
 	var rdata = 'Product ID,Product Code,Product Name,Price PCS,Price Lusin,Price Dus'+"\r\n";
 			for(var i=0;i<rows.length;++i) {
-			// console.log(rows[i].pid);
 				rdata += rows[i].pid+',"'+rows[i].pcode+'","'+rows[i].pname+'",'+rows[i].ppricepcs+','+rows[i].ppricedozen+','+rows[i].ppricekoli+"\r\n";
 			}
 	res.set('Content-Type', 'application/octet-stream');
