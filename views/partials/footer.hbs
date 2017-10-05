@@ -95,6 +95,13 @@
 <script>
   $(function () {
     $("#sTable").DataTable({"aaSorting": [], "pageLength": 25, "scrollX": true});
+	var url = '';
+	if (/\/products/.test(window.location.href) === true) {
+		url = '/products/list_datatables';
+	}
+	else {
+		url = '/order/list_datatables';
+	}
 	
 	$('#sAjaxTable').DataTable( {
 		"processing": true,
@@ -103,7 +110,7 @@
 		"ordering": true,
 		"scrollX": true,
 		"pageLength": 25,
-		"ajax": '/products/list_datatables',
+		"ajax": url,
 		"columnDefs": [
 		]
 	} );

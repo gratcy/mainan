@@ -4,11 +4,29 @@ import models_customers from '../models/models_customers';
 
 exports.list = async function(req, res) {
 	delete  req.session.order_products;
-    var rows = await models_order.get_order(req);
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
     
-	res.render('order',{data:rows,error_msg:errorMsg});
+	res.render('order',{error_msg:errorMsg});
+};
+
+exports.list_datatables = async function(req, res) {
+	var params = req.query;
+	var draw = params.draw;
+    var rows = await models_order.get_order(req,params);
+    var total = await models_order.get_order_total(req,params);
+	var data = [];
+	
+	for(var i=0;i<rows.length;++i) {
+		var execute = '<a href="'+helpers.__site_url('order/order_update/'+rows[i].pid)+'"><i class="fa fa-pencil"></i></a><a href="'+helpers.__site_url('order/order_update/'+rows[i].pid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
+		if (!helpers.__check_permission('OrderExecute')) {
+			execute = '';
+		}
+		
+		data.push([rows[i].tno,helpers.__get_date(rows[i].tdate,2),rows[i].cname,rows[i].tqty,helpers.__number_format(rows[i].tammount,0,'',','),helpers.__number_format(rows[i].tdiscount,0,'',','),helpers.__number_format(rows[i].ttotal,0,'',','),(rows[i].tstatus == 3 ? helpers.__parse_json(rows[i].tapprovedby,'uemail') : helpers.__parse_json(rows[i].tcreatedby,'uemail')),execute]);
+	}
+	
+	res.send({data:data,draw:draw,recordsTotal:total[0].total,recordsFiltered:total[0].total});
 };
 
 exports.products_delete = function(req, res) {

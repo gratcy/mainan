@@ -77,10 +77,12 @@ exports.get_products_total = function(conn,type,params) {
 			var sql = 'SELECT COUNT(*) as total FROM products_tab a LEFT JOIN categories_tab b ON a.pcid=b.cid WHERE (a.pstatus=1 OR a.pstatus=0) ORDER BY a.pid DESC';
 		}
 		else {
-			var orderby = 'a.pid DESC';
-			var search = params.search;
+			var search = params.search.value;
 			
-			var sql = 'SELECT COUNT(*) as total FROM products_tab a LEFT JOIN categories_tab b ON a.pcid=b.cid WHERE (a.pstatus=1 OR a.pstatus=0) ORDER BY '+orderby;
+			if (search)
+				var sql = 'SELECT COUNT(*) as total FROM products_tab a LEFT JOIN categories_tab b ON a.pcid=b.cid WHERE (a.pcode LIKE "%'+search+'%" OR a.pname LIKE "%'+search+'%" OR a.pdesc LIKE "%'+search+'%") AND (a.pstatus=1 OR a.pstatus=0)';
+			else
+				var sql = 'SELECT COUNT(*) as total FROM products_tab a LEFT JOIN categories_tab b ON a.pcid=b.cid WHERE (a.pstatus=1 OR a.pstatus=0)';
 		}
 		
 		var query = connection.query(sql, function (err, rows, fields) {

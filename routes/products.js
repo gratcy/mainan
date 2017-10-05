@@ -21,10 +21,10 @@ exports.list_datatables = async function(req, res) {
 		}
 		
 		if (helpers.__check_permission('ProductsPriceBase')) {
-			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,rows[i].ppricebasepcs,rows[i].ppricebasekoli,rows[i].ppricebasedozen,rows[i].ppricepcs,rows[i].ppricedozen,rows[i].ppricekoli,execute]);
+			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,helpers.__number_format(rows[i].ppricebasepcs,0,'',','),helpers.__number_format(rows[i].ppricebasekoli,0,'',','),helpers.__number_format(rows[i].ppricebasedozen,0,'',','),helpers.__number_format(rows[i].ppricepcs,0,'',','),helpers.__number_format(rows[i].ppricedozen,0,'',','),helpers.__number_format(rows[i].ppricekoli,0,'',','),execute]);
 		}
 		else {
-			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,rows[i].ppricepcs,rows[i].ppricedozen,rows[i].ppricekoli,execute]);
+			data.push([rows[i].cname,rows[i].pname,rows[i].pdesc,helpers.__number_format(rows[i].ppricepcs,0,'',','),helpers.__number_format(rows[i].ppricedozen,0,'',','),helpers.__number_format(rows[i].ppricekoli,0,'',','),execute]);
 		}
 	}
 	
@@ -182,7 +182,7 @@ exports.products_update = function(req,res) {
 };
 
 exports.export_product = async function(req,res){
-    var rows = await models_products.get_products(req);
+    var rows = await models_products.get_products(req,1,[]);
 	var rdata = 'Product ID,Product Code,Product Name,Price PCS,Price Lusin,Price Dus'+"\r\n";
 			for(var i=0;i<rows.length;++i) {
 				rdata += rows[i].pid+',"'+rows[i].pcode+'","'+rows[i].pname+'",'+rows[i].ppricepcs+','+rows[i].ppricedozen+','+rows[i].ppricekoli+"\r\n";

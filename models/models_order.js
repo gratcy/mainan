@@ -51,10 +51,54 @@ exports.get_list_products = function(conn) {
     return deferred.promise;
 };
 
-exports.get_order = function(conn) {
+exports.get_order_total = function(conn, params) {
     var deferred = q.defer();
+	var search = params.search.value;
+	
     conn.getConnection(function(err,connection){
-        var query = connection.query('SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND a.ttype=1 ORDER BY a.tid DESC', function (err, rows, fields) {
+		if (search) {
+			var sql = 'SELECT COUNT(*) as total FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND (a.tno LIKE "%'+search+'%" OR b.cname LIKE "%'+search+'%" OR a.tcreatedby LIKE "%'+search+'%" OR a.tapprovedby LIKE "%'+search+'%") AND a.ttype=1';
+		}
+		else {
+			var sql = 'SELECT COUNT(*) as total FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND a.ttype=1';
+		}
+		
+        var query = connection.query(sql, function (err, rows, fields) {
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+
+    return deferred.promise;
+};
+
+exports.get_order = function(conn, params) {
+    var deferred = q.defer();
+	var orderby = 'a.pid DESC';
+	
+	var search = params.search.value;
+	var order = params.order;
+	var start = params.start;
+	var length = params.length;
+	var orderby = 'a.tid DESC';
+	
+	if (order) {
+		var col = ['a.tno','b.cname','a.tdate','a.tqty','a.tammount','a.tdiscount','a.ttotal'];
+		orderby = col[order[0].column] + ' ' + order[0].dir;
+	}
+	
+    conn.getConnection(function(err,connection){
+		if (search) {
+			var sql = 'SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND (a.tno LIKE "%'+search+'%" OR b.cname LIKE "%'+search+'%" OR a.tcreatedby LIKE "%'+search+'%" OR a.tapprovedby LIKE "%'+search+'%") AND a.ttype=1 ORDER BY '+orderby+' LIMIT '+start+','+length;
+		}
+		else {
+			var sql = 'SELECT a.*,b.cname FROM transaction_tab a LEFT JOIN customers_tab b ON a.tcid=b.cid WHERE (a.tstatus=1 OR a.tstatus=0 OR a.tstatus=3) AND a.ttype=1 ORDER BY '+orderby+' LIMIT '+start+','+length;
+		}
+        var query = connection.query(sql, function (err, rows, fields) {
             if (err) {
                 deferred.reject(err);
             }

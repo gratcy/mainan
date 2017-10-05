@@ -249,6 +249,7 @@ app.get('/order/order_update/:id', order.order_detail);
 app.get('/order/order_detail/:id', order.order_detail_approved);
 app.post('/order/order_update',order.order_update);
 app.get('/order/order_delete/:id', order.order_delete);
+app.get('/order/list_datatables', order.list_datatables);
 
 app.get('/retur', retur.list);
 app.get('/retur/faktur/?:id?', retur.retur_faktur);
