@@ -78,7 +78,6 @@ exports.get_order_total = function(conn, params) {
 
 exports.get_order = function(conn, params) {
     var deferred = q.defer();
-	var orderby = 'a.pid DESC';
 	
 	var search = params.search.value;
 	var order = params.order;
@@ -87,7 +86,7 @@ exports.get_order = function(conn, params) {
 	var orderby = 'a.tid DESC';
 	
 	if (order) {
-		var col = ['a.tno','b.cname','a.tdate','a.tqty','a.tammount','a.tdiscount','a.ttotal'];
+		var col = ['a.tno','b.cname','a.tdate','a.tqty','a.tammount','a.tdiscount','a.ttotal','a.tid'];
 		orderby = col[order[0].column] + ' ' + order[0].dir;
 	}
 	
