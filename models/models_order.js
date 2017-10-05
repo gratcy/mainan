@@ -86,7 +86,7 @@ exports.get_order = function(conn, params) {
 	var orderby = 'a.tid DESC';
 	
 	if (order) {
-		var col = ['a.tno','b.cname','a.tdate','a.tqty','a.tammount','a.tdiscount','a.ttotal','a.tid'];
+		var col = ['a.tno','a.tdate','b.cname','a.tqty','a.tammount','a.tdiscount','a.ttotal','a.tid','a.tid'];
 		orderby = col[order[0].column] + ' ' + order[0].dir;
 	}
 	
