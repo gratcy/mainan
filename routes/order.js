@@ -58,7 +58,7 @@ exports.products_delete = function(req, res) {
 					res.send('-1');
 				}
 				else {
-					res.send('1');
+					res.send('12');
 				}
 			});
 		});
@@ -425,28 +425,33 @@ exports.order_update = function(req,res) {
 				
 				if (typeof products != 'undefined') {
 					Object.keys(products).map(function(objectKey, index) {
-						var index = parseInt(objectKey);
-						if (!isNaN(index)) {
-							if (index > 0) {
-								if (optype[index] == 1) {
-									if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
-									else tammount += parseInt(products[index]) * parseFloat(ppricedozen[index]);
-								}
-								else if (optype[index] == 2) {
-									if (!parseFloat(ppricekoli[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
-									else tammount += parseInt(products[index]) * parseFloat(ppricekoli[index]);
-								}
-								else {
-									if (retail == 1) {
-										if (!parseFloat(ppricedozen[index])) tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
-										else tammount += parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
+						if (objectKey !== null) {
+							var index = parseInt(objectKey);
+							var value = (isNaN(products[index]) == true ? 0 : parseInt(products[index]));
+							value = (isNaN(value) ? 0 : value);
+							
+							if (!isNaN(index)) {
+								if (index > 0) {
+									if (optype[index] == 1) {
+										if (!parseFloat(ppricedozen[index])) tammount += value * parseFloat(ppricepcs[index]);
+										else tammount += value * parseFloat(ppricedozen[index]);
+									}
+									else if (optype[index] == 2) {
+										if (!parseFloat(ppricekoli[index])) tammount += value * parseFloat(ppricepcs[index]);
+										else tammount += value * parseFloat(ppricekoli[index]);
 									}
 									else {
-										tammount += parseInt(products[index]) * parseFloat(ppricepcs[index]);
+										if (retail == 1) {
+											if (!parseFloat(ppricedozen[index])) tammount += value * parseFloat(ppricepcs[index]);
+											else tammount += value * (parseFloat(ppricedozen[index]) / 12);
+										}
+										else {
+											tammount += value * parseFloat(ppricepcs[index]);
+										}
 									}
+									
+									tqty += value;
 								}
-								
-								tqty += parseInt(products[index]);
 							}
 						}
 					});
@@ -465,6 +470,7 @@ exports.order_update = function(req,res) {
 					tapprovedby : rapproved,
 					tstatus : status
 				};
+				
 				connection.query("UPDATE transaction_tab set ? WHERE tid = ? ",[data,id], function(err, rows) {
 					if (err) {
 						console.log("Error Selecting : %s ",err );
@@ -477,62 +483,65 @@ exports.order_update = function(req,res) {
 						
 						if (typeof products != 'undefined') {
 							Object.keys(products).map(function(objectKey, index) {
-								var index = parseInt(objectKey);
-								if (!isNaN(index)) {
-									if (index > 0) {
-										var value = products[index];
-										var tprice = 0;
-										var tpricebase = 0;
-										
-										if (optype[index] == 1) {
-											tprice = parseInt(products[index]) * parseFloat(ppricedozen[index]);
-											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
-											tpricebase = parseInt(products[index]) * parseFloat(base_ppricedozen[index]);
-										}
-										else if (optype[index] == 2) {
-											tprice = parseInt(products[index]) * parseFloat(ppricekoli[index]);
-											if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
-											tpricebase = parseInt(products[index]) * parseFloat(base_ppricekoli[index]);
-										}
-										else {
-											if (retail == 1) {
-												tprice = parseInt(products[index]) * (parseFloat(ppricedozen[index]) / 12);
-												if (!tprice) tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
-												tpricebase = parseInt(products[index]) * (parseFloat(base_ppricedozen[index]) / 12);
+								if (objectKey !== null) {
+									var index = parseInt(objectKey);
+									if (!isNaN(index)) {
+										if (index > 0) {
+											var value = (isNaN(products[index]) == true ? 0 : parseInt(products[index]));
+											value = (isNaN(value) ? 0 : value);
+											var tprice = 0;
+											var tpricebase = 0;
+											
+											if (optype[index] == 1) {
+												tprice = value * parseFloat(ppricedozen[index]);
+												if (!tprice) tprice = value * parseFloat(ppricepcs[index]);
+												tpricebase = value * parseFloat(base_ppricedozen[index]);
+											}
+											else if (optype[index] == 2) {
+												tprice = value * parseFloat(ppricekoli[index]);
+												if (!tprice) tprice = value * parseFloat(ppricepcs[index]);
+												tpricebase = value * parseFloat(base_ppricekoli[index]);
 											}
 											else {
-												tprice = parseInt(products[index]) * parseFloat(ppricepcs[index]);
-												tpricebase = parseInt(products[index]) * parseFloat(base_ppricepcs[index]);
-											}
-										}
-										
-										var rdata = {
-											tprice: tprice,
-											tpricebase: tpricebase,
-											tqty: parseInt(value),
-											ttype: optype[index]
-										}
-										
-										connection.query("UPDATE transaction_detail_tab SET ? WHERE ttid = ? AND tpid = ? ",[rdata,ttid,index], function(err, rows) {
-											
-										});
-										
-										if (app == 1) {
-											connection.query('SELECT * FROM inventory_tab WHERE istatus=1 AND ipid=' + index,function(ierr,inv) {
-												if (ierr) {
-													console.log("Error Selecting : %s ",ierr );
+												if (retail == 1) {
+													tprice = value * (parseFloat(ppricedozen[index]) / 12);
+													if (!tprice) tprice = value * parseFloat(ppricepcs[index]);
+													tpricebase = value * (parseFloat(base_ppricedozen[index]) / 12);
 												}
 												else {
-													var idata = {
-														istockout : (parseInt(inv[0].istockout) + parseInt(value)),
-														istock : (parseInt(inv[0].istock) - parseInt(value))
-													};
-													
-													connection.query("UPDATE inventory_tab SET ? WHERE iid = ? ",[idata,inv[0].iid], function(err, rows) {
-														
-													});
+													tprice = value * parseFloat(ppricepcs[index]);
+													tpricebase = value * parseFloat(base_ppricepcs[index]);
 												}
+											}
+											
+											var rdata = {
+												tprice: tprice,
+												tpricebase: tpricebase,
+												tqty: value,
+												ttype: optype[index]
+											}
+											
+											connection.query("UPDATE transaction_detail_tab SET ? WHERE ttid = ? AND tpid = ? ",[rdata,ttid,index], function(err, rows) {
+												
 											});
+											
+											if (app == 1) {
+												connection.query('SELECT * FROM inventory_tab WHERE istatus=1 AND ipid=' + index,function(ierr,inv) {
+													if (ierr) {
+														console.log("Error Selecting : %s ",ierr );
+													}
+													else {
+														var idata = {
+															istockout : (parseInt(inv[0].istockout) + parseInt(value)),
+															istock : (parseInt(inv[0].istock) - parseInt(value))
+														};
+														
+														connection.query("UPDATE inventory_tab SET ? WHERE iid = ? ",[idata,inv[0].iid], function(err, rows) {
+															
+														});
+													}
+												});
+											}
 										}
 									}
 								}

@@ -131,9 +131,13 @@
 $( document ).ajaxComplete(function() {
 	$('input[name="disc"]').bind('change keyup', function(){
 		var gtotal = $('.totalpriceproduct').html();
-		gtotal = gtotal.replace(/(IDR |\.|\,)/g, '');
+		if(typeof(gtotal) !== "undefined"){
+			gtotal = gtotal.replace(/(IDR |\.|\,)/g, '');
+		}
 		var disc = $(this).val();
-		disc = disc.replace(/,/g, '');
+		if(typeof(disc) !== "undefined"){
+			disc = disc.replace(/,/g, '');
+		}
 		$('input[name="grandtotal"]').val(number_format(parseInt(gtotal)-parseInt(disc), 0, '.', ','));
 	});
 	$('input[name="disc"]').change();

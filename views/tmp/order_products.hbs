@@ -20,6 +20,7 @@
         <input type="hidden" name="base_ppricedozen[null]" />
         <input type="hidden" name="base_ppricekoli[null]" />
         <input type="hidden" name="optype[null]" />
+		{{#if tid}}
 				{{#each data}}
 				<tr class="listproducts" idnya="{{ pid }}">
 					<input type="hidden" name="ppricepcs[{{ pid }}]" value="{{ ppricepcs }}">
@@ -32,7 +33,28 @@
                   <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td class="ppricekoli hide" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
-                  {{#if tqty}}
+				<td class="pqty"><input type="number" value="{{ tqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
+                  <td><select name="optype[{{ pid }}]" data-pid="{{ pid }}" class="optype form-control">{{{ __order_product_type ttype 2 }}}</select></td>
+				<td class="pricew"><input name="pricew[{{ pid }}]" class="form-control" readonly></td>
+				<td style="text-align:center;">
+					<a href="javascript:void(0);" id="dellist" idnya="{{ pid }}"><i class="fa fa-times"></i></a>
+				</td>
+                </tr>
+                {{/each}}
+				{{else}}
+				{{#each data}}
+				<tr class="listproducts" idnya="{{ pid }}">
+					<input type="hidden" name="ppricepcs[{{ pid }}]" value="{{ ppricepcs }}">
+					<input type="hidden" name="ppricedozen[{{ pid }}]" value="{{ ppricedozen }}">
+					<input type="hidden" name="ppricekoli[{{ pid }}]" value="{{ ppricekoli }}">
+					<input type="hidden" name="base_ppricepcs[{{ pid }}]" value="{{ ppricebasepcs }}">
+					<input type="hidden" name="base_ppricedozen[{{ pid }}]" value="{{ ppricebasedozen }}">
+					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
+                  <td>{{ pname }}</td>
+                  <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
+                  <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
+                  <td class="ppricekoli hide" data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
+				{{#if tqty}}
 				<td class="pqty"><input type="number" value="{{ tqty }}" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
 				{{else}}
 				<td class="pqty"><input type="number" value="1" name="products[{{ pid }}]" class="form-control" style="width:100px;"></td>
@@ -44,6 +66,7 @@
 				</td>
                 </tr>
                 {{/each}}
+                {{/if}}
 		</tbody>
 		<tfoot>
 		<tr>
@@ -62,7 +85,7 @@
 $('a#dellist').click(function(){
 	var idnya = $(this).attr('idnya');
 	$('tr[idnya='+idnya+']').remove();
-	var data = {pid : idnya, type: '{{ type }}', rid: '{{ rid }}'};
+	var data = {pid : idnya, type: '{{ type }}', tid: '{{ tid }}'};
 	$.post('{{ __site_url "order/order_products_delete" }}', data,
 	function(datas) {
 		
