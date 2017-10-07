@@ -7,7 +7,6 @@
 		res += '<option value=""></option>';
 		$.get( url, function( data ) {
 			$.each(data.data, function( key, val ) {
-				console.log(val.value);
 				if (id > 0 && val.id == id)
 					res += "<option value='"+val.id+"' selected>"+val.value+"</option>";
 				else
