@@ -15,7 +15,7 @@ exports.list_datatables = async function(req, res) {
 	var data = [];
 	
 	for(var i=0;i<rows.length;++i) {
-		var execute = '<a href="'+helpers.__site_url('products/products_update/'+rows[i].pid)+'"><i class="fa fa-pencil"></i></a><a href="'+helpers.__site_url('products/products_update/'+rows[i].pid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
+		var execute = '<a href="'+helpers.__site_url('products/products_update/'+rows[i].pid)+'"><i class="fa fa-pencil"></i></a> <a href="'+helpers.__site_url('products/products_delete/'+rows[i].pid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
 		if (!helpers.__check_permission('ProductsExecute')) {
 			execute = '';
 		}
