@@ -11,7 +11,7 @@
                   <th></th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody id="bodyOrderProduct">
         <input type="hidden" name="products[null]" />
         <input type="hidden" name="ppricepcs[null]" />
         <input type="hidden" name="ppricedozen[null]" />
@@ -106,6 +106,7 @@ $('select.optype').change(function(){
 	var wqty = 0;
 	$('tr.listproducts').each(function(){
 		var rpid = $(this).attr('idnya');
+		$('select[name="optype['+rpid+']"] option[value="'+$('select[name="optype['+rpid+']"] option:selected').val()+'"]').attr("selected","selected");
 		if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
 			wprice = parseFloat($('td.ppricedozen', $(this)).attr('data-ppricedozen'));
 			if (!wprice) wprice = parseFloat($('td.ppricepcs', $(this)).attr('data-ppricepcs'));
@@ -124,7 +125,8 @@ $('select.optype').change(function(){
 			}
 			wqty = parseInt($('td.pqty > input', $(this)).val());
 		}
-		$('input[name="pricew['+rpid+']"]').val(number_format(wprice * wqty));
+		$('input[name="pricew['+rpid+']"]').attr('value',number_format(wprice * wqty));
+		//~ $('input[name="pricew['+rpid+']"]').val(number_format(wprice * wqty));
 			
 		if (rpid != pid) {
 			if ($('select[name="optype['+rpid+']"] option:selected').val() == 1) {
@@ -184,6 +186,8 @@ $('input[type="number"]').bind('change click keypress keyup',function(){
 	})
 	$('.totalqtyproduct').html(totalqty);
 	
+	$(this).attr('value', $(this).val())
+	
 	var totalprice = 0;
 	var price = 0;
 	var qty = 0;
@@ -210,7 +214,8 @@ $('input[type="number"]').bind('change click keypress keyup',function(){
 			}
 			totalprice += price * qty;
 		}
-		$('input[name="pricew['+rpid+']"]').val(number_format(price * qty));
+		//~ $('input[name="pricew['+rpid+']"]').val(number_format(price * qty));
+		$('input[name="pricew['+rpid+']"]').attr('value', number_format(price * qty));
 	});
 	$('.totalpriceproduct').html(number_format(totalprice, 0,'',','));
 	$('input[name="grandtotal"]').val(number_format(totalprice, 0,'',','));
