@@ -2,7 +2,7 @@
   "name": "mainan",
   "version": "1.0.0",
   "description": "mainan",
-  "main": "app.js",
+  "main": "start.js",
   "scripts": {
     "test": "test",
     "start": "pm2-dev start.js"
