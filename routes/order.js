@@ -3,7 +3,7 @@ import models_products from '../models/models_products';
 import models_customers from '../models/models_customers';
 
 exports.list = async function(req, res) {
-	delete  req.session.order_products;
+	delete req.session.order_products;
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
     

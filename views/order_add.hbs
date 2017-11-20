@@ -289,7 +289,7 @@ $(document).ready(function(){
 				res.push('</tr>');
 				res.push(document.getElementById('bodyOrderProduct').innerHTML);
 				document.getElementById('bodyOrderProduct').innerHTML = res.join('');
-				res = '';
+				res = [];
 			}
 			
 			$('a#dellist').click(function(){
@@ -309,6 +309,7 @@ $(document).ready(function(){
 				var totalprice = 0;
 				var price = 0;
 				var qty = 0;
+				$(this).find('option[value="'+$(this).val()+'"]').attr('selected', true);
 				$('tr.listproducts').each(function(){
 					var rpid = $(this).attr('idnya');
 					if (rpid != pid) {
@@ -361,8 +362,9 @@ $(document).ready(function(){
 				$('input[name="grandtotal"]').val(number_format(totalprice, 0,'',','));
 			});
 
-			$('input[type="number"]').bind('change click keypress keyup',function(){
+			$('input[type="number"]').bind('change click keypress keyup keydown',function(){
 				var totalqty = 0;
+				$(this).attr('value',$(this).val());
 				$('input[type="number"]').each(function(index){
 					totalqty += ($(this).val() == '' ? 0 : parseInt($(this).val()));
 				})
