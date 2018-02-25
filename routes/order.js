@@ -82,7 +82,7 @@ exports.products_add = async function(req, res) {
 				req.session.order_products = pids;
 				req.session.save();
 			}
-			var rows = await models_products.get_products_detail(req, pids[0]);
+			var rows = await models_products.get_products_order(req, pids[0]);
 			res.send({status: '-1',product:rows});
 		}
 		else {
