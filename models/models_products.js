@@ -30,6 +30,21 @@ exports.get_products_order = function(conn, id) {
     return deferred.promise;
 };
 
+exports.get_all_products_order = function(conn) {
+    var deferred = q.defer();
+    conn.getConnection(function(err, connection){
+        var query = connection.query('SELECT pid,pname,ppricepcs,ppricedozen,ppricekoli,ppricebasedozen,ppricebasekoli,ppricebasepcs FROM products_tab WHERE (pstatus=1 OR pstatus=0)', function(err, rows, fields){
+            if (err) {
+                deferred.reject(err);
+            }
+            else {
+                deferred.resolve(rows);
+            }
+        });
+    });
+    return deferred.promise;
+};
+
 exports.get_products_select = function(conn) {
     var deferred = q.defer();
     conn.getConnection(function(err,connection){

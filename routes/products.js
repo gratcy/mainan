@@ -96,6 +96,7 @@ exports.products_add = function(req,res) {
 					res.redirect('/products');
 				}
 				else {
+					memcached.del('tmpProduct', function (err) {  });
 					helpers.__set_error_msg({info : 'Data berhasil ditambahkan.'},req.sessionID);
 					res.redirect('/products');
 				}
@@ -168,6 +169,7 @@ exports.products_update = function(req,res) {
 						res.redirect('/products');
 					}
 					else {
+						memcached.del('tmpProduct', function (err) {  });
 						helpers.__set_error_msg({info : 'Data berhasil diubah.'},req.sessionID);
 						res.redirect('/products');
 					}
@@ -207,6 +209,7 @@ exports.products_delete = function(req,res){
 				res.redirect('/products');
 			}
 			else {
+				memcached.del('tmpProduct', function (err) {  });
 				helpers.__set_error_msg({info : 'Data berhasil dihapus.'},req.sessionID);
 				res.redirect('/products');
 			}

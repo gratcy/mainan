@@ -70,6 +70,18 @@ exports.products_add = async function(req, res) {
 	var pids = input.pid;
 	var oid = parseInt(input.oid);
 
+	const getProductById = (data, pid) => {
+		const productDetail = []
+		const totalData = _.result(data, 'length', 0) || _.size(data)
+
+		for(var i=0;i<totalData;++i) {
+			if (parseInt(pid) == parseInt(data[i].pid)) {
+				productDetail.push(data[i])
+			}
+		}
+		return productDetail
+	}
+
 	if (typeof(pids) != 'undefined') {
 		if (input.type == 1) {
 			if (typeof req.session.order_products != 'undefined') {
@@ -82,8 +94,19 @@ exports.products_add = async function(req, res) {
 				req.session.order_products = pids;
 				req.session.save();
 			}
-			var rows = await models_products.get_products_order(req, pids[0]);
-			res.send({status: '-1',product:rows});
+
+			memcached.get('tmpProduct', async (err, rows) => {
+				if (rows) {
+					res.send({status: '-1', product: getProductById(rows, pids[0])});
+				}
+				else {
+					var allProduct = await models_products.get_all_products_order(req);
+					memcached.set('tmpProduct', allProduct, 7200, function (err) {
+						if (err) console.error(err)
+					});
+					res.send({status: '-1', product: getProductById(allProduct, pids[0])});
+				}
+			})
 		}
 		else {
 			if (oid) {
