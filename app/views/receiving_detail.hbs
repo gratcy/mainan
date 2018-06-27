@@ -46,6 +46,7 @@
                   <th>Price Lusin</th>
                   <th>Price Koli</th>
                   <th>QTY</th>
+                  <th>Type</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,7 @@
                   <td data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
                   <td data-ppricekoli="{{ ppricekoli }}">{{ __number_format ppricekoli 0 '' ',' }}</td>
                   <td data-rqty="{{ rqty }}">{{ rqty }}</td>
+                  <td>{{ __receiving_product_type rtype 1 }}</td>
                 </tr>
                 {{/each}}
                 </tbody>
@@ -70,6 +72,7 @@
                   <th class="ppricedozen"></th>
                   <th class="ppricekoli"></th>
                   <th class="rqty"></th>
+                  <th></th>
                 </tr>
                 </tfoot>
               </table>

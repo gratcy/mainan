@@ -99,8 +99,14 @@
 	if (/\/products/.test(window.location.href) === true) {
 		url = '/products/list_datatables';
 	}
-	else {
+	else if (/\/order/.test(window.location.href) === true) {
 		url = '/order/list_datatables';
+	}
+	else if (/\/opname/.test(window.location.href) === true) {
+		url = '/opname/list_datatables';
+	}
+	else if (/\/inventory/.test(window.location.href) === true) {
+		url = '/inventory/list_datatables';
 	}
 	
 	$('#sAjaxTable').DataTable( {

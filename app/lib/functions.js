@@ -69,6 +69,24 @@ var register = function(Handlebars) {
 				return res;
 			}
 		},
+		__receiving_product_type : function(id,type) {
+			var data = ['Pcs','','Dus'];
+			if (type == 1) {
+				return data[id];
+			}
+			else {
+				var res = '';
+				for(var i=0;i<data.length;++i) {
+					if (data[i]) {
+						if (id == i)
+							res += '<option value="'+i+'" selected>'+data[i]+'</option>';
+						else
+							res += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+				}
+				return res;
+			}
+		},
 		__addZero : function (i) {
 			if (i < 10) {
 				i = "0" + i;

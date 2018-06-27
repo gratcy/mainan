@@ -6,7 +6,7 @@ exports.list = async function(req, res) {
 	delete req.session.order_products;
     var mem_msg = await helpers.__get_memcached_data(req);
     var errorMsg = helpers.__get_error_msg(mem_msg,req.sessionID);
-    
+
 	res.render('order',{error_msg:errorMsg});
 };
 
@@ -18,7 +18,7 @@ exports.list_datatables = async function(req, res) {
 	var data = [];
 	
 	for(var i=0;i<rows.length;++i) {
-		var execute = '<a href="'+helpers.__site_url('order/order_update/'+rows[i].tid)+'"><i class="fa fa-pencil"></i></a><a href="'+helpers.__site_url('order/order_update/'+rows[i].tid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
+		var execute = '<a href="'+helpers.__site_url('order/order_update/'+rows[i].tid)+'"><i class="fa fa-pencil"></i></a> <a href="'+helpers.__site_url('order/order_update/'+rows[i].tid)+'" onclick="return confirm(\'Are you sure you want to delete this item?\');"><i class="fa fa-times"></i></a>';
 		if (!helpers.__check_permission('OrderExecute')) {
 			execute = '';
 		}
@@ -423,6 +423,7 @@ exports.order_update = function(req,res) {
 			
 			var products = input.products;
 			var optype = input.optype;
+			var koliqty = input.koliqty;
 			var tdisc = parseFloat(input.disc.replace(/(\,|\.)/g, ""));
 			var ttotal = 0;
 			var tammount = 0;
@@ -554,9 +555,17 @@ exports.order_update = function(req,res) {
 														console.log("Error Selecting : %s ",ierr );
 													}
 													else {
+														let valueQTY = value
+														if (optype[index] == 0)
+															valueQTY = value
+														else if (optype[index] == 1)
+															valueQTY = parseInt(value) * 12
+														else
+															valueQTY = parseInt(koliqty[index]) * parseInt(value)
+
 														var idata = {
-															istockout : (parseInt(inv[0].istockout) + parseInt(value)),
-															istock : (parseInt(inv[0].istock) - parseInt(value))
+															istockout : (parseInt(inv[0].istockout) + parseInt(valueQTY)),
+															istock : (parseInt(inv[0].istock) - parseInt(valueQTY))
 														};
 														
 														connection.query("UPDATE inventory_tab SET ? WHERE iid = ? ",[idata,inv[0].iid], function(err, rows) {

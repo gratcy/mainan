@@ -18,7 +18,7 @@ exports.get_products_detail = function(conn, id) {
 exports.get_products_order = function(conn, id) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
-        var query = connection.query('SELECT pid,pname,ppricepcs,ppricedozen,ppricekoli,ppricebasedozen,ppricebasekoli,ppricebasepcs FROM products_tab WHERE (pstatus=1 OR pstatus=0) AND pid = ?', [id], function(err, rows, fields){
+        var query = connection.query('SELECT pid,pname,ppricepcs,ppricedozen,ppricekoli,ppricebasedozen,ppricebasekoli,ppricebasepcs,pkoliqty FROM products_tab WHERE (pstatus=1 OR pstatus=0) AND pid = ?', [id], function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }
@@ -33,7 +33,7 @@ exports.get_products_order = function(conn, id) {
 exports.get_all_products_order = function(conn) {
     var deferred = q.defer();
     conn.getConnection(function(err, connection){
-        var query = connection.query('SELECT pid,pname,ppricepcs,ppricedozen,ppricekoli,ppricebasedozen,ppricebasekoli,ppricebasepcs FROM products_tab WHERE (pstatus=1 OR pstatus=0)', function(err, rows, fields){
+        var query = connection.query('SELECT pid,pname,ppricepcs,ppricedozen,ppricekoli,ppricebasedozen,ppricebasekoli,ppricebasepcs,pkoliqty FROM products_tab WHERE (pstatus=1 OR pstatus=0)', function(err, rows, fields){
             if (err) {
                 deferred.reject(err);
             }

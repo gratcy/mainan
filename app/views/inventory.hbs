@@ -3,12 +3,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Stock Opname
-        <small>Opname</small>
+        Inventory
+        <small>Inventory</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="#">Stock Opname</a></li>
+        <li class="active"><a href="#">Inventory</a></li>
       </ol>
     </section>
 
@@ -18,13 +18,13 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Stock Opname</h3>
+              <h3 class="box-title">Inventory</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
             {{{ error_msg }}}
             
-              <table id="sTable" class="table table-bordered table-striped">
+              <table id="sAjaxTable" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>Product</th>
@@ -33,29 +33,14 @@
                   <th>Out</th>
                   <th>Return</th>
                   <th>Final</th>
+                  <th>Adjust (+)</th>
+                  <th>Adjust (-)</th>
                   <th>Process</th>
                   <th>Left</th>
-				  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-				{{#each data}}
-                <tr class="pid_inventory" data-pid="{{ ipid }}">
-                  <td>{{ pname }}</td>
-                  <td>{{ istockbegining }}</td>
-                  <td>{{ istockin }}</td>
-                  <td>{{ istockout }}</td>
-                  <td>{{ istockreturn }}</td>
-                  <td class="final_{{ ipid }}">{{ istock }}</td>
-                  <td class="proccess_{{ ipid }}">0</td>
-                  <td class="left_{{ ipid }}">0</td>
-				  <td>
-					{{#if (__check_permission 'OpnameExecute') }}
-					<a href="{{ __site_url 'opname/opname_update/' }}{{ ipid }}"><i class="fa fa-pencil"></i></a>
-					{{/if}}
-				  </td>
-                </tr>
-                {{/each}}
+
                 </tbody>
                 <tfoot>
                 <tr>
@@ -65,9 +50,10 @@
                   <th>Out</th>
                   <th>Return</th>
                   <th>Final</th>
+                  <th>Adjust (+)</th>
+                  <th>Adjust (-)</th>
                   <th>Process</th>
                   <th>Left</th>
-				  <th>Action</th>
                 </tr>
                 </tfoot>
               </table>
@@ -82,15 +68,3 @@
     </section>
     <!-- /.content -->
 </div>
-
-<script>
-$('tr.pid_inventory').each(function(k,v) {
-	$.post( "{{ __site_url 'ajax/stock_proccess' }}", {pids: $(v).attr('data-pid')}).done(function( data ) {
-		$('.left_'+$(v).attr('data-pid')).html($('.final_'+$(v).attr('data-pid')).html());
-		
-		var sfinal = parseInt($('.final_'+$(v).attr('data-pid')).html()) - data.total;
-		$('.proccess_'+$(v).attr('data-pid')).html(data.total);
-		$('.left_'+$(v).attr('data-pid')).html(sfinal);
-	});
-})
-</script>

@@ -1,12 +1,11 @@
-require('dotenv').config();
-import config from './config/settings';
+import config from './app/config/settings';
 
-var path = require('path'),
+const path = require('path'),
 	http = require('http'),
     fs = require('fs'),
     mysql = require('mysql'),
     Memcached = require('memcached');
-var _ = require("underscore");
+const _ = require("underscore");
 
 global.conf = config;
 global._ = _;
@@ -15,18 +14,18 @@ export const memcached = new Memcached(conf.memcached.host+':'+conf.memcached.po
 
 global.memcached = memcached;
 
-var express = require('express'),
+const express = require('express'),
 	session = require('express-session'),
 	hbs = require('express-handlebars'),
 	db  = require('express-myconnection'),
-	helpers = require('./lib/functions'),
+	helpers = require('./app/lib/functions'),
 	bodyParser = require('body-parser'),
 	memcachedStore = require('connect-memcached')(session);
 
-var app = express();
-var q = require('q');
+const app = express();
+const q = require('q');
 
-var getMySQLConnection = function() {
+const getMySQLConnection = function() {
     return mysql.createConnection({
 		host: conf.mysql.host,
 		user: conf.mysql.user,
@@ -39,34 +38,37 @@ global.getMySQLConnection = getMySQLConnection;
 global.q = q;
 global.helpers = helpers.helpers;
 
-var index = require('./routes/index'),
-	login = require('./routes/login'),
-	settings = require('./routes/settings'),
-	vendor = require('./routes/vendor'),
-	order = require('./routes/order'),
-	retur = require('./routes/retur'),
-	report = require('./routes/report'),
-	receiving = require('./routes/receiving'),
-	categories = require('./routes/categories'),
-	products = require('./routes/products'),
-	customers = require('./routes/customers'),
-	inventory = require('./routes/inventory'),
-	opname = require('./routes/opname'),
-	city = require('./routes/city'),
-	province = require('./routes/province'),
-	peticash = require('./routes/peticash'),
-	users_group = require('./routes/users_group'),
-	users = require('./routes/users');
+const index = require('./app/controllers/index'),
+	login = require('./app/controllers/login'),
+	settings = require('./app/controllers/settings'),
+	vendor = require('./app/controllers/vendor'),
+	order = require('./app/controllers/order'),
+	retur = require('./app/controllers/retur'),
+	report = require('./app/controllers/report'),
+	receiving = require('./app/controllers/receiving'),
+	categories = require('./app/controllers/categories'),
+	products = require('./app/controllers/products'),
+	customers = require('./app/controllers/customers'),
+	inventory = require('./app/controllers/inventory'),
+	opname = require('./app/controllers/opname'),
+	city = require('./app/controllers/city'),
+	province = require('./app/controllers/province'),
+	peticash = require('./app/controllers/peticash'),
+	users_group = require('./app/controllers/users_group'),
+	users = require('./app/controllers/users');
 
 app.set('port', config.web.port);
 app.set('host', config.web.host);
 
-var hbsHelpers = hbs.create({
+const viewsPath = path.join(__dirname, 'app', 'views');
+app.set('views', viewsPath);
+
+const hbsHelpers = hbs.create({
 	helpers: helpers.helpers,
 	extname:'hbs',
 	defaultLayout:'main',
-	layoutsDir: __dirname + '/views/layouts/',
-	partialsDir: __dirname + '/views/partials/'
+	layoutsDir: `${viewsPath}/layouts/`,
+	partialsDir: `${viewsPath}/partials/`
 });
 
 app.use(session({
@@ -96,8 +98,6 @@ app.use(
 app.engine('.hbs', hbsHelpers.engine);
 app.set('view engine', '.hbs');
 
-var sauth;
-
 app.use(function(req, res, next){
 	global.sauth = '';
 	if (/\/login/.test(req.path) === false) {
@@ -110,10 +110,10 @@ app.use(function(req, res, next){
 				return res.redirect('/login');
 			}
 			
-			for(var i=0;i<global.sauth.perms.length;++i) {
+			for(let i=0;i<global.sauth.perms.length;++i) {
 				if (global.sauth.perms[i].url != null) {
-					var pattern = global.sauth.perms[i].url;
-					var regex = new RegExp(pattern,'g');
+					let pattern = global.sauth.perms[i].url;
+					let regex = new RegExp(pattern,'g');
 					if (regex.test(req.path) === true) {
 						if (req.path != '/' && /\/ajax/.test(req.path) == false) {
 							if (global.sauth.perms[i].access != 1) {
@@ -200,9 +200,10 @@ app.post('/login/logging', login.login);
 app.get('/login/logout', login.logout);
 
 app.get('/inventory', inventory.list);
-app.post('/ajax/stock_proccess', inventory.stock_proccess);
+app.get('/inventory/list_datatables', inventory.list_datatables);
 
 app.get('/opname', opname.list);
+app.get('/opname/list_datatables', opname.list_datatables);
 app.get('/opname/opname_update/:id', opname.opname_detail);
 app.post('/opname/opname_update', opname.opname_update);
 

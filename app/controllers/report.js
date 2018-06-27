@@ -45,7 +45,7 @@ exports.exec_transaction = async function(req, res) {
 			var netto = (((price/qty) - pricebase) * qty) - discount;
 			var bruto = price;
 			
-			rdata.push({no:(i+1)+'.',uid:obj.uid,ttype:data[i].ttype,uemail:obj.uemail,netto:netto,bruto:bruto,tprice:(price/qty),tpricebase:pricebase,tdate:data[i].tdate,tcreatedby:data[i].tcreatedby,tno:data[i].tno,tdesc:data[i].tdesc,tqty:data[i].tqty,tammount:data[i].tammount,tdiscount:discount,ttotal:data[i].ttotal,pname:data[i].pname});
+			rdata.push({no:(i+1)+'.',uid:obj.uid,ttype:data[i].ttype,transType:data[i].transType,uemail:obj.uemail,netto:netto,bruto:bruto,tprice:(price/qty),tpricebase:pricebase,tdate:data[i].tdate,tcreatedby:data[i].tcreatedby,tno:data[i].tno,tdesc:data[i].tdesc,tqty:data[i].tqty,tammount:data[i].tammount,tdiscount:discount,ttotal:data[i].ttotal,pname:data[i].pname});
 			
 			ttotalQTY += qty;
 			ttotalDisc += discount;

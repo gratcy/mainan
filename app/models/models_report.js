@@ -61,7 +61,7 @@ exports.get_transaction = function(conn,input) {
 	}
 	
 	conn.getConnection(function(err,connection){
-		var query_str = "SELECT a.tprice,a.tpricebase,a.tqty,b.tdate,b.tcreatedby,b.ttype,b.tno,b.tdesc,b.tammount,b.tdiscount,b.ttotal,c.pname FROM transaction_detail_tab a JOIN transaction_tab b ON a.ttid=b.tid JOIN products_tab c ON a.tpid=c.pid WHERE a.tstatus=1" + ttype + date + approval + pid + cid + user;
+		var query_str = "SELECT a.tprice,a.tpricebase,a.tqty,b.tdate,b.tcreatedby,a.ttype as transType,b.ttype,b.tno,b.tdesc,b.tammount,b.tdiscount,b.ttotal,c.pname FROM transaction_detail_tab a JOIN transaction_tab b ON a.ttid=b.tid JOIN products_tab c ON a.tpid=c.pid WHERE a.tstatus=1" + ttype + date + approval + pid + cid + user;
 		var query = connection.query(query_str, function (err, rows, fields) {
 			if (err) {
 				deferred.reject(err);

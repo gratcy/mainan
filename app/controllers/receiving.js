@@ -77,6 +77,7 @@ exports.products_add = async function(req, res) {
 						riid : oid,
 						rpid : pids,
 						rqty : 0,
+						rtype : 1,
 						rstatus : 1
 					};
 					req.getConnection(function (err, connection) {
@@ -183,6 +184,7 @@ exports.receiving_add = function(req,res) {
 	}
 	else {
 		var products = input.products;
+		var rtype = input.rtype;
 		req.getConnection(function (err, connection) {
 			var str = input.waktu;
 			var rres = str.split('/');
@@ -212,12 +214,12 @@ exports.receiving_add = function(req,res) {
 						if (!isNaN(index)) {
 							if (index > 0) {
 								var value = products[index];
-								rdata.push([riid,index,parseInt(value),1]);
+								rdata.push([riid,index,parseInt(value),rtype[index],1]);
 							}
 						}
 					});
 					
-					var query = connection.query("INSERT INTO receiving_item_tab (riid,rpid,rqty,rstatus) VALUES ?",[rdata], function(err, rows) {
+					var query = connection.query("INSERT INTO receiving_item_tab (riid,rpid,rqty,rtype,rstatus) VALUES ?",[rdata], function(err, rows) {
 						if (err) {
 							console.log("Error Selecting : %s ",err );
 						}
@@ -273,17 +275,21 @@ exports.receiving_update = function(req,res) {
 					}
 					else {
 						var products = input.products;
+						var rtype = input.rtype;
+						var dusqty = input.dusqty;
 						var rdata = [];
 						var riid = id;
-						
+
 						Object.keys(products).map(function(objectKey, index) {
 							var index = parseInt(objectKey);
 							if (!isNaN(index)) {
 								if (index > 0) {
 									var value = products[index];
 									var rdata = {
-										rqty : value
+										rqty : value,
+										rtype: rtype[index]
 									};
+
 									connection.query("UPDATE receiving_item_tab SET ? WHERE riid = ? AND rpid = ? ",[rdata,id,index], function(err, rows) {
 										
 									});
@@ -293,11 +299,12 @@ exports.receiving_update = function(req,res) {
 												console.log("Error Selecting : %s ",ierr );
 											}
 											else {
+												var valueQTY = rtype[index] == 2 ? dusqty[index] : value
 												var idata = {
-													istockin : (parseInt(inv[0].istockin) + parseInt(value)),
-													istock : (parseInt(inv[0].istock) + parseInt(value))
+													istockin : (parseInt(inv[0].istockin) + parseInt(valueQTY)),
+													istock : (parseInt(inv[0].istock) + parseInt(valueQTY))
 												};
-												
+
 												connection.query("UPDATE inventory_tab SET ? WHERE iid = ? ",[idata,inv[0].iid], function(err, rows) {
 													
 												});

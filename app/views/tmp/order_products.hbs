@@ -20,6 +20,7 @@
         <input type="hidden" name="base_ppricedozen[null]" />
         <input type="hidden" name="base_ppricekoli[null]" />
         <input type="hidden" name="optype[null]" />
+        <input type="hidden" name="koliqty[null]" />
 		{{#if tid}}
 				{{#each data}}
 				<tr class="listproducts" idnya="{{ pid }}">
@@ -29,6 +30,7 @@
 					<input type="hidden" name="base_ppricepcs[{{ pid }}]" value="{{ ppricebasepcs }}">
 					<input type="hidden" name="base_ppricedozen[{{ pid }}]" value="{{ ppricebasedozen }}">
 					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
+					<input type="hidden" name="koliqty[{{ pid }}]" value="{{ pkoliqty }}">
                   <td>{{ pname }}</td>
                   <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
@@ -50,6 +52,7 @@
 					<input type="hidden" name="base_ppricepcs[{{ pid }}]" value="{{ ppricebasepcs }}">
 					<input type="hidden" name="base_ppricedozen[{{ pid }}]" value="{{ ppricebasedozen }}">
 					<input type="hidden" name="base_ppricekoli[{{ pid }}]" value="{{ ppricebasekoli }}">
+					<input type="hidden" name="koliqty[{{ pid }}]" value="{{ pkoliqty }}">
                   <td>{{ pname }}</td>
                   <td class="ppricepcs hide" data-ppricepcs="{{ ppricepcs }}">{{ __number_format ppricepcs 0 '' ',' }}</td>
                   <td class="ppricedozen hide" data-ppricedozen="{{ ppricedozen }}">{{ __number_format ppricedozen 0 '' ',' }}</td>
