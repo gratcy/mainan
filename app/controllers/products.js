@@ -55,7 +55,7 @@ exports.products_detail = async function(req, res) {
 
 exports.products_add = function(req,res) {
 	var input = req.body;
-	if (!input.name) {
+	if (!input.name || !input.cid) {
 		helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 		res.redirect('/products/products_add');
 	}
@@ -109,7 +109,7 @@ exports.products_update = function(req,res) {
 	var input = req.body;
 	var id = input.id;
 	if (id) {
-		if (!input.name) {
+		if (!input.name || !input.cid) {
 			helpers.__set_error_msg({error: 'Data yang anda masukkan tidak lengkap !!!'},req.sessionID);
 			res.redirect('/products/products_update/' + id);
 		}
