@@ -1,7 +1,7 @@
 {
   "apps" : [{
-    "name"      : "blaze",
-    "script"    : "server.js",
+    "name"      : "mainanAPP",
+    "script"    : "start.js",
     "env": {
       "COMMON_VARIABLE": "true"
     },

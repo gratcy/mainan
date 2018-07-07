@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "start": "pm2-dev start.js",
-    "deploy-production": "pm2 deploy ecosystem.json production",
+    "deploy-production": "pm2 deploy ecosystem.json production"
   },
   "keywords": [
     "mainan"
