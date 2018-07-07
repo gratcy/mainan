@@ -12,7 +12,7 @@
   "deploy" : {
     "production" : {
       "user" : "palma",
-      "host" : ["139.59.123.11"],
+      "host" : "139.59.123.11",
       "ref"  : "origin/master",
       "repo" : "git@github.com:gratcy/mainan.git",
       "path" : "/var/www/mainan",
