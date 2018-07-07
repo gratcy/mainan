@@ -1,0 +1,26 @@
+{
+  "apps" : [{
+    "name"      : "blaze",
+    "script"    : "server.js",
+    "env": {
+      "COMMON_VARIABLE": "true"
+    },
+    "env_production" : {
+      "NODE_ENV": "production"
+    }
+  }],
+  "deploy" : {
+    "production" : {
+      "user" : "palma",
+      "host" : ["139.59.123.11"],
+      "ref"  : "origin/master",
+      "repo" : "git@github.com:gratcy/mainan.git",
+      "path" : "/var/www/mainan",
+      "pre-deploy-local" : "git checkout . && echo 'Please wait... Deploying in process...'",
+      "post-deploy" : "source ~/.profile && npm install && NODE_ENV=production pm2 reload mainanAPP && pm2 ls && echo 'Please wait... Checking up the app starting up....' && sleep 7s && pm2 ls",
+      "env"  : {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
