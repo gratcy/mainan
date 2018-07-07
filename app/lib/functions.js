@@ -133,8 +133,8 @@ var register = function(Handlebars) {
 			return false;
 		},
 		__hash_password : function (password) {
-			var hash = crypto.createHash('md5').update(password).digest('hex');
-			var shasum = crypto.createHash('sha1').update(hash).digest('hex');
+			var hash = crypto.createCipheriv('md5').update(password).digest('hex');
+			var shasum = crypto.createCipheriv('sha1').update(hash).digest('hex');
 			return shasum;
 		},
 		__number_format : function (number, decimals, decPoint, thousandsSep) {
@@ -231,7 +231,6 @@ var register = function(Handlebars) {
 			}
 		},
 		__set_error_msg : function(arr,sesId) {
-			console.log('__msg'+sesId);
 			memcached.set('__msg'+sesId, arr, 10, function (err) { });
 		},
 		__get_memcached_data : function(req) {
