@@ -25,16 +25,16 @@ exports.get_opname = function(conn, params) {
     var orderby = 'a.ipid DESC';
     
     if (order) {
-        var col = ['b.pname','a.istockbegining','a.istockin','a.istockout','a.istockreturn','a.istock','a.ipid','a.ipid','a.ipid'];
+        var col = ['b.pname','a.istockbegining','a.istockin','a.istockout','a.istockreturn','a.istock','a.ipid','a.ipid','aplus','amin','a.ipid','a.ipid'];
         orderby = col[order[0].column] + ' ' + order[0].dir;
     }
     
     conn.getConnection(function(err,connection){
         if (search) {
-            var sql = 'SELECT a.*,b.pname FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) AND b.pname LIKE "%'+search+'%" ORDER BY '+orderby+' LIMIT '+start+','+length;
+            var sql = 'SELECT a.*,b.pname,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) AND b.pname LIKE "%'+search+'%" ORDER BY '+orderby+' LIMIT '+start+','+length;
         }
         else {
-            var sql = 'SELECT a.*,b.pname FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) ORDER BY '+orderby+' LIMIT '+start+','+length;
+            var sql = 'SELECT a.*,b.pname,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) ORDER BY '+orderby+' LIMIT '+start+','+length;
         }
 
         var query = connection.query(sql, function (err, rows, fields) {

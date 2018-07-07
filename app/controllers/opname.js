@@ -21,7 +21,7 @@ exports.list_datatables = async function(req, res) {
 	}
 
 	for(var i=0;i<rows.length;++i) {
-		var execute = '<a href="'+helpers.__site_url('order/opname_update/'+rows[i].ipid)+'"><i class="fa fa-pencil"></i></a>';
+		var execute = '<a href="'+helpers.__site_url('opname/opname_update/'+rows[i].ipid)+'"><i class="fa fa-pencil"></i></a>';
 		if (!helpers.__check_permission('OpnameExecute')) {
 			execute = '';
 		}
@@ -30,7 +30,7 @@ exports.list_datatables = async function(req, res) {
 		var proccess = totalProccess
 		var left = parseInt(totalProccess) + parseInt(rows[i].istock)
 		
-		data.push([rows[i].pname, rows[i].istockbegining, rows[i].istockin, rows[i].istockout, rows[i].istockreturn, rows[i].istock, proccess, left, execute]);
+		data.push([rows[i].pname, rows[i].istockbegining, rows[i].istockin, rows[i].istockout, rows[i].istockreturn, rows[i].istock, proccess, left, rows[i].aplus, rows[i].amin, execute]);
 	}
 	
 	res.send({data:data,draw:draw,recordsTotal:total[0].total,recordsFiltered:total[0].total});
