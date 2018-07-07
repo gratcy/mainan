@@ -23,18 +23,9 @@ const express = require('express'),
 	memcachedStore = require('connect-memcached')(session);
 
 const app = express();
+const server = http.createServer(app);
 const q = require('q');
 
-const getMySQLConnection = function() {
-    return mysql.createConnection({
-		host: conf.mysql.host,
-		user: conf.mysql.user,
-		password: conf.mysql.password,
-		database: conf.mysql.db
-    });
-}
-
-global.getMySQLConnection = getMySQLConnection;
 global.q = q;
 global.helpers = helpers.helpers;
 
@@ -83,7 +74,7 @@ app.use(session({
     })
 }));
 
-app.use( bodyParser.json() );
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/assets', express.static('assets'));
 app.use(
@@ -282,7 +273,12 @@ app.use(function(req, res, next){
 	res.render('404', { status: 404, url: req.url });
 });
 
-http.createServer(app).listen(app.get('port'),app.get('host'), function(){
+server.listen(app.get('port'), () => {
 	console.log('Express server listening on host: '+app.get('host')+' port: ' + app.get('port'));
 });
+
+process.on('SIGINT', () => {
+	process.exit(1)
+})
+
 memcached.end();
