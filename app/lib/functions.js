@@ -133,8 +133,8 @@ var register = function(Handlebars) {
 			return false;
 		},
 		__hash_password : function (password) {
-			var hash = crypto.createCipheriv('md5').update(password).digest('hex');
-			var shasum = crypto.createCipheriv('sha1').update(hash).digest('hex');
+			var hash = crypto.createHash('md5').update(password).digest('hex');
+			var shasum = crypto.createHash('sha1').update(hash).digest('hex');
 			return shasum;
 		},
 		__number_format : function (number, decimals, decPoint, thousandsSep) {
