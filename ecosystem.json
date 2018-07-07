@@ -16,7 +16,8 @@
       "ref"  : "origin/master",
       "repo" : "git@github.com:gratcy/mainan.git",
       "path" : "/var/www/mainan",
-      "pre-deploy-local" : "git checkout . && git pull && echo 'Please wait... Deploying in process...'",
+      "pre-deploy-local" : "git checkout . && echo 'Please wait... Deploying in process...'",
+      "pre-deploy" : "git pull",
       "post-deploy" : "npm install && NODE_ENV=production pm2 reload mainanAPP && pm2 ls && echo 'Please wait... Checking up the app starting up....' && sleep 7s && pm2 ls",
       "env"  : {
         "NODE_ENV": "production"
