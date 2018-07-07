@@ -8,6 +8,12 @@
     "start": "pm2-dev start.js",
     "deploy-production": "pm2 deploy ecosystem.json production"
   },
+  "author": "Gratcy",
+  "license": "Beerware",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gratcy/mainan.git"
+  },
   "keywords": [
     "mainan"
   ],
