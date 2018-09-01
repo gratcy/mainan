@@ -169,6 +169,9 @@ var register = function(Handlebars) {
 		__get_date_now : function() {
 			return Math.floor(Date.now() / 1000);
 		},
+		__isFloat(n){
+		    return Number(n) === n && n % 1 !== 0;
+		},
 		__themes_url : function(str) {
 			return conf.web.url +'assets/' + str;
 		},

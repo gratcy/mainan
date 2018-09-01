@@ -85,7 +85,7 @@ exports.products_add = function(req,res) {
 				ppricepcs : pricepcs,
 				ppricedozen : pricedozen,
 				ppricekoli : pricekoli,
-				pkoliqty : input.koliqty,
+				pkoliqty : parseInt(input.koliqty) < 1 ? 1 : input.koliqty,
 				pstatus : input.status
 			};
 
@@ -139,7 +139,7 @@ exports.products_update = function(req,res) {
 					ppricepcs : pricepcs,
 					ppricedozen : pricedozen,
 					ppricekoli : pricekoli,
-					pkoliqty : input.koliqty,
+					pkoliqty : parseInt(input.koliqty) < 1 ? 1 : input.koliqty,
 					pstatus : input.status
 				};
 				

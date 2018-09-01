@@ -32,10 +32,10 @@ exports.get_inventory = function(conn, params) {
 	
     conn.getConnection(function(err,connection){
 		if (search) {
-			var sql = 'SELECT a.*,b.pname,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) AND b.pname LIKE "%'+search+'%" ORDER BY '+orderby+' LIMIT '+start+','+length;
+			var sql = 'SELECT a.*,b.pname,b.pkoliqty,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) AND b.pname LIKE "%'+search+'%" ORDER BY '+orderby+' LIMIT '+start+','+length;
 		}
 		else {
-			var sql = 'SELECT a.*,b.pname,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) ORDER BY '+orderby+' LIMIT '+start+','+length;
+			var sql = 'SELECT a.*,b.pname,b.pkoliqty,(SELECT IFNULL(SUM(c.oadjustmin),0) FROM opname_tab c WHERE c.oidid=a.ipid) as amin,(SELECT IFNULL(SUM(d.oadjustplus),0) FROM opname_tab d WHERE d.oidid=a.ipid) as aplus FROM inventory_tab a JOIN products_tab b ON a.ipid=b.pid WHERE (b.pstatus=1 OR b.pstatus=0) ORDER BY '+orderby+' LIMIT '+start+','+length;
 		}
         var query = connection.query(sql, function (err, rows, fields) {
             if (err) {

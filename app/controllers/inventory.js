@@ -27,8 +27,12 @@ exports.list_datatables = async function(req, res) {
 		var totalProccess = await getStockProccess(rows[i].ipid)
 		var proccess = totalProccess
 		var left = parseInt(totalProccess) + parseInt(rows[i].istock)
+		var stockDus = (parseFloat(rows[i].istock) / parseFloat(rows[i].pkoliqty || 0))
+		if (helpers.__isFloat(stockDus)) {
+			stockDus = stockDus.toFixed(1);
+		}
 
-		data.push([rows[i].pname, rows[i].istockbegining, rows[i].istockin, rows[i].istockout, rows[i].istockreturn, rows[i].istock, rows[i].aplus, rows[i].amin, proccess, left, execute]);
+		data.push([rows[i].pname, rows[i].istockbegining, rows[i].istockin, rows[i].istockout, rows[i].istockreturn, rows[i].istock, stockDus, rows[i].aplus, rows[i].amin, proccess, left, execute]);
 	}
 
 	res.send({data:data,draw:draw,recordsTotal:total[0].total,recordsFiltered:total[0].total});
