@@ -27,8 +27,8 @@ exports.list_datatables = async function(req, res) {
 		var totalProccess = await getStockProccess(rows[i].ipid)
 		var proccess = totalProccess
 		var left = parseInt(totalProccess) + parseInt(rows[i].istock)
-		var stockDus = (parseFloat(rows[i].istock) / parseFloat(_.result(rows[i], 'pkoliqty', 0))) || 0
-		if (stockDus && helpers.__isFloat(stockDus)) {
+		var stockDus = parseFloat(_.result(rows[i], 'pkoliqty', 0)) > 0 ? (parseFloat(rows[i].istock) / parseFloat(_.result(rows[i], 'pkoliqty', 0))) : 0
+		if (stockDus > 0 && helpers.__isFloat(stockDus)) {
 			stockDus = stockDus.toFixed(1);
 		}
 
